@@ -1,0 +1,103 @@
+import Driver from "../../entities/interfaces/DriverInterface";
+import User from "../../entities/interfaces/UserInterface";
+import { AdminType } from "../../presentation/interfaces/AdminInterface";
+import { DriverType } from "../../presentation/interfaces/DriverInterface";
+import { UserType } from "../../presentation/interfaces/UserInterface";
+import { AdminRepository } from "../interfaces/repository/AdminRepository";
+import {AdminInteractor} from "../interfaces/usecases/AdminInteractor"
+
+
+export class adminInteractorImp implements AdminInteractor{
+    constructor (private readonly repository: AdminRepository){}
+    async licenseStatusInteractor(id: string, licenseStatus: string): Promise<{ message: string; status: number; }> {
+        try {
+            const { message,status } = await this.repository.licenseStatusRepository(id, licenseStatus);
+            return {
+                message,
+                status
+            }
+        } catch (error) {
+            console.log(error);
+            return{
+                message:"Internal server error",
+                status:500
+            }
+        }
+    }
+    async actionInteractor(id: string, block: string): Promise<{ users: User | null; message: string; status: number; }> {
+        console.log("User Actions interactor");
+        try {
+            const { users, message, status } = await this.repository.userBlockUnblock(
+                id,
+                block
+              );
+              return { users, message,status };
+        } catch (error) {
+            console.log(error);
+            return{
+                users:null,
+                status:500,
+                message:"Error updating the user"
+            }
+        }
+    }
+    async FindAllUsersInteractor(page: number, limit: number, searchQuery: string): Promise<{ users: User[] ;usertotal:number;pagesUser:number,pagesDriver:number,drivers:DriverType[] }> {
+        try {
+            const query = searchQuery ? { name: new RegExp(searchQuery, 'i') } : {};
+            const { users,drivers,drivertotal,usertotal } = await this.repository.findAllUsers(query,page,limit);
+            const pagesUser = Math.ceil(usertotal/limit);
+            const pagesDriver = Math.ceil(drivertotal/limit);
+            return{
+                usertotal,
+                users,
+                pagesUser,
+                pagesDriver,
+                drivers
+            }
+        } catch (error:any) {
+            console.log(error);
+            throw new Error(`Failed to get user list: ${error.message}`)
+        }
+    }
+   async AdminVerifyInteractor(adminToken: string): Promise<{ user?: AdminType | null | undefined; message: string | null; status: number; }> {
+        try{
+            console.log("AdminVerifyInteractor",adminToken)
+            const {message,status,user} = await this.repository.adminVerify(adminToken)
+            if (status === 200) {
+                return { user, message: 'Admin verified successfully', status: 200 };
+              } else {
+                // If the admin verification fails, return a null user, an error message, and the corresponding status code
+                return { user: null, message, status };
+              }
+            } catch (error) {
+              console.error(error);
+              // If an error occurs during the verification process, return a null user, an error message, and a 500 status code
+              return { user: null, message: 'An error occurred while verifying the admin', status: 500 };
+            }
+    }
+    async AdminLogin(credentials: { email: string; password: string; }): Promise<{ message: string|null; status: number; user: AdminType | undefined | null; token: string | null;refreshToken : string | null}> {
+        try{
+            const {user,message,token,status,refreshToken} = await this.repository.findAdminByCredentials(credentials);
+            if(!user){
+                return{
+                    user:null,
+                    message:message,
+                    token,
+                    refreshToken,
+                    status:402
+                }
+            
+            }
+            return {
+                user,
+                message,
+                token,
+                status:200,
+                refreshToken
+            }
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+}
