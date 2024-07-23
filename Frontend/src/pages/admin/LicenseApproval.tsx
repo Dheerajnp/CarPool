@@ -6,9 +6,10 @@ import { adminVerify } from '../../redux/adminStore/Authentication/AdminAuthSlic
 import Cookies from 'js-cookie';
 import { User } from '../../redux/userStore/Authentication/interfaces';
 import { useLocation } from 'react-router-dom';
+import { Driver } from '../../redux/driverStore/interfaces';
 
 const LicenseApprovalTable = () => {
-  const [userslist, setUsersList] = useState<User[]>([]);
+  const [userslist, setUsersList] = useState<Driver[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -17,26 +18,14 @@ const LicenseApprovalTable = () => {
   const location = useLocation();
   const userIdFromURL = location.pathname.split('/').pop() || '';
 
-  const { dispatch, navigate } = useEssentials();
+  // const { dispatch, navigate } = useEssentials();
 
-  useEffect(() => {
-    const adminToken = Cookies.get('adminToken');
-    if (adminToken) {
-      dispatch(adminVerify({ adminToken })).then((state: any) => {
-        if (!state.payload.user) {
-          navigate('/admin/login');
-        }
-      });
-    } else {
-      navigate('/admin/login');
-    }
-    fetchUsers();
-  }, [currentPage, searchQuery]);
 
   useEffect(() => {
     if (userIdFromURL) {
       setActiveUserId(userIdFromURL);
     }
+    fetchUsers();
   }, [userIdFromURL]);
 
   const fetchUsers = async () => {
@@ -45,8 +34,9 @@ const LicenseApprovalTable = () => {
         params: { page: currentPage, limit, searchQuery },
         withCredentials: true,
       });
-      setUsersList(response.data.users);
-      setTotalPages(response.data.pages);
+      console.log(response.data)
+      setUsersList(response.data.drivers);
+      setTotalPages(response.data.pagesDriver);
     } catch (error) {
       console.error(error);
     }

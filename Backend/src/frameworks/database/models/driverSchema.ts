@@ -13,8 +13,8 @@ const vehicleSchema = new Schema({
   },
   status:{
     type: String,
-    enum: ['active', 'inactive'],
-    default: 'inactive',
+    enum: ['approved', 'rejected'],
+    default: 'pending',
   }
 });
 

@@ -14,5 +14,5 @@ adminRouter.get('/getUsers',controller.getAllUsers.bind(controller));
 
 adminRouter.put('/user-actions/:id/:block',controller.userActions.bind(controller));
 adminRouter.put('/license-approval/:userId',controller.licenseApproval.bind(controller))
-
+adminRouter.get('/getUsersPendingApproval',controller.pendingUserDocs.bind(controller));
 export default adminRouter;

@@ -48,6 +48,10 @@ const userSchema = new Schema<User>({
         type: {
             type: String,
         },
+        status:{
+            type: String,
+            enum:["pending","verified","rejected"]
+        }
     }
 });
 

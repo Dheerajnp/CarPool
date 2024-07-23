@@ -1,5 +1,4 @@
 
-import useRequireAuth from '../../hooks/admin/adminAuth'
 import React from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';

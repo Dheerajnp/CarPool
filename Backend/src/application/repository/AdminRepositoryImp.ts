@@ -10,9 +10,29 @@ import { AdminRepository } from "../interfaces/repository/AdminRepository";
 import User from "../../entities/interfaces/UserInterface";
 import { DriverType } from "../../presentation/interfaces/DriverInterface";
 export class AdminRepositoryImp implements AdminRepository{
+    async getUsersPending(query: any, page: number, limit: number): Promise<{ status:number;user:User[]|null,userPage:number }> {
+        try{
+            console.log(query,page,limit);
+            let users = await userModel.find()
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .exec();
+            console.log("users",users)
+                let total = await userModel.countDocuments(query);          
+          return {
+                user:users,
+                userPage:total,
+                status:200
+            }
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
 async licenseStatusRepository(id: string, licenseStatus: string): Promise<{ message: string; status: number; }> {
         try{
-            let user = await userModel.findById(id);
+
+            let user = await driverModel.findById(id);
             if(!user){
                 return{
                     message:"User not found",
@@ -20,13 +40,13 @@ async licenseStatusRepository(id: string, licenseStatus: string): Promise<{ mess
                 }
             }
             if(licenseStatus==='approved'){
-                await userModel.findByIdAndUpdate(id, { licenseStatus: licenseStatus,verified:true });
+                await driverModel.findByIdAndUpdate(id, { licenseStatus: licenseStatus,verified:true });
             return {
                 message:"license status updated",
                 status:200
             }
             }else{
-                await userModel.findByIdAndUpdate(id, { licenseStatus: licenseStatus });
+                await driverModel.findByIdAndUpdate(id, { licenseStatus: licenseStatus });
             return {
                 message:"license status updated",
                 status:200
@@ -41,20 +61,27 @@ async licenseStatusRepository(id: string, licenseStatus: string): Promise<{ mess
             }
         }
     }
-  async userBlockUnblock(id: string, block: string): Promise<{ users: User | null; message: string; status: number; }> {
+    async  userBlockUnblock(id: string, block: string, role: string): Promise<{ users: User | null; message: string; status: number; }> {
         try {
             let user;
-            if(block=='false'){
-                user = await userModel.findByIdAndUpdate(id,{blocked: true},{new:true});
-            }else{
-                user = await userModel.findByIdAndUpdate(id,{blocked: false},{new:true});
+            const isBlocked = block === 'false';
+            const update = { blocked: isBlocked };
+    
+            if (role === 'rider') {
+                user = await userModel.findByIdAndUpdate(id, update, { new: true });
+            } else if (role === 'host') {
+                user = await driverModel.findByIdAndUpdate(id, update, { new: true });
+            } else {
+                return { users: null, message: 'Invalid role specified', status: 400 };
             }
+    
             return { users: user, message: 'User status updated successfully', status: 200 };
         } catch (error) {
             console.log(error);
-            return{users:null,message:"Error in updating",status:500}
+            return { users: null, message: 'Error in updating', status: 500 };
         }
     }
+    
     async findAllUsers(query: any, page: number, limit: number): Promise<{ users: User[];usertotal:number,drivers:DriverType[];drivertotal:number }> {
         try {
             let users =await userModel.find(query)

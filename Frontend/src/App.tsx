@@ -7,10 +7,8 @@ import PublicRoute from "./routes/PublicRoute";
 import { AdminPrivateRoute, DriverPrivateRoute, UserPrivateRoute } from "./routes/PrivateRoutes";
 import UserRoutes from "./routes/UserRoutes";
 import DriverRoutes from "./routes/DriverRoutes";
-import UserProfile from "./pages/UserProfile";
 import ForgotPasswordEmail from "./pages/ForgotPassword/ForgotPasswordEmail";
 import NewPasswordPage from "./pages/ForgotPassword/NewPasswordPage";
-import DriverProfile from "./pages/Driver/Driver Profile/DriverProfile";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRoutes from "./routes/AdminRoutes";
 
@@ -22,8 +20,8 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
       </Route>
-      <Route path="/user-profile" element={<UserProfile />} />
-      <Route path="/driver-profile" element={<DriverProfile />} />
+      
+      
       <Route path="/" element={<Home />} />
       <Route path="/verifyotp" element={<VerifyOtp />} />
       <Route path="/forgotpassword" element={<ForgotPasswordEmail />} />

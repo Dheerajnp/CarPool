@@ -12,8 +12,9 @@ export interface User {
     otp?:string;
     blocked?:boolean;
     documents?:{
-        url:string;
-        type: string;
+        url?:string;
+        type?: string;
+        status?:string
     };
 }
 

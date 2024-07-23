@@ -164,7 +164,7 @@ export default function Component() {
         </div>
       </CardContent>
       <CardFooter className="col-span-3">
-        <Button className="w-full">Search Flights</Button>
+        <Button className="w-full">Create Rides</Button>
       </CardFooter>
     </Card>
   );

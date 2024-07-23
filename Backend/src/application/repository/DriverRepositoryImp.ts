@@ -3,6 +3,35 @@ import driverModel from "../../frameworks/database/models/driverSchema";
 import { DriverRepository } from "../interfaces/repository/DriverRepository";
 
 export class driverRepositoryImp implements DriverRepository{
+   async editDriverInfoRepository(data: { name: string; phone: string; driverId: string; }): Promise<{ message: string; status: number; }> {
+       const{name,phone, driverId} = data;
+       try {
+
+        const driver = await driverModel.findByIdAndUpdate(
+            driverId,
+            { name, phone },
+            { new: true }
+          );
+        if(!driver) {
+                return{    
+                    message: "Driver not found",
+                    status: 404,
+                }
+            }
+            console.log("edit driver info")
+            console.log(driver);
+            return {
+                message: 'Driver info updated successfully',
+                status: 200,
+            }
+       } catch (error) {
+            console.log(error);
+            return {
+                message: 'Internal Server Error',
+                status: 500
+            }
+       }
+   }
    async saveLicenseInfoRepository(data: { driverId: string; licenseBackUrl: string; licenseFrontUrl: string; }): Promise<{ message: string; status: number; driver: Driver | null; }> {
     const { driverId, licenseBackUrl, licenseFrontUrl} = data;
     try { 

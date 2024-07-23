@@ -42,4 +42,17 @@ export class driverController{
           return res.status(500).json({message  : "Internal server error",status:500});
         }
       }
+
+      editDriverInfo:RequestHandler = async (req,res)=>{
+        const {name, phone } = req.body;
+        const { driverId } = req.params;
+        console.log(name, phone, driverId);
+        console.log(req.body)
+        try{
+          const { message, status } = await this.interactor.editDriverInfoInteractor({name,phone,driverId});
+          return res.status(status).json({ message,status }); 
+        }catch (error) {
+        return res.status(500).json({message  : "Internal server error",status:500});
+        }
+      }
 }

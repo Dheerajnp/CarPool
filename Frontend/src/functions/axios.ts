@@ -8,6 +8,7 @@ const getCookieToken = () => {
 
 const axiosApiGateway = axios.create({
   baseURL: "http://localhost:4000",
+  withCredentials: true,
 });
 
 axiosApiGateway.interceptors.request.use(

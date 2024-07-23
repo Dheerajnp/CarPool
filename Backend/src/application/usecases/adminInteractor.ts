@@ -9,6 +9,16 @@ import {AdminInteractor} from "../interfaces/usecases/AdminInteractor"
 
 export class adminInteractorImp implements AdminInteractor{
     constructor (private readonly repository: AdminRepository){}
+    async pendingUserDocsInteractor(query: any, page: number, limit: number): Promise<{ status:number;user:User[]|null,userPage:number }> {
+        try {
+            const result = await this.repository.getUsersPending(query, page, limit);
+            return result;
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+    }
+   
     async licenseStatusInteractor(id: string, licenseStatus: string): Promise<{ message: string; status: number; }> {
         try {
             const { message,status } = await this.repository.licenseStatusRepository(id, licenseStatus);
@@ -24,12 +34,13 @@ export class adminInteractorImp implements AdminInteractor{
             }
         }
     }
-    async actionInteractor(id: string, block: string): Promise<{ users: User | null; message: string; status: number; }> {
+    async actionInteractor(id: string, block: string,role:string): Promise<{ users: User | null; message: string; status: number; }> {
         console.log("User Actions interactor");
         try {
             const { users, message, status } = await this.repository.userBlockUnblock(
                 id,
-                block
+                block,
+                role
               );
               return { users, message,status };
         } catch (error) {

@@ -56,8 +56,9 @@ export class adminController{
     userActions:RequestHandler = async(req,res,next)=>{
         console.log("userActions controller");
         const { id,block } = req.params;
+        const { role } = req.body;
         try {
-            const { message,users,status } = await this.interactor.actionInteractor(id,block);
+            const { message,users,status } = await this.interactor.actionInteractor(id,block,role);
             return res.status(status).json({ message , users , status})
         } catch (error) {
             console.log(error);
@@ -77,6 +78,21 @@ export class adminController{
         }catch (error) {
             console.log(error);
             return res.status(500).json({ message: 'Internal Server Error' })
+        }
+    }
+
+    pendingUserDocs:RequestHandler = async(req, res) => {
+        
+        console.log('pendingUserDocs controller');
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 10;
+            const searchQuery = req.query.searchQuery as string || '';
+            const result = await this.interactor.pendingUserDocsInteractor(searchQuery,page,limit);
+            res.json(result);
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
     }
 }

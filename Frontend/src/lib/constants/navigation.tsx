@@ -19,6 +19,12 @@ export const DASHBOARD_SIDEBAR_LINKS =[
         label:"License Review",
         path:"/admin/license-review",
         icon:<FaAddressCard />
+    },
+    {
+        key:"document",
+        label:"Document Review",
+        path:"/admin/document-review",
+        icon:<FaAddressCard />
     }
 ];
 

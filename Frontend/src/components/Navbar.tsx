@@ -60,13 +60,25 @@ const Header: React.FC = () => {
                 </DrawerDescription>
               </DrawerHeader>
               <div className="grid gap-4 p-4">
+                {role && role === "host" &&
                 <Link
-                  to="/profile"
-                  className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
-                >
-                  <FiUser />
-                  <span>Profile</span>
-                </Link>
+                to="/driver/driver-profile"
+                className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+              >
+                <FiUser />
+                <span>Profile</span>
+              </Link>
+                }
+                {role && role === "rider" &&
+                <Link
+                to="/driver/user-profile"
+                className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+              >
+                <FiUser />
+                <span>Profile</span>
+              </Link>
+                }
+                
                 <Link
                   to="/settings"
                   className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"

@@ -4,6 +4,17 @@ import { DriverInteractor } from "../interfaces/usecases/driverInteractor";
 
 export class driverInteractorImp implements DriverInteractor{
     constructor(private readonly repository: DriverRepository){}
+    async editDriverInfoInteractor(data: { name: string; phone: string; driverId: string; }): Promise<{ message: string; status: number; }> {
+        try {
+            const result = await this.repository.editDriverInfoRepository(data);
+            return result;
+        } catch (error) {
+            return {
+                message: 'Internal Server Error',
+                status: 500
+            }
+        }
+    }
     async saveLicenseInfoInteractor(data: { driverId: string; licenseBackUrl: string; licenseFrontUrl: string; }): Promise<{ message: string; status: number; driver: Driver | null; }> {
         try {
             const result = await this.repository.saveLicenseInfoRepository(data);

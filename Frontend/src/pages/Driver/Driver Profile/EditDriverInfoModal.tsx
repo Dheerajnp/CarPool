@@ -4,6 +4,8 @@ import { Driver } from '../../../redux/userStore/Authentication/interfaces';
 import { Label } from '../../../components/ui/label';
 import { Input } from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
+import axiosApiGateway from '../../../functions/axios';
+import toast from 'react-hot-toast';
 
 interface EditDriverInfoModalProps {
   driver: Driver;
@@ -23,7 +25,22 @@ const EditDriverInfoModal: React.FC<EditDriverInfoModalProps> = ({ driver, onClo
   };
 
   const handleSave = () => {
-    onSave(formData);
+    let name = formData.name;
+    let phone = formData.phone;
+    console.log(name,phone)
+    const response = axiosApiGateway.post(`/driver/updateInfo/${driver._id}`,
+      {name,phone},
+    ).then((response) => {
+      if(response.data.status === 200) {
+        toast.success(response.data.message);
+        onSave(formData);
+      }else {
+        toast.error(response.data.message);
+        onClose();
+      }
+
+    })
+    
   };
 
   return (
