@@ -32,7 +32,7 @@ export class driverRepositoryImp implements DriverRepository{
           return { message: "Failed to delete vehicle. Please try again.", status: 500 };
         }
       }
-   async addVehicleRepository(data: { brand: string; model: string; driverId: string; rcDocumentUrl: string; vehicleNumber: string; }): Promise<{ status: number; message: string; }> {
+   async addVehicleRepository(data: { brand: string; model: string; driverId: string; rcDocumentUrl: string; vehicleNumber: string; }): Promise<{ status: number; message: string; driver:Driver|null}> {
        const {brand, model, driverId, rcDocumentUrl, vehicleNumber} = data
     try {
         const driver = await driverModel.findByIdAndUpdate(
@@ -44,6 +44,7 @@ export class driverRepositoryImp implements DriverRepository{
                 return{    
                     message: "Driver not found",
                     status: 404,
+                    driver:null
                 }
         }
         console.log("add vehicle")
@@ -51,12 +52,14 @@ export class driverRepositoryImp implements DriverRepository{
         return {
             message: 'Vehicle added successfully',
             status: 200,
+            driver:driver
         }
         
        } catch (error) {
             return{
                 message: 'Internal Server Error',
-                status: 500
+                status: 500,
+                driver:null
             }
        }
    }

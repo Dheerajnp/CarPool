@@ -72,7 +72,14 @@ const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, o
      const response = await axios.put(`/driver/addVehicle/${driver._id}`, updatedVehicle);
 
       if(response.data.status === 200) {
-       
+        const updatedVehicle = {
+          _id : vehicle._id,
+          brand: values.brand,
+          model: values.model,
+          number: values.vehicleNumber,
+          rcDocumentUrl: rcDocumentUrl,
+          status: "pending" // Assuming the default status is "active"
+        };
         onSave(updatedVehicle);
         toast.success("Vehicle information updated successfully!");
       }else{

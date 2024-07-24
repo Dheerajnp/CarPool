@@ -59,8 +59,8 @@ export class driverController{
         console.log(brand, model, vehicleNumber, driverId , rcDocumentUrl);
         console.log(req.body)
         try{
-          const { message, status } = await this.interactor.addVehicleInteractor({brand, model, vehicleNumber, driverId,rcDocumentUrl});
-          return res.status(status).json({ message,status }); 
+          const { message, status,driver } = await this.interactor.addVehicleInteractor({brand, model, vehicleNumber, driverId,rcDocumentUrl});
+          return res.status(status).json({ message,status,driver }); 
         }catch (error) {
         return res.status(500).json({message  : "Internal server error",status:500});
         }

@@ -16,14 +16,15 @@ export class driverInteractorImp implements DriverInteractor{
             }
         }
     }
-    async addVehicleInteractor(data: { brand: string; model: string; driverId: string; rcDocumentUrl: string; vehicleNumber: string; }): Promise<{ status: number; message: string; }> {
+    async addVehicleInteractor(data: { brand: string; model: string; driverId: string; rcDocumentUrl: string; vehicleNumber: string; }): Promise<{ status: number; message: string;driver:Driver|null }> {
         try {
             const result = await this.repository.addVehicleRepository(data);
             return result;
         } catch (error) {
             return {
                 message: 'Internal Server Error',
-                status: 500
+                status: 500,
+                driver: null
             }
         }
     }

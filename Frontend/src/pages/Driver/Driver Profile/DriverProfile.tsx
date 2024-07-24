@@ -14,6 +14,7 @@ import RoundLoader from "../../../components/RoundLoader";
 import { MdDelete } from "react-icons/md";
 import toast from "react-hot-toast";
 import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal";
+import ImageModal from "./ImageModal";
 
 const DriverProfile: React.FC = () => {
   const { auth } = useEssentials();
@@ -31,6 +32,8 @@ const DriverProfile: React.FC = () => {
   const [isEditingLicenseInfo, setIsEditingLicenseInfo] = useState(false);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<string | null>(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined); 
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); 
   useEffect(() => {
     const fetchDriver = async () => {
       setLoading(true);
@@ -126,6 +129,12 @@ const DriverProfile: React.FC = () => {
     setIsDeleteConfirmationOpen(true);
   };
 
+  const handleImageClick = (imageUrl: string|undefined) => {
+    console.log("Image clicked",imageUrl)
+    setSelectedImageUrl(imageUrl);
+    setIsImageModalOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -206,7 +215,8 @@ const DriverProfile: React.FC = () => {
                     width={110}
                     height={110}
                     alt="License Front"
-                    className="rounded-md h-full"
+                    className="rounded-md h-full cursor-pointer"
+                    onClick={() => handleImageClick(driver.licenseFrontUrl)}
                   />
                 ) : (
                   <img
@@ -223,7 +233,8 @@ const DriverProfile: React.FC = () => {
                     width={110}
                     height={110}
                     alt="License Back"
-                    className="rounded-md h-full"
+                    className="rounded-md h-full cursor-pointer"
+                    onClick={() => handleImageClick(driver.licenseBackUrl)}
                   />
                 ) : (
                   <img
@@ -279,6 +290,7 @@ const DriverProfile: React.FC = () => {
                             height={80}
                             alt="Registration Certificate"
                             className="rounded-md"
+                            onClick={() => handleImageClick(vehicle.rcDocumentUrl)}
                           />
                         ) : (
                           <img
@@ -332,6 +344,13 @@ const DriverProfile: React.FC = () => {
             onConfirm={handleVehicleDelete}
           />
         )}
+        {selectedImageUrl && (
+        <ImageModal
+          isOpen={isImageModalOpen}
+          onClose={() => setIsImageModalOpen(false)}
+          imageUrl={selectedImageUrl}
+        />
+      )}
       </div>
     </div>
   );

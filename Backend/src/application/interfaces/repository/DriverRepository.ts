@@ -5,6 +5,6 @@ export interface DriverRepository{
     getDriverRepository(data:{driverId:string}):Promise<{user:Driver|null,message:string,status:number}>
     saveLicenseInfoRepository(data:{driverId:string,licenseBackUrl:string,licenseFrontUrl:string}):Promise<{message:string,status:number,driver:Driver|null}>
     editDriverInfoRepository(data:{name:string,phone:string,driverId:string}):Promise<{message:string;status:number}>
-    addVehicleRepository(data:{brand:string,model:string,driverId:string,rcDocumentUrl:string,vehicleNumber:string}):Promise<{status:number,message:string}>
+    addVehicleRepository(data:{brand:string,model:string,driverId:string,rcDocumentUrl:string,vehicleNumber:string}):Promise<{status:number,message:string,driver:Driver|null}>
     deleteVehicleRepository(vehicleId:string, driverId:string):Promise<{message:string,status:number}>
 } 

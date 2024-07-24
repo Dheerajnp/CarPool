@@ -5,6 +5,6 @@ export interface DriverInteractor{
     getDriverInteractor(data: { driverId: string; }): Promise<{ user: Driver | null; message: string; status: number; }>
     saveLicenseInfoInteractor(data: { driverId: string; licenseBackUrl: string; licenseFrontUrl: string; }): Promise<{ message: string; status: number; driver: Driver | null; }>
     editDriverInfoInteractor(data:{name:string,phone:string,driverId:string}):Promise<{message:string;status:number}>
-    addVehicleInteractor(data:{brand:string,model:string,driverId:string,rcDocumentUrl:string,vehicleNumber:string}):Promise<{status:number,message:string}>
+    addVehicleInteractor(data:{brand:string,model:string,driverId:string,rcDocumentUrl:string,vehicleNumber:string}):Promise<{status:number,message:string,driver:Driver|null}>
     deleteVehicleInteractor(vehicleId:string, driverId:string):Promise<{message:string,status:number}>
 }
