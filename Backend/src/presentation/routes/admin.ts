@@ -11,8 +11,9 @@ const controller = new adminController(interactor);
 adminRouter.post('/login',controller.adminLogin.bind(controller));
 adminRouter.get('/verify',controller.adminVerifyController.bind(controller));
 adminRouter.get('/getUsers',controller.getAllUsers.bind(controller));
-
+adminRouter.get('/pendingDrivers',controller.getPendingDrivers.bind(controller));
 adminRouter.put('/user-actions/:id/:block',controller.userActions.bind(controller));
 adminRouter.put('/license-approval/:userId',controller.licenseApproval.bind(controller))
 adminRouter.get('/getUsersPendingApproval',controller.pendingUserDocs.bind(controller));
+adminRouter.get('/getPendingVehicles',controller.getPendingVehicles.bind(controller));
 export default adminRouter;

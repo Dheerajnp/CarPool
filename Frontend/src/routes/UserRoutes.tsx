@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import DocumentUploadPage from "../pages/User/DocumentUpload/DocumentUploadPage";
-import UserProfile from "../pages/UserProfile";
+import UserProfile from "../pages/User/DocumentUpload/User Profile/UserProfile";
 
 
 export default function UserRoutes(){

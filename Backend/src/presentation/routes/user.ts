@@ -11,5 +11,8 @@ const controller = new userController(interactor);
 const userRouter:Router = Router();
 
 userRouter.put('/upload-document/:userId', controller.uploadDocument.bind(controller));
+userRouter.get('/getUser/:userId',controller.getUserDetails.bind(controller));
+userRouter.put('/updateDocument/:userId',controller.editDocument.bind(controller));
+userRouter.put('/updateInfo/:userId',controller.userInfoEdit.bind(controller));
 
 export default userRouter;

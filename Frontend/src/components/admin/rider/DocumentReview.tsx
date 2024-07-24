@@ -21,10 +21,8 @@ const UserDocumentReviewListPage = () => {
         withCredentials: true,
       });
 
-    //   console.log(response.data)
       if (response.data.user) { // Check if 'users' exists in the response
         setUsersList(response.data.user);
-        console.log("usrretfascf",usersList)
         setTotalPages(response.data.totalPages);
       } else {
         console.error('Error fetching users: No users found in the response.');
@@ -34,18 +32,18 @@ const UserDocumentReviewListPage = () => {
     }
   };
 
-  const handleSearch = (e:any) => {
+  const handleSearch = (e: any) => {
     setSearchQuery(e.target.value.toLowerCase());
     setCurrentPage(1); // Reset to first page on new search
   };
 
-  const handlePageChange = (page:number) => {
+  const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
-  const approveDocument = async (userId:string) => {
+  const approveDocument = async (userId: string) => {
     try {
       const response = await axios.patch(`/admin/approveDocument/${userId}`, {}, {
         withCredentials: true,
@@ -60,7 +58,7 @@ const UserDocumentReviewListPage = () => {
     }
   };
 
-  const rejectDocument = async (userId:string) => {
+  const rejectDocument = async (userId: string) => {
     try {
       const response = await axios.patch(`/admin/rejectDocument/${userId}`, {}, {
         withCredentials: true,
@@ -119,9 +117,6 @@ const UserDocumentReviewListPage = () => {
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="text-sm text-gray-500">{user.email}</div>
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {user.role}
-        </td>
         <td className="px-6 py-4 whitespace-nowrap">
           <span
             className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -138,6 +133,16 @@ const UserDocumentReviewListPage = () => {
               ? 'Approved'
               : 'Rejected'}
           </span>
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {user.documents?.type}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {user.documents?.url && (
+            <a href={user.documents.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+              View Document
+            </a>
+          )}
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
           <button
@@ -200,10 +205,13 @@ const UserDocumentReviewListPage = () => {
                 Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Role
+                Approval Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Approval Status
+                Document Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Document URL
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions

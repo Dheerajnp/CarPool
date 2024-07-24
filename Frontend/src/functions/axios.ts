@@ -35,8 +35,6 @@ axiosApiGateway.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    console.log(error.config)
-    alert(originalRequest)
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = Cookies.get('refreshToken');
@@ -54,7 +52,6 @@ axiosApiGateway.interceptors.response.use(
             // If refresh token is also invalid, log out the user
             Cookies.remove('token');
             Cookies.remove('refreshToken');
-            alert("hiiii")
             window.location.href = '/login';
             return Promise.reject(error);
           });

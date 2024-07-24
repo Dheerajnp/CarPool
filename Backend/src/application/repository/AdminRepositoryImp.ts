@@ -9,16 +9,78 @@ import driverModel from "../../frameworks/database/models/driverSchema"
 import { AdminRepository } from "../interfaces/repository/AdminRepository";
 import User from "../../entities/interfaces/UserInterface";
 import { DriverType } from "../../presentation/interfaces/DriverInterface";
+import Driver from "../../entities/interfaces/DriverInterface";
 export class AdminRepositoryImp implements AdminRepository{
+    async getPendingVehicleRepo(query: any, page: number, limit: number): Promise<{ status: number; driver: Driver[] | null; driverPage: number; }> {
+        try {
+            const drivers = await driverModel
+            .find({
+              ...query,
+              'vehicles.status': 'pending',
+            })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean(); // Convert Mongoose documents to plain JavaScript objects
+      
+          // Calculate total number of pages
+          const totalDrivers = await driverModel.countDocuments({
+            ...query,
+            'vehicles.status': 'pending',
+          });
+          const driverPage = Math.ceil(totalDrivers / limit);
+
+          return{
+            status:200,
+            driver:drivers,
+            driverPage
+          }
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    async FindAllPendingDriversRepo(page: number, limit: number, searchQuery: any): Promise<{ drivers: Driver[]; drivertotal: number; pagesDriver: number; }> {
+        try {
+            const drivers = await driverModel
+            .find({
+              ...searchQuery,
+              licenseStatus:'pending',
+            })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean(); // Convert Mongoose documents to plain JavaScript objects
+      
+          // Calculate total number of pages
+          const totalDrivers = await driverModel.countDocuments({
+            ...searchQuery,
+              licenseStatus:'pending',
+          });
+          const driverPage = Math.ceil(totalDrivers / limit);
+
+          return{
+            drivertotal:totalDrivers,
+            drivers:drivers,
+            pagesDriver: driverPage
+          }
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
     async getUsersPending(query: any, page: number, limit: number): Promise<{ status:number;user:User[]|null,userPage:number }> {
         try{
             console.log(query,page,limit);
-            let users = await userModel.find()
+            const updatedQuery = {
+                ...query,
+                'documents.status': 'pending'
+              };
+          
+            let users = await userModel.find(updatedQuery)
             .skip((page - 1) * limit)
             .limit(limit)
             .exec();
             console.log("users",users)
-                let total = await userModel.countDocuments(query);          
+                let total = await userModel.countDocuments(updatedQuery);          
           return {
                 user:users,
                 userPage:total,
@@ -84,11 +146,15 @@ async licenseStatusRepository(id: string, licenseStatus: string): Promise<{ mess
     
     async findAllUsers(query: any, page: number, limit: number): Promise<{ users: User[];usertotal:number,drivers:DriverType[];drivertotal:number }> {
         try {
+            const userQuery = { ...query, 'documents.status': 'pending' };
+
             let users =await userModel.find(query)
             .skip((page - 1) * limit)
             .limit(limit)
             .exec();
             let total = await userModel.countDocuments(query);
+            const driverQuery = { ...query, licenseStatus: 'pending' };
+
             let drivers = await driverModel.find(query).skip((page -1)* limit)
             .limit(limit)
             .exec();

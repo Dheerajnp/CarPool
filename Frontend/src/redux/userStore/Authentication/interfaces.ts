@@ -1,5 +1,6 @@
 export interface User {
-    _id:string
+    id:string;
+    _id:string;
     name?: string;
     email?: string;
     phone?:string;
@@ -19,6 +20,7 @@ export interface User {
 }
 
 export interface Driver{
+    id:string;
     _id:string;
     name?: string;
     email?: string;

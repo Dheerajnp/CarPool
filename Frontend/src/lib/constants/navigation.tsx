@@ -1,5 +1,6 @@
 import { HiOutlineUsers, HiOutlineViewGrid, HiOutlineCog } from 'react-icons/hi';
 import { FaAddressCard } from "react-icons/fa";
+import { FaCar } from "react-icons/fa6";
 
 export const DASHBOARD_SIDEBAR_LINKS =[
     {
@@ -16,15 +17,20 @@ export const DASHBOARD_SIDEBAR_LINKS =[
     },
     {
         key:"license",
-        label:"License Review",
+        label:"License Review(Driver)",
         path:"/admin/license-review",
         icon:<FaAddressCard />
     },
     {
         key:"document",
-        label:"Document Review",
+        label:"Document Review(User)",
         path:"/admin/document-review",
         icon:<FaAddressCard />
+    },{
+        key:"vehicles",
+        label:"Vehicle Review",
+        path:"/admin/vehicles",
+        icon:<FaCar />
     }
 ];
 

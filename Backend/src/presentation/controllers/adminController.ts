@@ -53,6 +53,19 @@ export class adminController{
        }
     }
 
+    getPendingDrivers:RequestHandler = async(req,res,next)=>{
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 10;
+            const searchQuery = req.query.searchQuery as string || "";
+            const result = await this.interactor.FindAllPendingDriversInteractor(page,limit,searchQuery);
+            res.json(result);;
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Internal Server Error' })
+        }
+    }
+
     userActions:RequestHandler = async(req,res,next)=>{
         console.log("userActions controller");
         const { id,block } = req.params;
@@ -90,6 +103,20 @@ export class adminController{
             const searchQuery = req.query.searchQuery as string || '';
             const result = await this.interactor.pendingUserDocsInteractor(searchQuery,page,limit);
             res.json(result);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    
+    getPendingVehicles:RequestHandler = async(req,res,next)=>{
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 10;
+            const searchQuery = req.query.searchQuery as string || '';
+            const result = await this.interactor.getPendingVehiclesInteractor(searchQuery,page,limit);
+            console.log("wdddcd",result)
+            res.status(200).json({result})
         } catch (error) {
             console.log(error);
             throw error;

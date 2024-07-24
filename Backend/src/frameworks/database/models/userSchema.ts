@@ -50,7 +50,7 @@ const userSchema = new Schema<User>({
         },
         status:{
             type: String,
-            enum:["pending","verified","rejected"]
+            enum:["pending","verified","rejected"],
         }
     }
 });

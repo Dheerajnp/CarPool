@@ -54,7 +54,7 @@ const DriverProfile: React.FC = () => {
     if (driverId) {
       fetchDriver();
     }
-  }, [driverId]);
+  }, [driverId,auth]);
 
   const [profilePicture, setProfilePicture] = useState<string>(
     "/placeholder-user.jpg"

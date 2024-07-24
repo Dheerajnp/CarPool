@@ -22,9 +22,10 @@ export class driverRepositoryImp implements DriverRepository{
       
           // Update the driver's vehicle list
           driver.vehicles = updatedVehicles;
-      
+          console.log("udated vehicles",updatedVehicles)
           // Save the updated driver profile
           await driver.save();
+          
       
           return { message: "Vehicle deleted successfully", status: 200};
         } catch (error) {

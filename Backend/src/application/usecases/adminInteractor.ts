@@ -9,9 +9,35 @@ import {AdminInteractor} from "../interfaces/usecases/AdminInteractor"
 
 export class adminInteractorImp implements AdminInteractor{
     constructor (private readonly repository: AdminRepository){}
+    async getPendingVehiclesInteractor(query: any, page: number, limit: number): Promise<{ status: number; driver: Driver[] | null; driverPage: number; }> {
+        try {
+            const searchQuery = query ? {
+                $or: [
+                  { name: new RegExp(query, 'i') },
+                  { email: new RegExp(query, 'i') },
+                ],
+              } : {};
+            const result = await this.repository.getPendingVehicleRepo(searchQuery, page, limit);
+            return result;
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+    }
+   async FindAllPendingDriversInteractor(page: number, limit: number, searchQuery: string): Promise<{ drivers: Driver[]; drivertotal: number; pagesDriver: number; }> {
+        try {
+            let query = searchQuery ? {name: new RegExp(searchQuery,'i'),email:new RegExp(searchQuery,'i')}: {};
+            const result = await this.repository.FindAllPendingDriversRepo(page,limit,query);
+            return result;
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+    }
     async pendingUserDocsInteractor(query: any, page: number, limit: number): Promise<{ status:number;user:User[]|null,userPage:number }> {
         try {
-            const result = await this.repository.getUsersPending(query, page, limit);
+            const searchQuery = query ? { name: new RegExp(query, 'i') } : {};
+            const result = await this.repository.getUsersPending(searchQuery, page, limit);
             return result;
         } catch (error) {
             console.log(error)

@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { useEssentials } from '../../hooks/UseEssentials';
-import { adminVerify } from '../../redux/adminStore/Authentication/AdminAuthSlice';
-import Cookies from 'js-cookie';
-import { User } from '../../redux/userStore/Authentication/interfaces';
 import { useLocation } from 'react-router-dom';
 import { Driver } from '../../redux/driverStore/interfaces';
 
@@ -30,7 +26,7 @@ const LicenseApprovalTable = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/admin/getUsers', {
+      const response = await axios.get('/admin/pendingDrivers', {
         params: { page: currentPage, limit, searchQuery },
         withCredentials: true,
       });
