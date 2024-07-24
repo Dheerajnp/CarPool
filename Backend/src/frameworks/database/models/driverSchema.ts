@@ -11,9 +11,12 @@ const vehicleSchema = new Schema({
   rcDocumentUrl: {
     type: String,
   },
+  number:{
+    type: String,
+  },
   status:{
     type: String,
-    enum: ['approved', 'rejected'],
+    enum: ['approved', 'rejected','pending'],
     default: 'pending',
   }
 });

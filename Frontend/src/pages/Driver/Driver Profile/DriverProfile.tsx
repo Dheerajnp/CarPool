@@ -11,6 +11,9 @@ import EditVehicleModal from "./EditVehicleInfoModal";
 import EditLicenseInfoModal from "./EditLicenseInfoModal";
 import Header from "../../../components/Navbar";
 import RoundLoader from "../../../components/RoundLoader";
+import { MdDelete } from "react-icons/md";
+import toast from "react-hot-toast";
+import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal";
 
 const DriverProfile: React.FC = () => {
   const { auth } = useEssentials();
@@ -20,6 +23,14 @@ const DriverProfile: React.FC = () => {
   const driverId = auth.user?.email;
   const data = { driverId };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isEditingDriverInfo, setIsEditingDriverInfo] = useState(false);
+  const [isEditingVehicle, setIsEditingVehicle] = useState<Vehicle | null>(
+    null
+  );
+  const [isEditingLicenseInfo, setIsEditingLicenseInfo] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState<string | null>(null);
   useEffect(() => {
     const fetchDriver = async () => {
       setLoading(true);
@@ -45,12 +56,7 @@ const DriverProfile: React.FC = () => {
   const [profilePicture, setProfilePicture] = useState<string>(
     "/placeholder-user.jpg"
   );
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isEditingDriverInfo, setIsEditingDriverInfo] = useState(false);
-  const [isEditingVehicle, setIsEditingVehicle] = useState<Vehicle | null>(
-    null
-  );
-  const [isEditingLicenseInfo, setIsEditingLicenseInfo] = useState(false);
+  
 
   const handleProfilePictureChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -71,16 +77,53 @@ const DriverProfile: React.FC = () => {
   };
 
   const handleSaveVehicle = (updatedVehicle: Vehicle) => {
-    let d = driver;
-    d?.vehicles?.push(updatedVehicle);
-    setDriver(d);
+    console.log("saving",updatedVehicle);
+    setDriver((prevDriver:any) => {
+      if (!prevDriver) return prevDriver;
+      return {
+        ...prevDriver,
+        vehicles: [...(prevDriver.vehicles || []), updatedVehicle],
+      };
+    });
+    
     setIsEditingVehicle(null);
-    console.log(driver)
   };
-
+  
   const handleSaveLicenseInfo = (updatedDriver: Driver) => {
     setDriver(updatedDriver);
     setIsEditingLicenseInfo(false);
+  };
+
+  const handleVehicleDelete = async () => {
+    if (!vehicleToDelete) return;
+    setLoading(true);
+ 
+    try {
+      const response = await axios.put(`/driver/deleteVehicle/${vehicleToDelete}`,{driverId:driver?._id});
+      if(response.data.status === 200){
+        setDriver((prevDriver:any) => {
+          if (!prevDriver) return prevDriver;
+          return {
+            ...prevDriver,
+            vehicles: prevDriver.vehicles?.filter((vehicle:any) => vehicle._id !== vehicleToDelete),
+          };
+        });
+        setIsDeleteConfirmationOpen(false);
+        setVehicleToDelete(null);
+        toast.success("Vehicle deleted successfully!");
+      }
+    } catch (error) {
+      console.error("Error deleting vehicle:", error);
+      toast.error("Failed to delete vehicle. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleOpenDeleteConfirmation = (vehicleId: string) => {
+    setVehicleToDelete(vehicleId);
+    setIsDeleteConfirmationOpen(true);
   };
 
   if (loading) {
@@ -100,11 +143,11 @@ const DriverProfile: React.FC = () => {
   }
 
   return (
-    <div className="dark:bg-gray-800"> 
+    <div className="dark:bg-gray-800">
       <Header />
       <div className="w-full max-w-4xl mx-auto px-4 md:px-6 py-12 ">
-        <div className="grid gap-8 md:grid-cols-2 border  rounded-md  dark:shadow-indigo-500  dark:bg-slate-900 dark:text-white p-5">
-          <div className="bg-background rounded-lg shadow-sm p-6 space-y-6  col-span-2 dark:bg-slate-800">
+        <div className="grid gap-8 md:grid-cols-2 border rounded-md dark:shadow-indigo-500 dark:bg-slate-900 dark:text-white p-5">
+          <div className="bg-background rounded-lg shadow-sm p-6 space-y-6 col-span-2 dark:bg-slate-800">
             <div className="flex items-center gap-4 dark:bg-slate-800">
               <label htmlFor="avatar-input">
                 <Avatar className="h-16 w-16 cursor-pointer">
@@ -143,13 +186,9 @@ const DriverProfile: React.FC = () => {
                 <PhoneIcon className="h-5 w-5 text-muted-foreground" />
                 <span>{driver.phone || "NA"}</span>
               </div>
-              {/* <div className="flex items-center gap-2">
-                <LocateIcon className="h-5 w-5 text-muted-foreground" />
-                <span>{driver.address || "NA"}</span>
-              </div> */}
             </div>
           </div>
-          <div className="col-span-2  bg-background rounded-lg shadow-sm p-6 space-y-6 dark:bg-slate-800">
+          <div className="col-span-2 bg-background rounded-lg shadow-sm p-6 space-y-6 dark:bg-slate-800">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <div className="font-semibold text-lg">Driver's License</div>
@@ -221,15 +260,21 @@ const DriverProfile: React.FC = () => {
                     key={index}
                     className="bg-muted rounded-lg p-4 flex items-center justify-between"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 justify-between">
                       <div className="space-y-1">
                         <div className="font-semibold">{vehicle.brand} {vehicle.model}</div>
                         <div className="text-muted-foreground">
-                          License Plate: {vehicle.brand}
+                          License Plate: {vehicle.number}
                         </div>
-                        {vehicle.rcDocumentUrl ? (
+                        <div className="text-muted-foreground">
+                          Approval status : {vehicle.status}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="">
+                      {vehicle.rcDocumentUrl ? (
                           <img
-                            src={imgPlaceholder}
+                            src={vehicle.rcDocumentUrl}
                             width={80}
                             height={80}
                             alt="Registration Certificate"
@@ -244,6 +289,13 @@ const DriverProfile: React.FC = () => {
                             className="rounded-md"
                           />
                         )}
+                      <div className="flex justify-end mt-5">
+                        <a
+                          className="mt-2 ml-8 text-black cursor-pointer"
+                          onClick={() => handleOpenDeleteConfirmation(vehicle._id.toString())}
+                        >
+                          <MdDelete className="text-red-600 bg-gray-200 rounded-full size-10 p-2"/>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -253,7 +305,6 @@ const DriverProfile: React.FC = () => {
         </div>
         {isEditingDriverInfo && (
           <EditDriverInfoModal
-          
             driver={driver}
             onClose={() => setIsEditingDriverInfo(false)}
             onSave={handleSaveDriverInfo}
@@ -261,6 +312,7 @@ const DriverProfile: React.FC = () => {
         )}
         {isEditingVehicle && (
           <EditVehicleModal
+            driver={driver}
             vehicle={isEditingVehicle}
             onClose={() => setIsEditingVehicle(null)}
             onSave={handleSaveVehicle}
@@ -273,11 +325,17 @@ const DriverProfile: React.FC = () => {
             onSave={handleSaveLicenseInfo}
           />
         )}
+        {isDeleteConfirmationOpen && (
+          <DeleteConfirmationModal
+            isOpen={isDeleteConfirmationOpen}
+            onClose={() => setIsDeleteConfirmationOpen(false)}
+            onConfirm={handleVehicleDelete}
+          />
+        )}
       </div>
     </div>
   );
 };
-
 
 function MailIcon(props: any) {
   return (

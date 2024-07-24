@@ -12,5 +12,7 @@ const driverRouter: Router = Router();
 driverRouter.put('/upload-license/:userId',controller.uploadLicense.bind(controller));
 driverRouter.post('/getDriver',controller.getDriverDetails.bind(controller));
 driverRouter.post('/saveLicenseInfo',controller.editLicenseInfo.bind(controller));
-driverRouter.post('/updateInfo/:driverId',controller.editDriverInfo.bind(controller));;
+driverRouter.post('/updateInfo/:driverId',controller.editDriverInfo.bind(controller));
+driverRouter.put('/addVehicle/:driverId',controller.addVehicle.bind(controller));
+driverRouter.put('/deleteVehicle/:vehicleId',controller.deleteVehicle.bind(controller));
 export default driverRouter;

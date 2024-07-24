@@ -1,8 +1,65 @@
+import { log } from "console";
 import Driver from "../../entities/interfaces/DriverInterface";
 import driverModel from "../../frameworks/database/models/driverSchema";
 import { DriverRepository } from "../interfaces/repository/DriverRepository";
 
 export class driverRepositoryImp implements DriverRepository{
+    async  deleteVehicleRepository(vehicleId: string, driverId: string): Promise<{ message: string; status: number; }> {
+        try {
+          // Fetch the driver by their ID
+          console.log("driverdeleterepo",driverId)
+          const driver = await driverModel.findById(driverId);
+          console.log("driver", driver)
+          if (!driver) {
+            return { message: "Driver not found", status: 402 };
+          }
+      
+          // Filter out the vehicle to be deleted
+          const updatedVehicles = driver.vehicles?.filter((vehicle) => vehicle._id.toString() !== vehicleId);
+          if (updatedVehicles?.length === driver.vehicles?.length) {
+            return { message: "Vehicle not found", status: 402 };
+          }
+      
+          // Update the driver's vehicle list
+          driver.vehicles = updatedVehicles;
+      
+          // Save the updated driver profile
+          await driver.save();
+      
+          return { message: "Vehicle deleted successfully", status: 200};
+        } catch (error) {
+          console.error("Error deleting vehicle:", error);
+          return { message: "Failed to delete vehicle. Please try again.", status: 500 };
+        }
+      }
+   async addVehicleRepository(data: { brand: string; model: string; driverId: string; rcDocumentUrl: string; vehicleNumber: string; }): Promise<{ status: number; message: string; }> {
+       const {brand, model, driverId, rcDocumentUrl, vehicleNumber} = data
+    try {
+        const driver = await driverModel.findByIdAndUpdate(
+            driverId,
+            { $push: { vehicles: { brand:brand, model:model, rcDocumentUrl:rcDocumentUrl, number:vehicleNumber } } },
+            { new: true }
+          );
+        if(!driver) {
+                return{    
+                    message: "Driver not found",
+                    status: 404,
+                }
+        }
+        console.log("add vehicle")
+        console.log(driver);
+        return {
+            message: 'Vehicle added successfully',
+            status: 200,
+        }
+        
+       } catch (error) {
+            return{
+                message: 'Internal Server Error',
+                status: 500
+            }
+       }
+   }
    async editDriverInfoRepository(data: { name: string; phone: string; driverId: string; }): Promise<{ message: string; status: number; }> {
        const{name,phone, driverId} = data;
        try {
@@ -84,9 +141,11 @@ export class driverRepositoryImp implements DriverRepository{
             }
        }
    }
-   async licenseUpload(data: { userId: string; licenseFrontUrl: string; licenseBackUrl: string; vehicleBrand: string; vehiceModel: string;vehicleNumber:string; rcDocumentUrl: string; }): Promise<{ message: string; status: number; }> {
-        const { licenseFrontUrl, licenseBackUrl, vehicleBrand, vehiceModel, vehicleNumber, rcDocumentUrl,userId} = data;
+   async licenseUpload(data: { userId: string; licenseFrontUrl: string; licenseBackUrl: string; vehicleBrand: string; vehicleModel: string;vehicleNumber:string; rcDocumentUrl: string; }): Promise<{ message: string; status: number; }> {
+        const { licenseFrontUrl, licenseBackUrl, vehicleBrand, vehicleModel, vehicleNumber, rcDocumentUrl,userId} = data;
+        console.log("upload repositiiorysdbvjvdnv",data)
         try {
+            
             const driver = await driverModel.findById(userId);
             if(!driver) {
                 return{
@@ -101,7 +160,7 @@ export class driverRepositoryImp implements DriverRepository{
                 $push:{
                     vehicles:{
                         brand:vehicleBrand,
-                        model:vehiceModel,
+                        model:vehicleModel,
                         number:vehicleNumber,
                         rcDocumentUrl:rcDocumentUrl
                     }

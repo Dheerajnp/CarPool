@@ -38,9 +38,11 @@ export interface Driver{
 }
 
 export interface Vehicle{
+    _id: string;
     brand: string;
     model: string;
     rcDocumentUrl:string;
+    number:string;
     status:string;
 }
 export interface  RegisterCredentials{

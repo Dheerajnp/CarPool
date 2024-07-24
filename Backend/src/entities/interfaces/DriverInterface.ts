@@ -16,9 +16,11 @@ export default interface Driver extends Document {
     licenseBackUrl?:string;
     licenseFrontUrl?:string;
     vehicles?: Array<{
+        _id:string;
         brand: string;
         model: string;
         rcDocumentUrl: string;
+        number: string;
         status: string;
     }>;
 }
