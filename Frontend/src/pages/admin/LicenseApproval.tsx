@@ -20,6 +20,7 @@ const LicenseApprovalTable = () => {
   useEffect(() => {
     if (userIdFromURL) {
       setActiveUserId(userIdFromURL);
+      setTimeout(() => setActiveUserId(null), 3000);
     }
     fetchUsers();
   }, [userIdFromURL]);
@@ -125,7 +126,7 @@ const LicenseApprovalTable = () => {
 
         <tbody className="divide-y divide-gray-200">
           {userslist.map((user) => (
-            <tr key={user._id} className={user._id === activeUserId ? 'bg-blue-100' : ''}>
+            <tr key={user._id} className={user._id === activeUserId ? 'blink' : ''}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.email}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 hover:underline">

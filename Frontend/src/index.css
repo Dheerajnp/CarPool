@@ -59,3 +59,13 @@
       @apply bg-background text-foreground;
     }
   }
+
+  @keyframes blink {
+    0% { background-color: #dbeafe; } /* Initial color */
+    50% { background-color: transparent; } /* Blinking color */
+    100% { background-color: #dbeafe; } /* Final color */
+  }
+  
+  .blink {
+    animation: blink 1s ease-in-out infinite;
+  }
