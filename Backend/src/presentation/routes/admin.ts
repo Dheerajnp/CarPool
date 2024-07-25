@@ -16,4 +16,8 @@ adminRouter.put('/user-actions/:id/:block',controller.userActions.bind(controlle
 adminRouter.put('/license-approval/:userId',controller.licenseApproval.bind(controller))
 adminRouter.get('/getUsersPendingApproval',controller.pendingUserDocs.bind(controller));
 adminRouter.get('/getPendingVehicles',controller.getPendingVehicles.bind(controller));
+adminRouter.patch('/approveVehicle/:driverId/:vehicleId',controller.approveVehicle.bind(controller));
+adminRouter.patch('/rejectVehicle/:driverId/:vehicleId',controller.rejectVehicle.bind(controller));
+adminRouter.patch('/rejectDocument/:userId',controller.rejectDocument.bind(controller));
+adminRouter.patch('/approveDocument/:userId',controller.acceptDocument.bind(controller));
 export default adminRouter;

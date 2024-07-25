@@ -9,6 +9,66 @@ import {AdminInteractor} from "../interfaces/usecases/AdminInteractor"
 
 export class adminInteractorImp implements AdminInteractor{
     constructor (private readonly repository: AdminRepository){}
+    async acceptDocumentInteractor(userId: string): Promise<{ status: number; message: string; }> {
+        try{
+            const { message,status } = await this.repository.acceptDocumentRepo(userId);
+            return {
+                status,
+                message
+            }
+        }catch(error){
+            console.log(error);
+            return{
+                status:500,
+                message:"Internal server Error!"
+            }
+        }
+    }
+    async rejectDocumentInteractor(userId: string): Promise<{ status: number; message: string; }> {
+        try{
+            const { message,status } = await this.repository.rejectDocumentRepo(userId);
+            return {
+                status,
+                message
+            }
+        }catch(error){
+            console.log(error);
+            return{
+                status:500,
+                message:"Internal server Error!"
+            }
+        }
+    }
+    async rejectVehicleInteractor(driverId: string, vehicleId: string): Promise<{ status: number; message: string; }> {
+        try{
+            const { message,status } = await this.repository.rejectVehicleRepo(driverId,vehicleId);
+            return {
+                status,
+                message
+            }
+        }catch(error){
+            console.log(error);
+            return{
+                status:500,
+                message:"Internal server Error!"
+            }
+        }
+    }
+    async approveVehicleInteractor(driverId: string, vehicleId: string): Promise<{ status: number; message: string; }> {
+        try{
+            const { message,status } = await this.repository.approveVehicleRepo(driverId,vehicleId);
+            return {
+                status,
+                message
+            }
+        }catch(error){
+            console.log(error);
+            return{
+                status:500,
+                message:"Internal server Error!"
+            }
+        }
+    }
     async getPendingVehiclesInteractor(query: any, page: number, limit: number): Promise<{ status: number; driver: Driver[] | null; driverPage: number; }> {
         try {
             const searchQuery = query ? {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 interface Vehicle {
   _id: string;
@@ -62,22 +63,25 @@ const VehicleReviewListPage = () => {
 
   const approveVehicle = async (driverId: string, vehicleId: string) => {
     try {
-      await axios.patch(`/admin/approveVehicle/${driverId}/${vehicleId}`, {}, {
+      const response = await axios.patch(`/admin/approveVehicle/${driverId}/${vehicleId}`, {}, {
         withCredentials: true,
       });
+      console.log(response.data)
 
-      const updatedDrivers = driversList.map(driver =>
-        driver._id === driverId
-          ? {
-              ...driver,
-              vehicles: driver.vehicles.map(vehicle =>
-                vehicle._id === vehicleId ? { ...vehicle, status: 'approved' } : vehicle
-              ),
-            }
-          : driver
-      );
-
-      setDriversList(updatedDrivers);
+      if(response.data.result.status === 200){
+        const updatedDrivers = driversList.map(driver =>
+          driver._id === driverId
+            ? {
+                ...driver,
+                vehicles: driver.vehicles.map(vehicle =>
+                  vehicle._id === vehicleId ? { ...vehicle, status: 'approved' } : vehicle
+                ),
+              }
+            : driver
+        );
+        toast.success(response.data.result.message)
+        setDriversList(updatedDrivers);
+      }
     } catch (error) {
       console.error('Error approving vehicle:', error);
     }
@@ -85,22 +89,24 @@ const VehicleReviewListPage = () => {
 
   const rejectVehicle = async (driverId: string, vehicleId: string) => {
     try {
-      await axios.patch(`/admin/rejectVehicle/${driverId}/${vehicleId}`, {}, {
+      const response = await axios.patch(`/admin/rejectVehicle/${driverId}/${vehicleId}`, {}, {
         withCredentials: true,
       });
 
-      const updatedDrivers = driversList.map(driver =>
-        driver._id === driverId
-          ? {
-              ...driver,
-              vehicles: driver.vehicles.map(vehicle =>
-                vehicle._id === vehicleId ? { ...vehicle, status: 'rejected' } : vehicle
-              ),
-            }
-          : driver
-      );
-
-      setDriversList(updatedDrivers);
+      if(response.data.result.status === 200){
+        const updatedDrivers = driversList.map(driver =>
+          driver._id === driverId
+            ? {
+                ...driver,
+                vehicles: driver.vehicles.map(vehicle =>
+                  vehicle._id === vehicleId ? { ...vehicle, status: 'rejected' } : vehicle
+                ),
+              }
+            : driver
+        );
+        toast.success(response.data.result.message)
+        setDriversList(updatedDrivers);
+      }
     } catch (error) {
       console.error('Error rejecting vehicle:', error);
     }

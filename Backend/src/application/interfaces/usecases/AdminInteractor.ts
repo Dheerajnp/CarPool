@@ -13,4 +13,8 @@ export interface AdminInteractor{
     licenseStatusInteractor(id:string,licenseStatus:string):Promise<{message:string,status:number}>
     pendingUserDocsInteractor(query: any, page: number, limit: number):Promise<{status:number;user:User[]|null,userPage:number}>
     getPendingVehiclesInteractor(query: any, page: number, limit: number):Promise<{status:number;driver:Driver[]|null,driverPage:number}>
+    approveVehicleInteractor(driverId:string,vehicleId:string):Promise<{status:number,message:string}>
+    rejectVehicleInteractor(driverId:string,vehicleId:string):Promise<{status:number,message:string}>
+    rejectDocumentInteractor(userId:string):Promise<{status:number,message:string}>
+    acceptDocumentInteractor(userId:string):Promise<{status:number,message:string}>
 }

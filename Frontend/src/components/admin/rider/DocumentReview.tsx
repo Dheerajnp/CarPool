@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { User } from '../../../redux/userStore/Authentication/interfaces';
+import toast from 'react-hot-toast';
 
 const UserDocumentReviewListPage = () => {
   const [usersList, setUsersList] = useState<User[]|[]>([]);
@@ -50,11 +51,16 @@ const UserDocumentReviewListPage = () => {
       const response = await axios.patch(`/admin/approveDocument/${userId}`, {}, {
         withCredentials: true,
       });
-      // Assuming the response contains updated user data
-      const updatedUsers = usersList.map(user =>
-        user._id === userId ? { ...user, documents: { ...user.documents, status: 'verified' } } : user
-      );
-      setUsersList(updatedUsers);
+      if(response.data.result.status === 200){
+        const updatedUsers = usersList.map(user =>
+          user._id === userId ? { ...user, documents: { ...user.documents, status: 'verified' } } : user
+        );
+        toast.success(response.data.result.message)
+        setUsersList(updatedUsers);
+      }else{
+        toast.error(response.data.result.message)
+      }
+     
     } catch (error) {
       console.error('Error approving document:', error);
     }
@@ -65,11 +71,16 @@ const UserDocumentReviewListPage = () => {
       const response = await axios.patch(`/admin/rejectDocument/${userId}`, {}, {
         withCredentials: true,
       });
-      // Assuming the response contains updated user data
+     if(response.data.result.status === 200){
       const updatedUsers = usersList.map(user =>
         user._id === userId ? { ...user, documents: { ...user.documents, status: 'rejected' } } : user
       );
+      toast.success(response.data.result.message) ;
       setUsersList(updatedUsers);
+     }else{
+      toast.error(response.data.result.message)
+     }
+      
     } catch (error) {
       console.error('Error rejecting document:', error);
     }

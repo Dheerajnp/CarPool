@@ -30,6 +30,7 @@ export class userRepositoryImp implements UserRepository{
     async editDocumentRepository(userId: string,type:string,url:string): Promise<{ message: string; status: number; }> {
         try {
             const user = await userModel.findByIdAndUpdate(userId, {
+                verified:false,
                 documents: {
                   url: url,
                   type: type,

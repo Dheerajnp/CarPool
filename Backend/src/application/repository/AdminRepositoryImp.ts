@@ -11,6 +11,109 @@ import User from "../../entities/interfaces/UserInterface";
 import { DriverType } from "../../presentation/interfaces/DriverInterface";
 import Driver from "../../entities/interfaces/DriverInterface";
 export class AdminRepositoryImp implements AdminRepository{
+    async acceptDocumentRepo(userId: string): Promise<{ status: number; message: string; }> {
+        try {
+            const user = await userModel.findById(userId);
+            if(!user) {
+                return{
+                    status:402,
+                    message:"No User Found"
+                }
+            }
+
+            if(user.documents){
+                user.documents.status = 'verified'
+                user.verified = true;
+            }
+
+            await user.save();
+
+            return{
+                status:200,
+                message:"Document Rejected"
+            }
+        } catch (error) {
+            console.error('Error rejecting vehicle:', error);
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+    async rejectDocumentRepo(userId: string): Promise<{ status: number; message: string; }> {
+        try {
+            const user = await userModel.findById(userId);
+            if(!user) {
+                return{
+                    status:402,
+                    message:"No User Found"
+                }
+            }
+
+            if(user.documents){
+                user.documents.status = 'rejected'
+            }
+
+            await user.save();
+
+            return{
+                status:200,
+                message:"Document Rejected"
+            }
+        } catch (error) {
+            console.error('Error rejecting vehicle:', error);
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+    async rejectVehicleRepo(driverId: string, vehicleId: string): Promise<{ status: number; message: string; }> {
+        try{
+            const driver = await driverModel.findById(driverId);
+            if (!driver) {
+                return{
+                    status:404,
+                    message:"Driver not found"
+                }
+            }
+
+            const vehicle = driver.vehicles?.find((v: any) => v._id.toString() === vehicleId);
+            if (!vehicle) {
+              return { status: 404, message: 'Vehicle not found' };
+            }
+            // Update the vehicle status to 'approved'
+            vehicle.status = 'rejected';
+        
+            // Save the driver document with the updated vehicle status
+            await driver.save();
+        
+            return { status: 200, message: 'Vehicle rejected successfully' };
+        }catch(error){
+            console.error('Error rejecting vehicle:', error);
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
+    async approveVehicleRepo(driverId: string, vehicleId: string): Promise<{ status: number; message: string; }> {
+        try{
+            const driver = await driverModel.findById(driverId);
+            if (!driver) {
+                return{
+                    status:404,
+                    message:"Driver not found"
+                }
+            }
+
+            const vehicle = driver.vehicles?.find((v: any) => v._id.toString() === vehicleId);
+            if (!vehicle) {
+              return { status: 404, message: 'Vehicle not found' };
+            }
+            // Update the vehicle status to 'approved'
+            vehicle.status = 'approved';
+        
+            // Save the driver document with the updated vehicle status
+            await driver.save();
+        
+            return { status: 200, message: 'Vehicle approved successfully' };
+        }catch(error){
+            console.error('Error approving vehicle:', error);
+            return { status: 500, message: 'Internal server error' };
+        }
+    }
     async getPendingVehicleRepo(query: any, page: number, limit: number): Promise<{ status: number; driver: Driver[] | null; driverPage: number; }> {
         try {
             const drivers = await driverModel

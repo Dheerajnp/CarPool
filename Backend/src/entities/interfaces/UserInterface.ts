@@ -15,5 +15,6 @@ export default interface User extends Document {
     documents?:{
         url:string;
         type: string;
+        status:string;
     };
 }

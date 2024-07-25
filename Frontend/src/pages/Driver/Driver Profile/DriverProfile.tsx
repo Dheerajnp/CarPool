@@ -202,11 +202,11 @@ const DriverProfile: React.FC = () => {
               <div className="space-y-1">
                 <div className="font-semibold text-lg">Driver's License</div>
                 <div className="text-muted-foreground">
-                  License Number: {driver.licenseStatus}
+                  Status: {driver.licenseStatus}
                 </div>
-                <div className="text-muted-foreground">
+                {/* <div className="text-muted-foreground">
                   Expiration Date: {driver.blocked || "achvchs"}
-                </div>
+                </div> */}
               </div>
               <div className="flex items-center gap-2 flex-col sm:flex-row">
                 {driver.licenseFrontUrl ? (

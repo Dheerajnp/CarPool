@@ -122,4 +122,49 @@ export class adminController{
             throw error;
         }
     }
+
+    approveVehicle:RequestHandler =async(req,res,next)=>{
+        const {driverId,vehicleId} = req.params;
+        try {
+            const result = await this.interactor.approveVehicleInteractor(driverId,vehicleId);
+            res.status(result.status).json({result})
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    rejectVehicle:RequestHandler =async(req,res,next)=>{
+        const {driverId,vehicleId} = req.params;
+        try {
+            const result = await this.interactor.rejectVehicleInteractor(driverId,vehicleId);
+            res.status(result.status).json({result})
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    rejectDocument:RequestHandler = async(req,res,next)=>{
+       const {userId} = req.params;
+        try {
+            const result = await this.interactor.rejectDocumentInteractor(userId);
+            res.status(result.status).json({result})
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    acceptDocument:RequestHandler = async(req,res,next)=>{
+        const {userId} = req.params;
+        console.log("user",userId)
+         try {
+             const result = await this.interactor.acceptDocumentInteractor(userId);
+             res.status(result.status).json({result})
+         } catch (error) {
+             console.log(error);
+             throw error;
+         }
+     }
 }

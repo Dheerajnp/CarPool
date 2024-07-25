@@ -11,4 +11,8 @@ export interface AdminRepository{
     licenseStatusRepository(id: string, licenseStatus: string): Promise<{ message: string; status: number; }>
     getUsersPending(query: any, page: number, limit: number):Promise<{status:number;user:User[]|null,userPage:number}>
     getPendingVehicleRepo(query: any, page: number, limit: number):Promise<{status:number;driver:Driver[]|null,driverPage:number}>
+    approveVehicleRepo(driverId:string,vehicleId:string):Promise<{status:number,message:string}>
+    rejectVehicleRepo(driverId:string,vehicleId:string):Promise<{status:number,message:string}>
+    rejectDocumentRepo(userId:string):Promise<{status:number,message:string}>
+    acceptDocumentRepo(userId:string):Promise<{status:number,message:string}>
 }
