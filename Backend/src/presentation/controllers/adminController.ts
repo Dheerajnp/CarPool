@@ -45,7 +45,7 @@ export class adminController{
         const limit = parseInt(req.query.limit as string) || 10;
         const searchQuery = req.query.searchQuery as string || '';
         const result = await this.interactor.FindAllUsersInteractor(page,limit,searchQuery);
-        res.json(result);;
+        res.json(result);
         
        } catch (error) {
         console.log(error);

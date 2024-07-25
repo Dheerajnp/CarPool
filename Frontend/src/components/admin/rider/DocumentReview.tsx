@@ -8,7 +8,7 @@ const UserDocumentReviewListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const limit = 10; // Number of users per page
+  const limit = 8; // Number of users per page
 
   useEffect(() => {
     fetchUsers();
@@ -23,7 +23,7 @@ const UserDocumentReviewListPage = () => {
 
       if (response.data.user) { // Check if 'users' exists in the response
         setUsersList(response.data.user);
-        setTotalPages(response.data.totalPages);
+        setTotalPages(response.data.userPage);
       } else {
         console.error('Error fetching users: No users found in the response.');
       }
@@ -31,6 +31,8 @@ const UserDocumentReviewListPage = () => {
       console.error('Error fetching users:', error);
     }
   };
+  console.log("total pages")
+  console.log(totalPages);
 
   const handleSearch = (e: any) => {
     setSearchQuery(e.target.value.toLowerCase());

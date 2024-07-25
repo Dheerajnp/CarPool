@@ -79,11 +79,13 @@ export class AdminRepositoryImp implements AdminRepository{
             .skip((page - 1) * limit)
             .limit(limit)
             .exec();
-            console.log("users",users)
-                let total = await userModel.countDocuments(updatedQuery);          
+
+                let total = await userModel.countDocuments(updatedQuery);    
+                const pagesUser = Math.ceil(total/limit); 
+                console.log("asdfghj",pagesUser)
           return {
                 user:users,
-                userPage:total,
+                userPage:pagesUser,
                 status:200
             }
         }catch(error){

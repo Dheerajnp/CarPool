@@ -23,7 +23,7 @@ const VehicleReviewListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const limit = 10; // Number of drivers per page
+  const limit = 8; // Number of drivers per page
 
   useEffect(() => {
     fetchDrivers();
@@ -40,7 +40,7 @@ const VehicleReviewListPage = () => {
 
       if (response.data.result.driver) {
         setDriversList(response.data.result.driver);
-        setTotalPages(response.data.result.totalPages);
+        setTotalPages(response.data.result.driverPage);
       } else {
         console.error('Error fetching drivers: No drivers found in the response.');
       }

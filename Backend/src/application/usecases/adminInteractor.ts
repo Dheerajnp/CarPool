@@ -28,6 +28,7 @@ export class adminInteractorImp implements AdminInteractor{
         try {
             let query = searchQuery ? {name: new RegExp(searchQuery,'i'),email:new RegExp(searchQuery,'i')}: {};
             const result = await this.repository.FindAllPendingDriversRepo(page,limit,query);
+            
             return result;
         } catch (error) {
             console.log(error)
@@ -38,6 +39,7 @@ export class adminInteractorImp implements AdminInteractor{
         try {
             const searchQuery = query ? { name: new RegExp(query, 'i') } : {};
             const result = await this.repository.getUsersPending(searchQuery, page, limit);
+            
             return result;
         } catch (error) {
             console.log(error)
