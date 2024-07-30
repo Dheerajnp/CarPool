@@ -4,14 +4,17 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from './userStore/Authentication/AuthSlice'
 import adminAuthReducer from './adminStore/Authentication/AdminAuthSlice'
 import driverReducer from './driverStore/DriverSlice'
+import rideReducer ,{RideState} from './rideStore/rideSlice'
 import { AuthState } from './userStore/Authentication/interfaces';
 import { AdminAuthState } from './adminStore/Authentication/interfaces';
 import { DriverStoreState } from './driverStore/interfaces';
+import { FaBlackTie } from 'react-icons/fa';
 
 interface RootReducerInterface {
     auth: AuthState;
     authAdmin:AdminAuthState;
     driver:DriverStoreState;
+    ride:RideState;
   }
 
 
@@ -19,13 +22,15 @@ interface RootReducerInterface {
 const rootReducer:Reducer<RootReducerInterface> = combineReducers({
     auth:authReducer,
     authAdmin:adminAuthReducer,
-    driver: driverReducer,  // Add your driver store here
+    driver: driverReducer, 
+    ride: rideReducer,  
 })
 
 const persistConfig = {
   key: "root",
   storage,
   version: 1,
+  blacklist: ["ride"],
 };
 
 const persistedReducer = persistReducer(persistConfig,rootReducer)

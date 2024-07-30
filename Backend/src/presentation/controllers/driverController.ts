@@ -77,4 +77,10 @@ export class driverController{
         return res.status(500).json({message  : "Internal server error",status:500});
         }
       }
+
+      createRide:RequestHandler = async (req,res)=>{
+        const { driverId } = req.params;
+        const { data } = req.body;
+        console.log(driverId, data);
+      }
 }

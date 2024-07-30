@@ -12,6 +12,7 @@ import NewPasswordPage from "./pages/ForgotPassword/NewPasswordPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRoutes from "./routes/AdminRoutes";
 
+
 function App() {
   return (
     <Routes>
@@ -23,6 +24,7 @@ function App() {
       
       
       <Route path="/" element={<Home />} />
+      
       <Route path="/verifyotp" element={<VerifyOtp />} />
       <Route path="/forgotpassword" element={<ForgotPasswordEmail />} />
       <Route path="/forgotpassword/newpassword" element={<NewPasswordPage />} />

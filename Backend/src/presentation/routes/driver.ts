@@ -15,4 +15,7 @@ driverRouter.post('/saveLicenseInfo',controller.editLicenseInfo.bind(controller)
 driverRouter.post('/updateInfo/:driverId',controller.editDriverInfo.bind(controller));
 driverRouter.put('/addVehicle/:driverId',controller.addVehicle.bind(controller));
 driverRouter.put('/deleteVehicle/:vehicleId',controller.deleteVehicle.bind(controller));
+
+//ride routes
+driverRouter.post('/create-ride/:driverId',controller.createRide.bind(controller));
 export default driverRouter;

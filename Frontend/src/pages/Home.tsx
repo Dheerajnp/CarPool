@@ -6,10 +6,8 @@ import TestimonialCard from "../components/TestimonialCard";
 import FeatureCard from "../components/FeatureCard";
 import { Button } from "../components/ui/button";
 import { useEssentials } from "../hooks/UseEssentials";
-import ScrollToButton from "../components/ScrollToButton";
 import Header from "../components/Navbar";
 import CreateRide from "../components/driver/CreateRide";
-import CreateRide1 from "../components/driver/CreateRide1";
 import SearchRide from "../components/user/SearchRideCard";
 
 export default function Home() {

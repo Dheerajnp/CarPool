@@ -4,6 +4,7 @@ const getLocations = async(query : string) =>{
             import.meta.env.VITE_API_MAXBOX_TOKEN 
           }`)
           const data = await  res.json();
+          console.log(data);
           return data.features;
     }catch(error){
         console.log("Error in Get Location",error );

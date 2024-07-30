@@ -1,7 +1,7 @@
 import { model, Schema, Document } from "mongoose";
 import Driver from "../../../entities/interfaces/DriverInterface";
 
-const vehicleSchema = new Schema({
+const  vehicleSchema = new Schema({
   brand: {
     type: String,
   },
@@ -20,6 +20,8 @@ const vehicleSchema = new Schema({
     default: 'pending',
   }
 });
+
+export const vehicleModel = model("Vehicle", vehicleSchema);
 
 const driverSchema = new Schema<Driver>({
   name: {

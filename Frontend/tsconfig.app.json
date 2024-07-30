@@ -8,6 +8,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    "typeRoots": ["./node_modules/@types", "./node_modules/@mapbox"],
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
