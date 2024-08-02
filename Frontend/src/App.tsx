@@ -11,6 +11,8 @@ import ForgotPasswordEmail from "./pages/ForgotPassword/ForgotPasswordEmail";
 import NewPasswordPage from "./pages/ForgotPassword/NewPasswordPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRoutes from "./routes/AdminRoutes";
+import SearchRide from "./components/user/SearchRideCard";
+import SearchResultPage from "./components/user/Sample";
 
 
 function App() {
@@ -24,7 +26,7 @@ function App() {
       
       
       <Route path="/" element={<Home />} />
-      
+      <Route path="/search" element={<SearchResultPage />} />
       <Route path="/verifyotp" element={<VerifyOtp />} />
       <Route path="/forgotpassword" element={<ForgotPasswordEmail />} />
       <Route path="/forgotpassword/newpassword" element={<NewPasswordPage />} />

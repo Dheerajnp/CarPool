@@ -81,6 +81,25 @@ export class driverController{
       createRide:RequestHandler = async (req,res)=>{
         const { driverId } = req.params;
         const { data } = req.body;
-        console.log(driverId, data);
+        try {
+          const { message,status } = await this.interactor.createRideIntercator(data,driverId);
+          console.log(status, message);
+            return res.status(status).json({ message,status });
+        } catch (error) {
+          return res.status(500).json({ message: "Internal server error"});
+        }
+      }
+
+
+      getVehicles:RequestHandler = async (req,res)=>{
+        const { driverId } = req.params;
+        console.log(driverId);
+        try{
+          const { message, status,vehicles } = await this.interactor.getVehiclesInteractor(driverId);
+          console.log(status, vehicles)
+          return res.status(status).json({ message,status,vehicles }); 
+        }catch (error) {
+        return res.status(500).json({message  : "Internal server error",status:500});
+        }
       }
 }

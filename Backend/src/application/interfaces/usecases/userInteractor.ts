@@ -1,3 +1,4 @@
+import { IRide } from "../../../entities/interfaces/RideInterface"
 import User from "../../../entities/interfaces/UserInterface"
 
 export interface UserInteractor{
@@ -5,4 +6,5 @@ export interface UserInteractor{
     getUserDetailsInteractor(userId:string):Promise<{message:string,status:number,user:User|null}>
     editDocumentInteractor(userId:string,type:string,url:string):Promise<{message:string,status:number}>
     editUserInfoInteractor(userId:string,name:string,phone:string):Promise<{message:string,status:number}>
+    getRidesInteractor(data:{fromName:string,fromCoordinates:number[],toName:string,toCoordinates:number[],date:Date|undefined}):Promise<{message:string,status:number,rides:IRide[]}>
 }

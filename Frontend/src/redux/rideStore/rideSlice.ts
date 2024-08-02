@@ -9,7 +9,7 @@ export interface RideState {
   source: Location | null;
   destination: Location | null;
   date: Date | undefined;
-  time: Date | undefined;
+  time: string;
   passengers: number;
   price?: string | null;
 }
@@ -17,8 +17,8 @@ export interface RideState {
 const initialState: RideState = {
   source: null,
   destination: null,
-  date: undefined,
-  time: undefined,
+  date: undefined as Date | undefined,
+  time: "",
   passengers: 1,
   price: null,
 };

@@ -4,19 +4,21 @@ import mongoose from "mongoose";
 export interface IRide extends Document {
     driver: mongoose.Schema.Types.ObjectId;
     vehicle: {
-      _id: string;
+      id: string;
       brand: string;
       model: string;
       rcDocumentUrl: string;
       number: string;
     };
     origin: {
-      address: string;
-      coordinates: { lat: number; lng: number };
+      type: string;
+      name: string;
+      coordinates: [];
     };
     destination: {
-      address: string;
-      coordinates: { lat: number; lng: number };
+      type: string;
+      name: string;
+      coordinates: [];
     };
     rideDate: Date;
     availableSeats: number;
@@ -28,6 +30,8 @@ export interface IRide extends Document {
       status: 'pending' | 'accepted' | 'rejected';
     }[];
     distance: number;
-    minutes: number;
+    duration: number;
+    passengerCount: number;
+    eta:Date;
   }
   

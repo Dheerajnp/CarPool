@@ -1,4 +1,30 @@
 import Driver from "../../../entities/interfaces/DriverInterface";
+import Vehicle from "../../../entities/interfaces/VehicleInterface";
+
+interface Location {
+    name: string;
+    coordinates: [number, number];
+  }
+
+export interface RideInterface{
+    driverId:string,
+    source:Location;
+    destination: Location;
+    date: Date;
+    time: string;
+    price:number;
+    passengers:number;
+    distance:number;
+    duration:number;
+    vehicle:{
+        _id:string;
+        brand: string;
+        model: string;
+        rcDocumentUrl: string;
+        number: string;
+        status: string;
+    }
+}
 
 export interface DriverInteractor{
     licenseUploadInteractor(data:{userId:string,licenseFrontUrl:string,licenseBackUrl:string,vehicleBrand:string,vehicleModel:string,vehicleNumber:string,rcDocumentUrl:string}):Promise<{message:string,status:number}>
@@ -7,4 +33,6 @@ export interface DriverInteractor{
     editDriverInfoInteractor(data:{name:string,phone:string,driverId:string}):Promise<{message:string;status:number}>
     addVehicleInteractor(data:{brand:string,model:string,driverId:string,rcDocumentUrl:string,vehicleNumber:string}):Promise<{status:number,message:string,driver:Driver|null}>
     deleteVehicleInteractor(vehicleId:string, driverId:string):Promise<{message:string,status:number}>
+    getVehiclesInteractor(driverId:string):Promise<{message:string,status:number,vehicles:Vehicle[]}>
+    createRideIntercator(data:RideInterface,driverId:string):Promise<{status:number,message:string,ride:any}>
 }

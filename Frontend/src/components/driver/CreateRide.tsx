@@ -15,6 +15,8 @@ import { setRideDetails } from "../../redux/rideStore/rideSlice";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from "react-router-dom";
+import { formatISO } from 'date-fns';
+
 
 interface LocationSuggestion {
   place_name: string;
@@ -31,7 +33,7 @@ const validationSchema = Yup.object().shape({
     coordinates: Yup.array().of(Yup.number()).length(2, "Invalid coordinates").required("Arrival city coordinates are required"),
   }).required("Arrival city is required"),
   date: Yup.date().required("Date is required"),
-  time: Yup.date().required("Time is required"),
+  time: Yup.string().required("Time is required"),
   passengers: Yup.number().required("Number of passengers is required"),
 });
 
@@ -49,12 +51,12 @@ export default function Component() {
       source: { name: "", coordinates: [0, 0] } as { name: string, coordinates: [number, number] },
       destination: { name: "", coordinates: [0, 0] } as { name: string, coordinates: [number, number] },
       date: undefined as Date | undefined,
-      time: undefined as Date | undefined,
+      time: "",
       passengers: 1,
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+     
       dispatch(setRideDetails(values));
       navigate("/driver/create-ride");
     },
@@ -102,11 +104,10 @@ export default function Component() {
   const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const timeString = e.target.value;
     if (timeString) {
-      const [hours, minutes] = timeString.split(':').map(Number);
-      const timeDate = set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 });
-      formik.setFieldValue('time', timeDate);
+     
+      formik.setFieldValue('time', timeString);
     } else {
-      formik.setFieldValue('time', undefined);
+      formik.setFieldValue('time', '');
     }
   };
 
@@ -216,7 +217,7 @@ export default function Component() {
                 type="time"
                 id="time"
                 onChange={handleTimeChange}
-                value={formik.values.time ? format(formik.values.time, "HH:mm") : ""}
+                value={formik.values.time ? formik.values.time : ""}
                 className="block w-full px-3 py-2 border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-black dark:text-gray-100 dark:border-gray-700 dark:placeholder-gray-500 sm:text-sm"
               />
               {/* <ClockIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" /> */}

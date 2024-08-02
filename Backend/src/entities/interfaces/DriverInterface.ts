@@ -24,3 +24,5 @@ export default interface Driver extends Document {
         status: string;
     }>;
 }
+
+

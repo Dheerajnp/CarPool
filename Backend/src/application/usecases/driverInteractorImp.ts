@@ -1,9 +1,35 @@
 import Driver from "../../entities/interfaces/DriverInterface";
 import { DriverRepository } from "../interfaces/repository/DriverRepository";
-import { DriverInteractor } from "../interfaces/usecases/driverInteractor";
+import { DriverInteractor, RideInterface } from "../interfaces/usecases/driverInteractor";
 
 export class driverInteractorImp implements DriverInteractor{
     constructor(private readonly repository: DriverRepository){}
+    async createRideIntercator(data: RideInterface,driverId:string): Promise<{ status: number; message: string; ride: any; }> {
+        try {
+            console.log("iiiiiiiiiiiiiiiiii",data,driverId);
+            const result = await this.repository.createRideRepository(data,driverId);
+            return result;
+        } catch (error) {
+            console.log(error);
+            return {
+                message: 'Internal Server Error',
+                status: 500,
+                ride: null
+            }
+        }
+    }
+    async getVehiclesInteractor(driverId: string): Promise<{ message: string; status: number; vehicles: any; }> {
+        try{
+            const result = await this.repository.getVehiclesRepository(driverId);
+            return result;
+        }catch (error) {
+            return {
+                message: 'Internal Server Error',
+                status: 500,
+                vehicles:[]
+            }
+        }
+    }
     async deleteVehicleInteractor(vehicleId: string, driverId: string): Promise<{ message: string; status: number; }> {
         try {
             const result = await this.repository.deleteVehicleRepository(vehicleId, driverId);

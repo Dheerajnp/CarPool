@@ -7,7 +7,6 @@ export class userController{
     uploadDocument:RequestHandler = async(req,res,next)=>{
         const { userId } = req.params;
         const { documentUrl,documentType } = req.body;
-        console.log("uploaddocument");
         try{
           const { message,status } = await this.interactor.uploadDocumentInteractor({userId,documentUrl,documentType});
           return res.status(status).json({ message,status });
@@ -49,6 +48,7 @@ export class userController{
         const { userId } = req.params;
         console.log(name, phone, userId);
         console.log(req.body)
+
         try{
           const { message, status } = await this.interactor.editUserInfoInteractor(userId,name,phone);
           return res.status(status).json({ message,status }); 
@@ -56,4 +56,20 @@ export class userController{
         return res.status(500).json({message  : "Internal server error",status:500});
         }
       }
+
+      getRides:RequestHandler = async(req,res,next)=>{
+        const fromName = req.query.fromName as string ?? '';
+        const fromCoordinates = req.query.fromCoordinates as [] ?? [];
+        const toName = req.query.toName as string ?? '';
+        const toCoordinates = req.query.toCoordinates  as [] ?? [];
+        const date = req.query.date ;
+
+        console.log(date)
+        // try {
+        //     const result  = await this.interactor.getRidesInteractor({ fromName, fromCoordinates, toName, toCoordinates,date });
+        //     return res.status(result.status).json(result);
+        // } catch (error) {
+        //     return res.status(500).json({message  : "Internal server error",status:500});
+        // }
+    }
 }

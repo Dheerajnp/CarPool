@@ -8,13 +8,14 @@ import rideReducer ,{RideState} from './rideStore/rideSlice'
 import { AuthState } from './userStore/Authentication/interfaces';
 import { AdminAuthState } from './adminStore/Authentication/interfaces';
 import { DriverStoreState } from './driverStore/interfaces';
-import { FaBlackTie } from 'react-icons/fa';
+import rideListReducer,{ RideListState } from './userStore/Rides/RideListSlice';
 
 interface RootReducerInterface {
     auth: AuthState;
     authAdmin:AdminAuthState;
     driver:DriverStoreState;
     ride:RideState;
+    rides:RideListState;
   }
 
 
@@ -24,6 +25,7 @@ const rootReducer:Reducer<RootReducerInterface> = combineReducers({
     authAdmin:adminAuthReducer,
     driver: driverReducer, 
     ride: rideReducer,  
+    rides:rideListReducer
 })
 
 const persistConfig = {

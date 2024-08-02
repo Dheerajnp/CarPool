@@ -18,4 +18,7 @@ driverRouter.put('/deleteVehicle/:vehicleId',controller.deleteVehicle.bind(contr
 
 //ride routes
 driverRouter.post('/create-ride/:driverId',controller.createRide.bind(controller));
+
+//get vehicles
+driverRouter.get('/vehicles/:driverId',controller.getVehicles.bind(controller));
 export default driverRouter;
