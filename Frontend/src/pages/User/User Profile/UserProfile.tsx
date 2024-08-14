@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { GoMail } from "react-icons/go";
 import { FaPhone } from "react-icons/fa6";
-import { Button } from "../../../../components/ui/button";
-import { Badge } from "../../../../components/ui/badge";
-import imgPlaceholder from "../../../../assets/imgPlaceholder.png";
-import axiosApiGateway from "../../../../functions/axios";
-import { useEssentials } from "../../../../hooks/UseEssentials";
-import { User } from "../../../../redux/userStore/Authentication/interfaces";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
+import imgPlaceholder from "../../../assets/imgPlaceholder.png";
+import axiosApiGateway from "../../../functions/axios";
+import { useEssentials } from "../../../hooks/UseEssentials";
+import { User } from "../../../redux/userStore/Authentication/interfaces";
 import toast from "react-hot-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
-import Header from "../../../../components/Navbar";
-import EditDocumentModal from "../../../../components/user/profile/EditDocumentModal";
-import EditUserInfoModal from "../../../../components/user/profile/EditUserInfoModal";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
+import Header from "../../../components/Navbar";
+import EditDocumentModal from "../../../components/user/profile/EditDocumentModal";
+import EditUserInfoModal from "../../../components/user/profile/EditUserInfoModal";
 
 export default function UserProfile() {
   const [document, setDocument] = useState<File | null>(null);

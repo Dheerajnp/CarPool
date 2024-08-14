@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface Location {
   name: string;
@@ -11,6 +11,7 @@ export interface IRide {
     name: string;
     email: string;
     _id: string;
+    profile: string;
   };
   vehicle: {
     id: string;

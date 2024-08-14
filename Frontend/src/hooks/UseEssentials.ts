@@ -8,6 +8,7 @@ import {  useMemo, } from 'react';
 import { AdminAuthState } from '../redux/adminStore/Authentication/interfaces';
 import { RideState } from '../redux/rideStore/rideSlice';
 import { DriverStoreState } from '../redux/driverStore/interfaces';
+import { RideDetailsListState } from '../redux/userStore/RideDetails/RideDetailsInterface';
 
 interface RootReducerInterface {
     navigate: NavigateFunction;
@@ -16,6 +17,7 @@ interface RootReducerInterface {
     authAdmin:AdminAuthState;
     ride: RideState;
     driver: DriverStoreState;
+    rideDetails: RideDetailsListState
 }
 
 
@@ -23,12 +25,13 @@ interface RootReducerInterface {
 export const useEssentials = (): RootReducerInterface => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const { auth,authAdmin,ride,driver } = useSelector(
+    const { auth,authAdmin,ride,driver,rideDetails } = useSelector(
         (state: RootState) => ({
             auth: state.auth,
             authAdmin:state.authAdmin,
             driver: state.driver,
-            ride: state.ride
+            ride: state.ride,
+            rideDetails:state.rideDetails,
         }),
         shallowEqual
     );
@@ -39,8 +42,9 @@ export const useEssentials = (): RootReducerInterface => {
         auth,
         authAdmin,
         ride,
-        driver
-    }), [dispatch, navigate, auth, authAdmin, ride, driver]);
+        driver,
+        rideDetails
+    }), [dispatch, navigate, auth, authAdmin, ride, driver,rideDetails]);
 };
 
 

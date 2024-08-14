@@ -45,3 +45,16 @@ export interface SaveLicenseInfoPayload {
     error: string[];
     message: string;
 }
+
+export interface DriverLoginCredentials {
+    email: string;
+    password: string;
+    role: string;
+}
+
+export interface DriverLoginResponse {
+  message: string,
+  status: number;
+  user?: any;
+  token?:string;
+}

@@ -9,6 +9,8 @@ import { AuthState } from './userStore/Authentication/interfaces';
 import { AdminAuthState } from './adminStore/Authentication/interfaces';
 import { DriverStoreState } from './driverStore/interfaces';
 import rideListReducer,{ RideListState } from './userStore/Rides/RideListSlice';
+import { RideDetailsListState } from './userStore/RideDetails/RideDetailsInterface';
+import  rideDetailsReducer  from './userStore/RideDetails/RideDetailsSlice'
 
 interface RootReducerInterface {
     auth: AuthState;
@@ -16,6 +18,7 @@ interface RootReducerInterface {
     driver:DriverStoreState;
     ride:RideState;
     rides:RideListState;
+    rideDetails:RideDetailsListState;
   }
 
 
@@ -25,14 +28,15 @@ const rootReducer:Reducer<RootReducerInterface> = combineReducers({
     authAdmin:adminAuthReducer,
     driver: driverReducer, 
     ride: rideReducer,  
-    rides:rideListReducer
+    rides:rideListReducer,
+    rideDetails:rideDetailsReducer
 })
 
 const persistConfig = {
   key: "root",
   storage,
   version: 1,
-  blacklist: ["ride"],
+  blacklist: ["ride","rideDetails"],
 };
 
 const persistedReducer = persistReducer(persistConfig,rootReducer)

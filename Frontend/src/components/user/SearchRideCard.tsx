@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, ChangeEvent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import { fetchRidesFailure, fetchRidesRequest, fetchRidesSuccess } from '../../redux/userStore/Rides/RideListSlice';
 import axiosApiGateway from '../../functions/axios';
 import { useNavigate } from 'react-router-dom';
+import { FaCalendar } from 'react-icons/fa';
 
 interface LocationSuggestion {
   place_name: string;
@@ -50,7 +51,6 @@ const SearchRide: React.FC = () => {
       dispatch(fetchRidesRequest());
         const localDate = new Date(values.date?values.date:"");
         let utcDate = formatISO(localDate);
-        console.log(utcDate);
       try {
         const response = await axiosApiGateway.get('/user/getRides', {
           params: {
@@ -63,7 +63,7 @@ const SearchRide: React.FC = () => {
         });
         console.log(response.data)
         dispatch(fetchRidesSuccess(response.data));
-        navigate('/search')
+        navigate('/user/search')
       } catch (error: any) {
         dispatch(fetchRidesFailure(error.message || 'Failed to fetch rides'));
       }
@@ -199,8 +199,9 @@ const SearchRide: React.FC = () => {
             <Label htmlFor="date">Date</Label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                <Button variant="outline" className="w-full justify-start text-left font-normal relative">
                   {formik.values.date ? format(formik.values.date, "PPP") : <span id="date">Select date</span>}
+                  <FaCalendar className='absolute right-2 text-gray-500'/>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -209,6 +210,7 @@ const SearchRide: React.FC = () => {
                   selected={formik.values.date}
                   onSelect={handleDateChange}
                   initialFocus
+                  disabled={(date) => date.getTime() < new Date().setHours(0, 0, 0, 0)}
                 />
               </PopoverContent>
             </Popover>

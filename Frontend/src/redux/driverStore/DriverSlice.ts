@@ -15,6 +15,8 @@ const initialState: interfaces.DriverStoreState = {
   message: ""
 }
 
+
+
 interface AsyncThunkConfig {
     state: RootState;
     dispatch: AppDispatch;
@@ -24,6 +26,31 @@ interface AsyncThunkConfig {
       errors: string[];
     };
   }
+
+  export const driverLogin = createAsyncThunk<interfaces.DriverLoginResponse,interfaces.DriverLoginCredentials,AsyncThunkConfig>(
+    "driver/login",
+    async (credentials, { rejectWithValue }) => {
+      try {
+        const response = await axios.post('/login',credentials,{
+            withCredentials:true
+        })
+        console.log("from login function",response.data)
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+          return {
+            message: error.response.data.message,
+            status: error.response.status
+          };
+        } else {
+          return {
+            message: 'Internal Server Error',
+            status: 500
+          };
+        }
+      }
+    }
+  )
 
 export const saveLicenseInfo = createAsyncThunk<interfaces.SaveLicenseInfoResponse,interfaces.SaveLicenseInfoPayload,AsyncThunkConfig>(
     "driver/saveLicenseInfo",
@@ -51,6 +78,11 @@ const driverSlice = createSlice({
       .addCase(saveLicenseInfo.fulfilled, (state, action) => {
         state.loading = false;
         state.driver = action.payload.driver;
+      })
+      .addCase(driverLogin.pending, (state, action:any) => {
+        state.loading = false;
+        state.message = action.payload?.message ?? "";
+        state.driver = action.payload?.user;
       })
   },
 });

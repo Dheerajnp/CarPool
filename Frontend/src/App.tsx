@@ -11,11 +11,10 @@ import ForgotPasswordEmail from "./pages/ForgotPassword/ForgotPasswordEmail";
 import NewPasswordPage from "./pages/ForgotPassword/NewPasswordPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRoutes from "./routes/AdminRoutes";
-import SearchRide from "./components/user/SearchRideCard";
-import SearchResultPage from "./components/user/Sample";
-
+import useSocket from "./hooks/UseSocket";
 
 function App() {
+  const socket = useSocket();
   return (
     <Routes>
       {/* Public Route */}
@@ -26,7 +25,7 @@ function App() {
       
       
       <Route path="/" element={<Home />} />
-      <Route path="/search" element={<SearchResultPage />} />
+      
       <Route path="/verifyotp" element={<VerifyOtp />} />
       <Route path="/forgotpassword" element={<ForgotPasswordEmail />} />
       <Route path="/forgotpassword/newpassword" element={<NewPasswordPage />} />
@@ -46,6 +45,8 @@ function App() {
       <Route element={<DriverPrivateRoute />}>
         <Route path="/driver/*" element={<DriverRoutes />} />
       </Route>
+
+      
     </Routes>
   );
 }

@@ -11,8 +11,6 @@ import CreateRide from "../components/driver/CreateRide";
 import SearchRide from "../components/user/SearchRideCard";
 
 export default function Home() {
-  const createRideButtonRef = React.useRef(null);
-  const searchRideButtonRef = React.useRef(null);
 
   const { auth } = useEssentials();
 

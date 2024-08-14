@@ -15,7 +15,6 @@ import { setRideDetails } from "../../redux/rideStore/rideSlice";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from "react-router-dom";
-import { formatISO } from 'date-fns';
 
 
 interface LocationSuggestion {
@@ -199,6 +198,7 @@ export default function Component() {
                   selected={formik.values.date}
                   onSelect={(date) => formik.setFieldValue('date', date)}
                   initialFocus
+                  disabled={(date) => date.getTime() < new Date().setHours(0, 0, 0, 0)}
                 />
               </PopoverContent>
             </Popover>

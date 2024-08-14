@@ -18,6 +18,8 @@ import CarIcon from "../components/CarIcon";
 import { removeCookie } from "../functions/CalculateTime";
 import { useEssentials } from "../hooks/UseEssentials";
 import { resetState } from "../redux/userStore/Authentication/AuthSlice";
+import DriverNotification from "./driver/DriverNotification";
+import UserNotification from "./user/UserNotification";
 
 const Header: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -39,6 +41,12 @@ const Header: React.FC = () => {
           <span>CarPool</span>
         </Link>
         <div className="flex items-center gap-4">
+          {role==="rider"&&
+           <UserNotification />
+          }
+          {role === "host" &&
+           <DriverNotification />
+          }
           <ModeToggle />
           <Button
             variant="ghost"
