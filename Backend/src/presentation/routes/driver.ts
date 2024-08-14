@@ -21,4 +21,8 @@ driverRouter.post('/create-ride/:driverId',controller.createRide.bind(controller
 
 //get vehicles
 driverRouter.get('/vehicles/:driverId',controller.getVehicles.bind(controller));
+driverRouter.get('/notifications',controller.getNotifications.bind(controller));
+driverRouter.get('/getRideDetails/:rideId',controller.getRideDetails.bind(controller));
+driverRouter.put('/requestAccept/:rideId',controller.requestAccept.bind(controller));
+driverRouter.put('/requestDeny/:rideId',controller.requestDeny.bind(controller));
 export default driverRouter;

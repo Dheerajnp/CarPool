@@ -7,4 +7,7 @@ export interface UserInteractor{
     editDocumentInteractor(userId:string,type:string,url:string):Promise<{message:string,status:number}>
     editUserInfoInteractor(userId:string,name:string,phone:string):Promise<{message:string,status:number}>
     getRidesInteractor(data:{fromName:string,fromCoordinates:number[],toName:string,toCoordinates:number[],date:Date|undefined}):Promise<{message:string,status:number,rides:IRide[]}>
+    getRideDetailsInteractor(rideId:string):Promise<{message:string,status:number,ride:IRide|null}>
+    getUserNotificationInteractor(userId:string):Promise<{status:number,message:string,notifications:any[]}>
+
 }

@@ -5,6 +5,32 @@ import { UserInteractor } from "../interfaces/usecases/userInteractor";
 
 export class userInteractorImp implements UserInteractor {
     constructor(private readonly repository: UserRepository) {}
+  async getUserNotificationInteractor(userId: string): Promise<{ status: number; message: string; notifications: any[]; }> {
+    try {
+      const result = await this.repository.getUserNotificationRepository(userId);
+      return result;
+  } catch (error) {
+      console.log(error);
+      return {
+          message: 'Internal Server Error',
+          status: 500,
+          notifications: []
+      }
+  }
+  }
+  async getRideDetailsInteractor(rideId: string): Promise<{ message: string; status: number; ride: IRide | null; }> {
+    try {
+      const result = await this.repository.getRideDetailsRepository(rideId);
+      return result;
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Internal Server Error',
+        status: 500,
+        ride: null
+      };
+    }
+  }
   async getRidesInteractor(data: { fromName: string; fromCoordinates: number[]; toName: string; toCoordinates: number[]; date: Date|undefined; }): Promise<{ message: string; status: number; rides: IRide[]; }> {
     try {
       const result = await this.repository.getRidesRepository(data);

@@ -7,4 +7,6 @@ export interface UserRepository{
     editDocumentRepository(userId:string,type:string,url:string):Promise<{message:string,status:number}>
     editUserInfoRepository(userId:string,name:string,phone:string):Promise<{message:string,status:number}>
     getRidesRepository(data:{fromName:string,fromCoordinates:number[],toName:string,toCoordinates:number[],date:Date|undefined}):Promise<{message:string,status:number,rides:IRide[]}>
+    getRideDetailsRepository(rideId:string):Promise<{message:string,status:number,ride:IRide|null}>
+    getUserNotificationRepository(userId:string):Promise<{status:number,message:string,notifications:any[]}>
 }

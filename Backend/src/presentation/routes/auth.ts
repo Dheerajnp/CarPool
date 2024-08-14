@@ -7,7 +7,7 @@ const repository = new AuthRepositoryImp();
 const interactor = new authInteractorImp(repository);
 const controller = new authController(interactor);
 
-const authRouter:Router = Router();
+const authRouter:Router = Router(); 
 
 authRouter.post('/register',controller.register.bind(controller));
 authRouter.post('/verifyotp/:userId',controller.verifyOTP.bind(controller));

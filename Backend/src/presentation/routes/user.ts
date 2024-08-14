@@ -15,4 +15,6 @@ userRouter.get('/getUser/:userId',controller.getUserDetails.bind(controller));
 userRouter.put('/updateDocument/:userId',controller.editDocument.bind(controller));
 userRouter.put('/updateInfo/:userId',controller.userInfoEdit.bind(controller));
 userRouter.get('/getRides',controller.getRides.bind(controller));
+userRouter.get('/getRideDetails/:rideId',controller.getRideDetails.bind(controller));
+userRouter.get('/notifications',controller.getUserNotifications.bind(controller));
 export default userRouter;

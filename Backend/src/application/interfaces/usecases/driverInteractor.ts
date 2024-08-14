@@ -1,4 +1,5 @@
 import Driver from "../../../entities/interfaces/DriverInterface";
+import { IRide } from "../../../entities/interfaces/RideInterface";
 import Vehicle from "../../../entities/interfaces/VehicleInterface";
 
 interface Location {
@@ -35,4 +36,8 @@ export interface DriverInteractor{
     deleteVehicleInteractor(vehicleId:string, driverId:string):Promise<{message:string,status:number}>
     getVehiclesInteractor(driverId:string):Promise<{message:string,status:number,vehicles:Vehicle[]}>
     createRideIntercator(data:RideInterface,driverId:string):Promise<{status:number,message:string,ride:any}>
+    getDriverNotificationInteractor(driverId:string):Promise<{status:number,message:string,notifications:any[]}>
+    getRideDetailsIntercator(rideId:string):Promise<{status:number,message:string,rideDetails:IRide | null}>
+    requestAcceptInteractor(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
+    requestDenyInteractor(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
 }

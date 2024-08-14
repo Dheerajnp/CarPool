@@ -46,8 +46,6 @@ export class userController{
       userInfoEdit:RequestHandler = async(req,res,next)=>{
         const {name, phone } = req.body;
         const { userId } = req.params;
-        console.log(name, phone, userId);
-        console.log(req.body)
 
         try{
           const { message, status } = await this.interactor.editUserInfoInteractor(userId,name,phone);
@@ -62,14 +60,33 @@ export class userController{
         const fromCoordinates = req.query.fromCoordinates as [] ?? [];
         const toName = req.query.toName as string ?? '';
         const toCoordinates = req.query.toCoordinates  as [] ?? [];
-        const date = req.query.date ;
+        const date = new Date(req.query.date as string) ;
 
-        console.log(date)
-        // try {
-        //     const result  = await this.interactor.getRidesInteractor({ fromName, fromCoordinates, toName, toCoordinates,date });
-        //     return res.status(result.status).json(result);
-        // } catch (error) {
-        //     return res.status(500).json({message  : "Internal server error",status:500});
-        // }
+        try {
+            const result  = await this.interactor.getRidesInteractor({ fromName, fromCoordinates, toName, toCoordinates,date });
+            return res.status(result.status).json(result);
+        } catch (error) {
+            return res.status(500).json({message  : "Internal server error",status:500});
+        }
+    }
+
+    getRideDetails:RequestHandler = async (req, res) => {
+      const { rideId } = req.params;
+      try {
+        const result = await this.interactor.getRideDetailsInteractor(rideId);
+        return res.status(result.status).json(result);
+      } catch (error) {
+        return res.status(500).json({ message: "Internal server error", status: 500 });
+      }
+    }
+
+    getUserNotifications:RequestHandler = async(req,res)=>{
+      const { userId } = req.query;
+      try {
+        const notification = await this.interactor.getUserNotificationInteractor(userId as string);
+        return res.status(notification.status).json(notification);
+      } catch (error) {
+        return res.status(500).json({message: "Internal server error",status:500});
+      }
     }
 }

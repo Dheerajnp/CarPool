@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { DriverInteractor } from "../../application/interfaces/usecases/driverInteractor";
+import { resourceLimits } from "worker_threads";
 
 
 export class driverController{
@@ -93,13 +94,59 @@ export class driverController{
 
       getVehicles:RequestHandler = async (req,res)=>{
         const { driverId } = req.params;
-        console.log(driverId);
+
         try{
           const { message, status,vehicles } = await this.interactor.getVehiclesInteractor(driverId);
-          console.log(status, vehicles)
           return res.status(status).json({ message,status,vehicles }); 
         }catch (error) {
         return res.status(500).json({message  : "Internal server error",status:500});
         }
       }
+
+      getNotifications:RequestHandler = async (req,res)=>{
+        const { userId } = req.query;
+        const driverId = userId;
+        try {
+          const notification = await this.interactor.getDriverNotificationInteractor(driverId as string);
+          return res.status(notification.status).json(notification);
+        } catch (error) {
+          return res.status(500).json({message: "Internal server error",status:500});
+        }
+      }
+
+      getRideDetails:RequestHandler = async(req,res)=>{
+        const {rideId } = req.params;
+        console.log("jbjoadbcjbdbdcdcb",rideId);
+        try{
+          const result = await this.interactor.getRideDetailsIntercator(rideId);
+
+          return res.status(result.status).json(result);
+        }catch(error) {
+          return res.status(500).json({message: "Internal server error",status:500});
+        }
+      }
+
+      requestAccept:RequestHandler = async(req,res)=>{
+        const {rideId} = req.params;
+        const {passengerId} = req.body;
+        console.log("controller for ride accept",rideId);
+        try {
+          const result = await this.interactor.requestAcceptInteractor(rideId,passengerId);
+          return res.status(result.status).json(result);
+        } catch (error) {
+          return res.status(500).json({message:"Internal Server Error"})
+        }
+      }
+      requestDeny:RequestHandler = async(req,res)=>{
+        const{rideId} = req.params;
+        const {passengerId} = req.body;
+        console.log("controller for ride deny",rideId);
+        try {
+          const result = await this.interactor.requestDenyInteractor(rideId,passengerId);
+          return res.status(result.status).json(result);
+        } catch (error) {
+          return res.status(500).json({message:"Internal Server Error"})
+        }
+      }
+      
 }

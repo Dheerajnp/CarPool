@@ -28,6 +28,7 @@ const rideSchema = new mongoose.Schema<IRide>({
       {
         rider: { type: Schema.Types.ObjectId, ref: 'User' },
         status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+        numberOfPassengers:{type: Number, default:1},
       },
     ],
     distance: { type: Number, required: true },

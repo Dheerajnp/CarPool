@@ -1,4 +1,5 @@
 import Driver from "../../../entities/interfaces/DriverInterface"
+import { IRide } from "../../../entities/interfaces/RideInterface"
 import { RideInterface } from "../usecases/driverInteractor"
 
 export interface DriverRepository{
@@ -10,4 +11,8 @@ export interface DriverRepository{
     deleteVehicleRepository(vehicleId:string, driverId:string):Promise<{message:string,status:number}>
     getVehiclesRepository(driverId:string):Promise<{message:string,status:number,vehicles:any}>
     createRideRepository(data:RideInterface,driverId:string):Promise<{status:number,message:string,ride:any}>
+    getDriverNotificationRepository(driverId:string):Promise<{status:number,message:string,notifications:any[]}>
+    getRideDetailsRepository(rideId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
+    requestAcceptRepository(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
+    requestDenyRepository(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
 } 

@@ -1,104 +1,337 @@
-import { log } from "console";
 import Driver from "../../entities/interfaces/DriverInterface";
 import driverModel from "../../frameworks/database/models/driverSchema";
+import Notification from "../../frameworks/database/models/notificationSchema";
 import { DriverRepository } from "../interfaces/repository/DriverRepository";
 import { RideInterface } from "../interfaces/usecases/driverInteractor";
 import Ride from "../../frameworks/database/models/rideSchema";
-import {formatISO} from 'date-fns';
+import { IRide } from "../../entities/interfaces/RideInterface";
+import { getSocketInstance } from "../../frameworks/server/socket";
+
 export class driverRepositoryImp implements DriverRepository {
-    async createRideRepository(
-        data: RideInterface,
-        driverId: string
-      ): Promise<{ status: number; message: string; ride: any }> {
-        const {
-            source,
-            destination,
-            date,
-            time,
-            price,
-            passengers,
-            distance,
-            duration,
-            vehicle,
-          } = data;
-          
-          try {
-            const driver = await driverModel.findById(driverId);
-            if (!driver) {
-              return {
-                message: "Driver not found",
-                status: 404,
-                ride: null,
-              };
-            }
-        
-            const startDate = new Date(date); // This will be in UTC
-            const endDate = new Date(startDate.getTime() + (duration/60) * 60000); // duration is in minutes
-            console.log(endDate);
-            console.log(startDate);
-            const isRideOverlap = async (
-              driverId: string,
-              startDate: Date,
-              endDate: Date
-            ) => {
-              // Find overlapping rides
-              const overlappingRides = await Ride.find({
-                driver: driverId,
-                $or: [
-                  { rideDate: { $gte: startDate, $lte: endDate } },
-                  { eta: { $gte: startDate, $lte: endDate } }
-                ]
-              });
-          
-              return overlappingRides.length > 0
-                
-            };
-        
-            const overlap = await isRideOverlap(driverId, startDate, endDate);
-            if (overlap) {
-              return {
-                message: "Ride overlaps with existing rides",
-                status: 409,
-                ride: null,
-              };
-            }
- 
-            // console.log(startDate.toLocaleString());
-            // Create the ride if no overlap
-            const newRide = new Ride({
-              origin:source,
-              destination,
-              rideDate:startDate,
-              price,
-              passengers:{},
-              totalSeats:passengers,
-              availableSeats:passengers,
-              eta:endDate,
-              distance,
-              duration,
-              vehicle:{
-                ...vehicle,
-                id:vehicle._id
-              },
-              driver: driverId,
-            });
-            await newRide.save();
+  async requestAcceptRepository(rideId: string,passengerId:string): Promise<{ status: number; message: string; rideDetails: IRide | null; }> {
+    try {
+      const ride = await Ride.findById(rideId);
   
-            return {
-              message: "Ride created successfully",
-              status: 201,
-              ride: newRide,
-            };
-          } catch (error) {
-            console.error(error);
-            return {
-              message: "An error occurred while creating the ride",
-              status: 500,
-              ride: null,
-            };
-          }
+      if (!ride) {
+        return {
+          status: 404,
+          message: "Ride not found",
+          rideDetails: null,
+        };
       }
-      
+  
+      const passenger = ride.passengers.find(
+        (p) => p.rider.toString() === passengerId
+      );
+  
+      if (!passenger) {
+        return {
+          status: 404,
+          message: "Passenger not found in ride",
+          rideDetails: null,
+        };
+      }
+  
+      if (passenger.status === "accepted") {
+        return {
+          status: 400,
+          message: "Passenger already accepted",
+          rideDetails: null,
+        };
+      }
+  
+      if (ride.availableSeats < passenger.numberOfPassengers) {
+        return {
+          status: 400,
+          message: "Not enough available seats",
+          rideDetails: null,
+        };
+      }
+  
+      // Accept the ride request
+      passenger.status = "accepted";
+      ride.availableSeats -= passenger.numberOfPassengers;
+  
+      // Save the updated ride details
+      await ride.save();
+  
+      // Create a notification for the user
+      const notification = new Notification({
+        recipient: passenger.rider,
+        sender: ride.driver,
+        message: `Your request to join the ride from ${ride.origin.name} to ${ride.destination.name} has been accepted.`,
+        rideId: ride._id,
+        status: "unread",
+      });
+      await notification.save();
+  
+      getSocketInstance()?.to(passengerId).emit("requestnotification",notification);
+      return {
+        status: 200,
+        message: "Ride request accepted",
+        rideDetails: ride,
+      };
+    } catch (error) {
+      console.error("Error accepting ride request:", error);
+      return {
+        status: 500,
+        message: "Internal server error",
+        rideDetails: null,
+      };
+    }
+  }
+  async requestDenyRepository(rideId: string, passengerId: string): Promise<{ status: number; message: string; rideDetails: IRide | null; }> {
+    try {
+      const ride = await Ride.findById(rideId);
+  
+      if (!ride) {
+        return {
+          status: 404,
+          message: "Ride not found",
+          rideDetails: null,
+        };
+      }
+  
+      const passenger = ride.passengers.find(
+        (p) => p.rider.toString() === passengerId
+      );
+  
+      if (!passenger) {
+        return {
+          status: 404,
+          message: "Passenger not found in ride",
+          rideDetails: null,
+        };
+      }
+  
+      if (passenger.status === "rejected") {
+        return {
+          status: 400,
+          message: "Passenger already rejected",
+          rideDetails: null,
+        };
+      }
+  
+      // Deny the ride request
+      passenger.status = "rejected";
+  
+      // Save the updated ride details
+      await ride.save();
+  
+      // Create a notification for the user
+      const notification = new Notification({
+        recipient: passenger.rider,
+        sender: ride.driver,
+        message: `Your request to join the ride from ${ride.origin.name} to ${ride.destination.name} has been denied.`,
+        rideId: ride._id,
+        status: "unread",
+      });
+      await notification.save();
+  
+      // Emit notification via socket
+      getSocketInstance()?.to(passengerId).emit("requestnotification", notification);
+  
+      return {
+        status: 200,
+        message: "Ride request denied",
+        rideDetails: ride,
+      };
+    } catch (error) {
+      console.error("Error denying ride request:", error);
+      return {
+        status: 500,
+        message: "Internal server error",
+        rideDetails: null,
+      };
+    }
+  }
+  
+  async getRideDetailsRepository(
+    rideId: string
+  ): Promise<{ status: number; message: string; rideDetails: IRide | null }> {
+    try {
+      let rideDetails = await Ride.findById(rideId).populate({
+        path: "passengers.rider",
+        select: "name email",
+      });
+      console.log("rideDetailssssssssssssssss", rideDetails?.passengers);
+      if (!rideDetails) {
+        return {
+          status: 404,
+          message: "Ride not found",
+          rideDetails: null,
+        };
+      }
+      console.log("Ride details", rideDetails);
+      return {
+        status: 200,
+        message: "Get ride details",
+        rideDetails,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: 500,
+        message: "Internal server error",
+        rideDetails: null,
+      };
+    }
+  }
+  async getDriverNotificationRepository(
+    driverId: string
+  ): Promise<{ status: number; message: string; notifications: any[] }> {
+    try {
+      const driver = await driverModel.findById(driverId);
+      if (!driver) {
+        return {
+          status: 404,
+          message: "Driver not found",
+          notifications: [],
+        };
+        
+      }
+      // const notifications = await Notification.find({recipient:driverId}).sort({createdAt: -1});
+      const notifications = await Notification.aggregate([
+        {
+          $match: { recipient: driver._id },
+        },
+        {
+          $sort: { createdAt: -1 },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "sender",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $project: { name: 1, email: 1 },
+              },
+            ],
+            as: "user",
+          },
+        },
+        {
+          $project:{
+            _id: 1,
+            sender: 1,
+            recipient: 1,
+            message: 1,
+            createdAt: 1,
+            user: { $arrayElemAt: ["$user", 0] },
+            senderName:{ $arrayElemAt: ["$user.name", 0] },
+            rideId:1,
+          }
+        }
+      ]);
+
+      console.log("notifications",notifications)
+      return {
+        status: 200,
+        message: "Get driver notifications",
+        notifications,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: 500,
+        message: "Internal server error",
+        notifications: [],
+      };
+    }
+  }
+
+  async createRideRepository(
+    data: RideInterface,
+    driverId: string
+  ): Promise<{ status: number; message: string; ride: any }> {
+    const {
+      source,
+      destination,
+      date,
+      time,
+      price,
+      passengers,
+      distance,
+      duration,
+      vehicle,
+    } = data;
+
+    try {
+      const driver = await driverModel.findById(driverId);
+      if (!driver) {
+        return {
+          message: "Driver not found",
+          status: 404,
+          ride: null,
+        };
+      }
+
+      const startDate = new Date(date); // This will be in UTC
+      const endDate = new Date(startDate.getTime() + (duration / 60) * 60000); // duration is in minutes
+      console.log(endDate);
+      console.log(startDate);
+      const isRideOverlap = async (
+        driverId: string,
+        startDate: Date,
+        endDate: Date
+      ) => {
+        // Find overlapping rides
+        const overlappingRides = await Ride.find({
+          driver: driverId,
+          $or: [
+            { rideDate: { $gte: startDate, $lte: endDate } },
+            { eta: { $gte: startDate, $lte: endDate } },
+          ],
+        });
+
+        return overlappingRides.length > 0;
+      };
+
+      const overlap = await isRideOverlap(driverId, startDate, endDate);
+      if (overlap) {
+        return {
+          message: "Ride overlaps with existing rides",
+          status: 409,
+          ride: null,
+        };
+      }
+
+      // console.log(startDate.toLocaleString());
+      // Create the ride if no overlap
+      const newRide = new Ride({
+        origin: source,
+        destination,
+        rideDate: startDate,
+        price,
+        passengers: {},
+        totalSeats: passengers,
+        availableSeats: passengers,
+        eta: endDate,
+        distance,
+        duration,
+        vehicle: {
+          ...vehicle,
+          id: vehicle._id,
+        },
+        driver: driverId,
+      });
+      await newRide.save();
+
+      return {
+        message: "Ride created successfully",
+        status: 201,
+        ride: newRide,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: "An error occurred while creating the ride",
+        status: 500,
+        ride: null,
+      };
+    }
+  }
 
   async getVehiclesRepository(
     driverId: string
