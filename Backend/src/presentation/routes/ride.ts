@@ -10,4 +10,5 @@ const controller = new RideController(interactor);
 const rideRouter:Router = Router();
 rideRouter.put('/requestRide/:rideId',controller.requestRide.bind(controller));
 rideRouter.get('/getDriverRides/:driverId',controller.getRidesDriver.bind(controller));
+rideRouter.get('/getUserRides/:userId',controller.getUserRides.bind(controller));
 export default rideRouter;

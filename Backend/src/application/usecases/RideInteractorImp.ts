@@ -4,6 +4,19 @@ import { RideIntercator } from "../interfaces/usecases/rideInteractor";
 
 export class RideIntercatorImp implements RideIntercator{
     constructor(public readonly repository: RideRepository){}
+    async getRidesUserInteractor(userId: string): Promise<{ message: string; status: number; rides: IRide[] | null; }> {
+        try {
+            const result = await this.repository.getRidesUserRepository(userId);
+            return result;
+        } catch (error) {
+            console.log(error);
+            return{
+                message: 'Internal Server Error',
+                status: 500,
+                rides: null
+            }
+        }
+    }
     async getRidesDriverInteractor(driverId: string): Promise<{ message: string; status: number; rides: IRide[] | null; }> {
         try {
             const result = await this.repository.getRidesDriverRepository(driverId);

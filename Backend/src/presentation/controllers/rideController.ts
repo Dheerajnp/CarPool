@@ -27,4 +27,16 @@ export class RideController{
           return res.status(500).json({message  : "Internal server error",status:500});
         }
       }
+
+      getUserRides:RequestHandler = async(req,res)=>{
+        const { userId } = req.params;
+        try {
+          console.log(userId)
+          const result = await this.interactor.getRidesUserInteractor(userId);
+          return res.status(result.status).json({result});
+        } catch (error) {
+          return res.status(500).json({message  : "Internal server error",status:500});
+        }
+      }
+
 }

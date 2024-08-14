@@ -10,6 +10,38 @@ import { IRide } from "../../entities/interfaces/RideInterface";
 import { Types } from "mongoose";
 
 export class RideRepositoryImp implements RideRepository {
+  async getRidesUserRepository(userId: string): Promise<{ message: string; status: number; rides: IRide[] | null; }> {
+    try {
+        const ride = await Ride.find({ "passengers.rider": userId })
+    .populate("driver", "name") 
+    .populate("passengers.rider", "name") 
+
+    
+    console.log("Populated Ride:", ride);
+
+      if (!ride) {
+        return {
+          message: "Rides not found",
+          status: 404,
+          rides: null,
+        };
+      }
+
+      return {
+        message: "Rides found successfully",
+        status: 200,
+        rides: ride,
+      };
+    } catch (error) {
+        console.log(error);
+      return {
+        message: "Internal Server Error",
+        status: 500,
+        rides: null,
+      };
+    }
+    
+  }
   async getRidesDriverRepository(
     driverId: string
   ): Promise<{ message: string; status: number; rides: IRide[] | null }> {
