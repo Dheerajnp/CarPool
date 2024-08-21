@@ -17,14 +17,21 @@ import RoundLoader from "../../RoundLoader";
 import { useEssentials } from "../../../hooks/UseEssentials";
 import toast from "react-hot-toast";
 import Header from "../../Navbar";
+import { MdChatBubble } from "react-icons/md";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../ui/tooltip";
 
 export default function RideDetailsComponent() {
-  const { auth,navigate }  = useEssentials();
+  const { auth, navigate } = useEssentials();
   const [rideDetails, setRideDetails] = useState<IRideDetails | null>(null);
   const { rideId } = useParams();
   let loading;
   useEffect(() => {
-    loading = true
+    loading = true;
     const getRideDetails = async (rideId: string) => {
       try {
         const response = await axiosApiGateway.get(
@@ -41,21 +48,27 @@ export default function RideDetailsComponent() {
     loading = false;
   }, [rideId]);
 
+  const handleRideRequestClick = async (userId: string, rideId: string) => {
+    console.log(userId, rideId);
+    axiosApiGateway
+      .put(`/ride/requestRide/${rideId}`, {
+        userId,
+        totalPassengers,
+      })
+      .then((response) => {
+        toast.success(response.data.message);
+        navigate("/user");
+      })
+      .catch(({ response }) => {
+        toast.error(response.data.message);
+      });
+  };
 
-  const handleRideRequestClick = async(userId:string,rideId:string)=>{
-    console.log(userId,rideId);
-    axiosApiGateway.put(`/ride/requestRide/${rideId}`,{
-      userId,
-      totalPassengers
-    }).then((response)=>{
-      toast.success(response.data.message);
-      navigate("/user")
-    }).catch(({response})=>{
-      toast.error(response.data.message);
-    })
-    
+  const handleChatClick = async(driverId:string)=>{
+    console.log(auth.user?.id)
+    const response = await axiosApiGateway.get(`/chat/user/getChat/${auth.user?.id as string}?driverId=${driverId}`)
+    console.log(response)
   }
-
   const formatDate = (dateString: string) => {
     console.log(dateString);
     const date = new Date(dateString);
@@ -108,13 +121,19 @@ export default function RideDetailsComponent() {
                   {rideDetails?.availableSeats}
                 </p>
               </div>
-                <p className="text-muted-foreground">{rideDetails?.distance?`${(rideDetails?.distance/1000).toFixed(2)} K.M's`:"N/A"}</p>
+              
+              <p className="text-muted-foreground">
+              <h2 className="text-xl font-semibold text-black">Distance</h2>
+                {rideDetails?.distance
+                  ? `${(rideDetails?.distance / 1000).toFixed(2)} K.M's`
+                  : "N/A"}
+              </p>
               <div>
                 <h2 className="text-xl font-semibold">Price per Passenger</h2>
                 <p className="text-muted-foreground">{rideDetails?.price}</p>
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Distance</h2>
+                
               </div>
               <div>
                 <h2 className="text-xl font-semibold">Date and Time</h2>
@@ -193,18 +212,24 @@ export default function RideDetailsComponent() {
                 Get to know your driver and request your ride.
               </p>
               <div className="mt-6 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-4">
                     <Avatar className="w-12 h-12 border">
                       <AvatarImage
                         src="/placeholder-user.jpg"
                         alt="User Avatar"
                       />
-                      <AvatarFallback>{rideDetails?.driver.name.slice(0,2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>
+                        {rideDetails?.driver.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="text-xl font-semibold">{rideDetails?.driver.name}</h3>
-                      <h4 className="text-lg font-light">{rideDetails?.driver.email}</h4>
+                      <h3 className="text-xl font-semibold">
+                        {rideDetails?.driver.name}
+                      </h3>
+                      <h4 className="text-lg font-light">
+                        {rideDetails?.driver.email}
+                      </h4>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <FaStar className="w-4 h-4 fill-primary" />
                         <FaStar className="w-4 h-4 fill-primary" />
@@ -214,12 +239,33 @@ export default function RideDetailsComponent() {
                         <span>4.3</span>
                       </div>
                     </div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            variant="outline"
+                            className="w-12 h-12 border-gray-200 rounded-full hover:text-primary-dark ms-36"
+                            onClick={()=>handleChatClick(rideDetails?.driver._id as string)}
+                          >
+                            <MdChatBubble size={20} />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Chat with Driver</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
-                <Button 
-                size="lg" 
-                className="w-full"
-                onClick={()=>handleRideRequestClick(auth.user?.id as string,rideDetails?._id as string)}
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={() =>
+                    handleRideRequestClick(
+                      auth.user?.id as string,
+                      rideDetails?._id as string
+                    )
+                  }
                 >
                   Request Ride
                 </Button>

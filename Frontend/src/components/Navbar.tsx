@@ -20,6 +20,7 @@ import { useEssentials } from "../hooks/UseEssentials";
 import { resetState } from "../redux/userStore/Authentication/AuthSlice";
 import DriverNotification from "./driver/DriverNotification";
 import UserNotification from "./user/UserNotification";
+import { FaCar } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -87,13 +88,24 @@ const Header: React.FC = () => {
               </Link>
                 }
                 
+               {role=== "rider"&&
                 <Link
-                  to="/settings"
-                  className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
-                >
-                  <IoIosSettings />
-                  <span>Settings</span>
-                </Link>
+                to="/user/myrides"
+                className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+              >
+                <FaCar />
+                <span>My Rides</span>
+              </Link>
+               }
+               {role=== "host"&&
+                <Link
+                to="/driver/myrides"
+                className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+              >
+                <FaCar />
+                <span>My Rides</span>
+              </Link>
+               }
                 <Link
                   to="/help"
                   className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"

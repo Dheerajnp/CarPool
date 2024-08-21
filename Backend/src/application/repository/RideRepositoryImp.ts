@@ -14,7 +14,7 @@ export class RideRepositoryImp implements RideRepository {
     try {
         const ride = await Ride.find({ "passengers.rider": userId })
     .populate("driver", "name") 
-    .populate("passengers.rider", "name") 
+    .populate("passengers.rider", "name id") 
 
     
     console.log("Populated Ride:", ride);

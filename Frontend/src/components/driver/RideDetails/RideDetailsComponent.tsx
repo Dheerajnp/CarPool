@@ -164,7 +164,7 @@ export default function RideDetailsForDriver() {
                     <div className="flex items-center gap-4">
                       <div>
                         <p className="text-lg font-semibold">
-                          {passenger.rider.name}
+                          {/* {passenger.rider.name} */}
                         </p>
                         <p className="text-muted-foreground">
                           Number of Passengers: {passenger.numberOfPassengers}

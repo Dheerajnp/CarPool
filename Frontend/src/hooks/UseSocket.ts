@@ -7,6 +7,7 @@ export default function useSocket(recieverId: string) {
     const connect = io(import.meta.env.VITE_SOCKET_URL);
     setSocket(connect)
     connect.emit('joinRoom', recieverId);
+  
     connect.on('disconnect', () => {
         console.log('Disconnected from server');
       });

@@ -12,6 +12,8 @@ import NewPasswordPage from "./pages/ForgotPassword/NewPasswordPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRoutes from "./routes/AdminRoutes";
 import useSocket from "./hooks/UseSocket";
+import Chat from "./components/chat/ChatPageComponent";
+import ChatComponent from "./components/chat/chatComponent";
 
 function App() {
   const socket = useSocket();
@@ -46,7 +48,7 @@ function App() {
         <Route path="/driver/*" element={<DriverRoutes />} />
       </Route>
 
-      
+      <Route path="/chat" element={<ChatComponent />} />
     </Routes>
   );
 }

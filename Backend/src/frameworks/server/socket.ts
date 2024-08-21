@@ -20,6 +20,12 @@ const initializeSocketServer = (server: HttpServer) => {
     socket.on('joinRoom', (recieverId) => {
       socket.join(recieverId);
     });
+
+    socket.on('joinChatRoom',(chatRoomId)=>{
+      socket.join(chatRoomId);
+      console.log(`Socket ${socket.id} joined chat room ${chatRoomId}`)
+    })
+
     socket.on("disconnect", () => {
       console.log(`Socket disconnected: ${socket.id}`);
     });

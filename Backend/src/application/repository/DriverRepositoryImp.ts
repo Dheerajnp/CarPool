@@ -304,7 +304,7 @@ export class driverRepositoryImp implements DriverRepository {
         destination,
         rideDate: startDate,
         price,
-        passengers: {},
+        passengers:[],
         totalSeats: passengers,
         availableSeats: passengers,
         eta: endDate,
