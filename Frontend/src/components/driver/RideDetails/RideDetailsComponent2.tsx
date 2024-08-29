@@ -35,7 +35,7 @@ import MapComponent from "../../map/MapComponent";
 import Header from "../../Navbar";
 
 export default function RideDetailedViewDriver() {
-  const { navigate } = useEssentials();
+  const { auth,navigate } = useEssentials();
   const { rideId } = useParams();
   const [rideDetails, setRideDetails] = useState<IRideDetails | null>(null);
   const [loading, setLoading] = useState(false);
@@ -86,6 +86,16 @@ export default function RideDetailedViewDriver() {
       console.error(error.data.message);
     }
   };
+
+  const handleChatClick = async(userId:string)=>{
+    console.log(auth.user?.id)
+    const response = await axiosApiGateway.get(`/chat/user/getChat/${userId}?driverId=${auth.user?.id as string}`)
+    if(response.data.result.status === 200){
+      navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
+    }else{
+      toast("Unable to initiate chat with driver. Please try again later.");
+    }
+  }
 
   const handleRequestDeny = async (passengerId: string) => {
     try {
@@ -304,7 +314,7 @@ export default function RideDetailedViewDriver() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <Badge>Confirmed</Badge>
-                          <Button size="icon" variant="ghost">
+                          <Button size="icon" variant="ghost" onClick={()=>handleChatClick(passenger.rider._id as string)}>
                             <MessageCircleIcon className="h-4 w-4" />
                             <span className="sr-only">
                               Chat with {passenger.rider.name}

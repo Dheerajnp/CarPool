@@ -16,6 +16,8 @@ export default function Home() {
 
   const user = auth.user;
 
+
+
   return (
     <div>
       <Header />

@@ -5,6 +5,7 @@ import UserProfile from "../pages/User/User Profile/UserProfile";
 import SearchResultsPage from "../pages/User/RideSearch/SearchResultsPage";
 import RideDetailsPage from "../pages/User/RideSearch/RideDetailsPage";
 import UserRideListPage from "../pages/User/My Rides/UserRideListPage";
+import UserRideDeatiledViewPage from "../pages/User/My Rides/UserRideDeatiledViewPage";
 
 
 export default function UserRoutes(){
@@ -17,6 +18,7 @@ export default function UserRoutes(){
         <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/ride-details/:rideId" element={<RideDetailsPage />}/>
         <Route path="/myrides" element={<UserRideListPage/>}/>
+        <Route path="/rideDetails/:rideId" element={<UserRideDeatiledViewPage/>}/>
     </Routes>
   )
 }
