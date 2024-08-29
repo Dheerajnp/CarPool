@@ -116,7 +116,6 @@ export class AuthRepositoryImp implements AuthRepository {
             }
     
             const otp = CommonFunctions.otpGenerator();
-            console.log("forgot password otp", otp);
             sendMail.forgotPasswordOtpMail(otp, email);
             if (foundUser.role === "rider") {
                 await userModel.findOneAndUpdate({ email: email }, { $set: { otp: otp } });
@@ -292,11 +291,9 @@ export class AuthRepositoryImp implements AuthRepository {
     role: string;
   }): Promise<{ message: string; user: TempUser | null; status: number }> {
     let { name, email, password, role } = userInfo;
-    console.log("user temp signup rep");
     try {
       const userData = await userModel.findOne({ email: email });
       if (userData) {
-        console.log(userData);
         return {
           user: null,
           message: "User already exists",
@@ -320,7 +317,6 @@ export class AuthRepositoryImp implements AuthRepository {
 
       await sendMail.sendOtpMail(email, otp);
       const savedUser: TempUser = await newUser.save();
-      console.log(savedUser);
       return {
         user: newUser,
         message: "OTP sent to mail",

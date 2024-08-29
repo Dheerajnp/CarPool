@@ -146,7 +146,7 @@ export const googleSignup:Function = async(credentials:interfaces.GoogleSignUpCr
 
 export const licenseUpload:Function = async({userId, licenseFrontUrl, licenseBackUrl}:interfaces.UploadLicenseCredentials)=>{
   try {
-    const response = await axios.put(
+    const response = await axiosApiGateway.put(
       `/user/profile/upload-license/${userId}`,
       { licenseFrontUrl, licenseBackUrl },
       { withCredentials: true }

@@ -1,6 +1,7 @@
 import { model, Schema, Document } from "mongoose";
+import Chat from "../../../entities/interfaces/ChatInterface";
 
-const chatSchema = new Schema(
+const chatSchema = new Schema<Chat>(
     {
         roomId:{
             type: String,
@@ -15,6 +16,9 @@ const chatSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref:'Driver',
             required:true
+        },
+        lastMessage:{
+            type: String,
         }
     },
     {timestamps:true}

@@ -11,12 +11,9 @@ import ForgotPasswordEmail from "./pages/ForgotPassword/ForgotPasswordEmail";
 import NewPasswordPage from "./pages/ForgotPassword/NewPasswordPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRoutes from "./routes/AdminRoutes";
-import useSocket from "./hooks/UseSocket";
-import Chat from "./components/chat/ChatPageComponent";
 import ChatComponent from "./components/chat/chatComponent";
 
 function App() {
-  const socket = useSocket();
   return (
     <Routes>
       {/* Public Route */}

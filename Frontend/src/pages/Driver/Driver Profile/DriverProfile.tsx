@@ -15,6 +15,7 @@ import { MdDelete } from "react-icons/md";
 import toast from "react-hot-toast";
 import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal";
 import ImageModal from "./ImageModal";
+import axiosApiGateway from "../../../functions/axios";
 
 const DriverProfile: React.FC = () => {
   const { auth } = useEssentials();
@@ -38,7 +39,7 @@ const DriverProfile: React.FC = () => {
     const fetchDriver = async () => {
       setLoading(true);
       try {
-        const response = await axios.post("/driver/getDriver", {
+        const response = await axiosApiGateway.post("/driver/getDriver", {
           data,
           withCredentials: true,
         });
@@ -102,7 +103,7 @@ const DriverProfile: React.FC = () => {
     setLoading(true);
  
     try {
-      const response = await axios.put(`/driver/deleteVehicle/${vehicleToDelete}`,{driverId:driver?._id});
+      const response = await axiosApiGateway.put(`/driver/deleteVehicle/${vehicleToDelete}`,{driverId:driver?._id});
       if(response.data.status === 200){
         setDriver((prevDriver:any) => {
           if (!prevDriver) return prevDriver;

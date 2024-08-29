@@ -45,7 +45,6 @@ const CreateRideStageTwo = () => {
         duration: route?.duration,
         vehicle: selectedVehicle,
       }
-      console.log(data)
       await axiosApiGateway.post(`/driver/create-ride/${auth.user?.id}`, { data }).then((res)=>{
         toast.success(res.data.message)  
         navigate("/user")
@@ -104,7 +103,6 @@ const CreateRideStageTwo = () => {
     const vehicle = vehicles.find((v: any) => v._id === vehicleId);
     setSelectedVehicle(vehicle);
   };
-  console.log(selectedVehicle);
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

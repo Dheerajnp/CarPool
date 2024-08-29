@@ -51,7 +51,6 @@ export const forgotPasswordOtpMail:Function = async(otp:string,email:string):Pro
                 console.error('Error sending email:', error.message);
                 return false
             }
-            console.log(info.response);
             
         });
         return true;
@@ -75,13 +74,11 @@ export const sendOtpMail:Function = async(Email:string,otp:string): Promise<bool
             subject: 'OTP For Login Verification',
             html: body
         }
-        console.log(Email,otp)
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error('Error sending email:', error.message);
                 return false
             }
-            console.log(info.response);
             
         });
         return true;

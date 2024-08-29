@@ -22,7 +22,6 @@ export class userRepositoryImp implements UserRepository {
       const notifications = await Notification.find({ recipient: userId }).sort(
         { createdAt: -1 }
       );
-      console.log("notifications", notifications);
       return {
         status: 200,
         message: "Get driver notifications",
@@ -75,7 +74,6 @@ export class userRepositoryImp implements UserRepository {
       const startOfDay = moment(date).startOf("day").toDate(); // Start of the day
       const endOfDay = moment(date).add(1, "day").startOf("day").toDate(); // Start of the next day
       if (date !== undefined) {
-        console.log(new Date(date));
         const rides = await Ride.find({
           rideDate: {
             $gte: startOfDay,

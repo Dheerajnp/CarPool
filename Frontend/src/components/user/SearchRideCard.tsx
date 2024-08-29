@@ -61,7 +61,6 @@ const SearchRide: React.FC = () => {
             date:utcDate,
           },
         });
-        console.log(response.data)
         dispatch(fetchRidesSuccess(response.data));
         navigate('/user/search')
       } catch (error: any) {

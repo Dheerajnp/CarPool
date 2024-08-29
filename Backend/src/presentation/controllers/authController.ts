@@ -6,7 +6,6 @@ export class authController{
 
     register:RequestHandler = async(req,res,next)=>{
         const {name, email, password,role} = req.body;
-        console.log("register",name,email,password)
        try {
       const user = { name, email, password, role };
       const result = await this.interactor.createUser(user);
@@ -40,7 +39,6 @@ export class authController{
 
     login:RequestHandler = async (req, res) => {
       const { email, password, role } = req.body;
-      console.log(email,password,role)
       try {
         const { user, token, message, refreshToken } =
         await this.interactor.loginInteractor({ email, password, role });
@@ -64,7 +62,6 @@ export class authController{
       try {
         const { email,role } = req.body;
         const result = await this.interactor.forgotPasswordInteractor(email,role);
-        console.log(result);
         return res.status(result.status).json(result);
       } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error'});
@@ -75,7 +72,6 @@ export class authController{
       try {
         const { email,otp,role } = req.body;
         const result = await this.interactor.verifyOtpforgotPasswordInteractor(email,otp,role);
-        console.log(result);
         return res.status(result.status).json(result);
       } catch (error) {
         return res.status(500).json({ message: 'Internal Server'});
@@ -83,12 +79,9 @@ export class authController{
     }
 
     resetPassword:RequestHandler = async(req,res)=>{
-      console.log(req.body);  
       try {
         const { email,password,role } = req.body;
-        console.log(email,password)
         const result = await this.interactor.resetPasswordInteractor(email,password,role)
-        console.log("successsssssssss",result);
         return res.status(result.status).json(result)
       } catch (error) {
         return res.status(500).json({message:'Internal Server error'})

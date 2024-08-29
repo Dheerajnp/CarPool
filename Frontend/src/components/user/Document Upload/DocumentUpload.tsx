@@ -3,6 +3,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useEssentials } from "../../../hooks/UseEssentials";
 import { ModeToggle } from "../../mode-toggle";
+import axiosApiGateway from "../../../functions/axios";
 
 const DocumentUpload = () => {
   const [documentType, setDocumentType] = useState<string>("");
@@ -43,7 +44,7 @@ const DocumentUpload = () => {
 
       const uploadedUrl = response.data.secure_url;
 
-      await axios.put(`/user/upload-document/${userId}`, {
+      await axiosApiGateway.put(`/user/upload-document/${userId}`, {
         documentType,
         documentUrl: uploadedUrl
       });

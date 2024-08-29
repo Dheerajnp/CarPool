@@ -38,7 +38,6 @@ const SignUpForm = () => {
 
   const onSubmit = (values: any, { setSubmitting }: any) => {
     const { name, email, password } = values;
-    console.log(values)
     dispatch(register({ name, email, password, role })).then((state: any) => {
       if (state.payload.status === 200) {
         navigate('/verifyotp');

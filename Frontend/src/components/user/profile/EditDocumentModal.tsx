@@ -8,6 +8,7 @@ import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { User } from "../../../redux/userStore/Authentication/interfaces";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import axiosApiGateway from "../../../functions/axios";
 
 interface EditDocumentModalProps {
   document: { type: string; url: string; status: string };
@@ -76,7 +77,7 @@ const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
       console.log("updatedDocument");
       console.log(updatedDocument);
       // Save to backend
-      const response = await axios.put(
+      const response = await axiosApiGateway.put(
         `/user/updateDocument/${user._id}`,
         updatedDocument
       );

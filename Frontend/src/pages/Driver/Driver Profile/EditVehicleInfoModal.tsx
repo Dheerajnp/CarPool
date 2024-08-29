@@ -8,6 +8,7 @@ import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 import { Driver } from "../../../redux/driverStore/interfaces";
+import axiosApiGateway from "../../../functions/axios";
 
 interface EditVehicleModalProps {
   vehicle: Vehicle;
@@ -69,7 +70,7 @@ const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, o
       console.log("updatedVehicle");
       console.log(updatedVehicle);
       // Save to backend
-     const response = await axios.put(`/driver/addVehicle/${driver._id}`, updatedVehicle);
+     const response = await axiosApiGateway.put(`/driver/addVehicle/${driver._id}`, updatedVehicle);
 
       if(response.data.status === 200) {
         const updatedVehicle = {

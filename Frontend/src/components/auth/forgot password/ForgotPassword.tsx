@@ -31,7 +31,6 @@ const ForgotPasswordPage = () => {
           if (response.payload.status == 200) {
             setOtpModal(true);
           } else {
-            console.log(response)
             const errorMessage = response.payload.message;
             console.log("Error: " + errorMessage);
             toast.error(errorMessage);

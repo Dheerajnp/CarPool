@@ -15,10 +15,6 @@ export class RideRepositoryImp implements RideRepository {
         const ride = await Ride.find({ "passengers.rider": userId })
     .populate("driver", "name") 
     .populate("passengers.rider", "name id") 
-
-    
-    console.log("Populated Ride:", ride);
-
       if (!ride) {
         return {
           message: "Rides not found",
@@ -47,10 +43,6 @@ export class RideRepositoryImp implements RideRepository {
   ): Promise<{ message: string; status: number; rides: IRide[] | null }> {
     try {
       const ride = await Ride.find({ driver: driverId })
-
-
-      console.log("Populated Ride:", ride);
-
       if (!ride) {
         return {
           message: "Rides not found",
@@ -78,8 +70,6 @@ export class RideRepositoryImp implements RideRepository {
     totalPassengers: number
   ): Promise<{ message: string; status: number }> {
     try {
-        console.log("requestRideRepository")
-        console.log(passengerId,rideId,totalPassengers);
       const user = await userModel.findById(passengerId);
       if (!user) {
         return {

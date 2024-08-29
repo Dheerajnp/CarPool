@@ -172,7 +172,6 @@ export class AdminRepositoryImp implements AdminRepository{
     }
     async getUsersPending(query: any, page: number, limit: number): Promise<{ status:number;user:User[]|null,userPage:number }> {
         try{
-            console.log(query,page,limit);
             const updatedQuery = {
                 ...query,
                 'documents.status': 'pending'
@@ -185,7 +184,6 @@ export class AdminRepositoryImp implements AdminRepository{
 
                 let total = await userModel.countDocuments(updatedQuery);    
                 const pagesUser = Math.ceil(total/limit); 
-                console.log("asdfghj",pagesUser)
           return {
                 user:users,
                 userPage:pagesUser,
@@ -281,7 +279,6 @@ async licenseStatusRepository(id: string, licenseStatus: string): Promise<{ mess
             const decodedToken = jwt.verify(splitToken,configuredKeys.JWT_SECRET_KEY) as {
                 adminID: string
             }
-            console.log(decodedToken)
             const admin_id = decodedToken.adminID
             const admin = await AdminModel.findById(admin_id);
             if(!admin){
@@ -324,9 +321,7 @@ async licenseStatusRepository(id: string, licenseStatus: string): Promise<{ mess
                 message = "Admin credentials not found";
             }else{
                 const isMatch = await bcrypt.compare(password,admin.password);
-                console.log("isssssssssssssmatch",isMatch)
                 if(!isMatch){
-                    console.log("incorrect password.........................")
                     message = "Incorrect password"
                 }else{
                     token =  CommonFunctions.jwtGenerateAdminToken(admin._id.toString());

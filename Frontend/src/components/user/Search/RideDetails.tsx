@@ -67,7 +67,11 @@ export default function RideDetailsComponent() {
   const handleChatClick = async(driverId:string)=>{
     console.log(auth.user?.id)
     const response = await axiosApiGateway.get(`/chat/user/getChat/${auth.user?.id as string}?driverId=${driverId}`)
-    console.log(response)
+    if(response.data.result.status === 200){
+      navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
+    }else{
+      toast.error("Unable to initiate chat with driver. Please try again later.");
+    }
   }
   const formatDate = (dateString: string) => {
     console.log(dateString);

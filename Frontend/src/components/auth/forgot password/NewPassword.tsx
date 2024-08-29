@@ -41,7 +41,6 @@ const NewPassword = () => {
       const errorMessage = error.message;
       toast.error(errorMessage);
     } finally {
-      console.log(values);
       setSubmitting(false);
     }
       

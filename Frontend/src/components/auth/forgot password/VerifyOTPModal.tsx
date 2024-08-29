@@ -36,7 +36,6 @@ export const VerifyUserModal: React.FC<IVerifyUserProps> = ({ saved, onClose,rol
           navigate("/forgotpassword/newpassword");
         }, 2000);
       } else {
-        console.log(response.payload);
         setError(response.payload.message);
         toast.error(response.payload.message);
       }

@@ -19,7 +19,6 @@ export default function UserRides() {
         const response = await axiosApiGateway.get(
           `/ride/getUserRides/${auth.user?.id}`
         );
-        console.log(response);
         if (response.data.result.status === 200) {
           setRides(response.data.result.rides);
         }
@@ -32,7 +31,6 @@ export default function UserRides() {
 
     fetchRides();
   }, [auth.user?.id]);
-  console.log(rides);
   return loading ? (
     <div className="flex justify-center items-center min-h-screen">
       <RoundLoader />

@@ -36,8 +36,6 @@ const VehicleReviewListPage = () => {
         params: { page: currentPage, limit, searchQuery },
         withCredentials: true,
       });
-      console.log("here")
-      console.log(response.data.result);
 
       if (response.data.result.driver) {
         setDriversList(response.data.result.driver);
@@ -66,7 +64,6 @@ const VehicleReviewListPage = () => {
       const response = await axios.patch(`/admin/approveVehicle/${driverId}/${vehicleId}`, {}, {
         withCredentials: true,
       });
-      console.log(response.data)
 
       if(response.data.result.status === 200){
         const updatedDrivers = driversList.map(driver =>

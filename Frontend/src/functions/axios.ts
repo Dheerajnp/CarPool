@@ -1,5 +1,9 @@
 import Cookies from "js-cookie";
 import axios from 'axios';
+import { useEssentials } from "../hooks/UseEssentials";
+import { resetState } from "../redux/userStore/Authentication/AuthSlice";
+import { persistor } from "../redux/store"
+import { useDispatch } from "react-redux";
 
 const getCookieToken = () => {
   const token = Cookies.get('token');
@@ -48,7 +52,7 @@ axiosApiGateway.interceptors.response.use(
             Cookies.set('token', newToken);
             return axiosApiGateway(originalRequest);
           })
-          .catch((error) => {
+          .catch(async (error) => {
             // If refresh token is also invalid, log out the user
             Cookies.remove('token');
             Cookies.remove('refreshToken');
@@ -60,7 +64,7 @@ axiosApiGateway.interceptors.response.use(
         Cookies.remove('token');
         Cookies.remove('refreshToken');
         window.location.href = '/login';
-        return Promise.reject(error);
+        
       }
     } else {
       return Promise.reject(error);

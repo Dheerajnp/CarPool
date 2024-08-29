@@ -10,7 +10,6 @@ export class RideController{
         const { userId,totalPassengers } = req.body;
         try {
           const { message, status } = await this.interactor.requestRideInteractor(userId, rideId, totalPassengers);
-          console.log(status, message);
             return res.status(status).json({ message,status });
         } catch (error) {
           return res.status(500).json({message  : "Internal server error",status:500});
@@ -20,7 +19,6 @@ export class RideController{
       getRidesDriver:RequestHandler = async(req,res)=>{
         const { driverId } = req.params;
         try {
-          console.log("drrrrrrrrrrrrrrrrrrrrrrrrr",driverId)
           const result = await this.interactor.getRidesDriverInteractor(driverId);
           return res.status(result.status).json({result});
         } catch (error) {
@@ -31,7 +29,6 @@ export class RideController{
       getUserRides:RequestHandler = async(req,res)=>{
         const { userId } = req.params;
         try {
-          console.log(userId)
           const result = await this.interactor.getRidesUserInteractor(userId);
           return res.status(result.status).json({result});
         } catch (error) {

@@ -132,7 +132,6 @@ export class driverInteractorImp implements DriverInteractor{
     }
    async getDriverInteractor(data: { driverId: string; }): Promise<{ user: Driver | null; message: string; status: number; }> {
        try {
-        console.log("interactor")
             const result = await this.repository.getDriverRepository(data);
             return result;
        } catch (error) {
@@ -144,7 +143,6 @@ export class driverInteractorImp implements DriverInteractor{
        }
     }
    async licenseUploadInteractor(data: { userId: string; licenseFrontUrl: string; licenseBackUrl: string; vehicleBrand: string; vehicleModel: string; vehicleNumber:string; rcDocumentUrl: string; }): Promise<{ message: string; status: number; }> {
-    console.log("licenseUploadInteractor",data)
     try {
             const result = await this.repository.licenseUpload(data);
             return result;

@@ -32,21 +32,21 @@ export const jwtGenerateToken = (userID: string,userRole:string): string => {
       userID: userID,
       role: userRole,
     };
-    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "1h" });
+    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "7d" });
   };
 
   export const jwtGenerateAdminToken = (adminID: string): string => {
     const payload = {
       adminID: adminID,
     };
-    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "1h" });
+    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "14d" });
   };
 
   export const jwtGenerateAdminRefreshToken = (adminID: string): string => {
     const payload = {
       adminID: adminID,
     };
-    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "10h" });
+    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "7h" });
   }
 
   export const jwtGenerateRefreshToken = (userID: string,userRole:string): string => {
@@ -54,7 +54,7 @@ export const jwtGenerateToken = (userID: string,userRole:string): string => {
       userID: userID,
       role: userRole,
     };
-    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "10h" });
+    return jwt.sign(payload, configuredKeys.JWT_SECRET_KEY, { expiresIn: "14h" });
   };
 
   export const jwtVerifyToken = {}

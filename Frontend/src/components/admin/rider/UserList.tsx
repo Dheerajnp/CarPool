@@ -40,7 +40,6 @@ const UserList = () => {
         params: { page: currentPageUser, limit, searchQuery },
         withCredentials: true,
       });
-      console.log(response.data)
       setUsersList(response.data.users);
       setDriversList(response.data.drivers);
       setTotalPagesUser(response.data.pagesUser);
@@ -61,7 +60,6 @@ const UserList = () => {
   };
 
   const blockUser = (id: string, block: boolean, role: string) => {
-    console.log(id, block, role);
     axiosActionsUser(id, block, role);
   
     if (role === 'driver') {

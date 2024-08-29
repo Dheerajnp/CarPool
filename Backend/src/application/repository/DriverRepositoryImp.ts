@@ -154,7 +154,6 @@ export class driverRepositoryImp implements DriverRepository {
         path: "passengers.rider",
         select: "name email",
       });
-      console.log("rideDetailssssssssssssssss", rideDetails?.passengers);
       if (!rideDetails) {
         return {
           status: 404,
@@ -162,7 +161,6 @@ export class driverRepositoryImp implements DriverRepository {
           rideDetails: null,
         };
       }
-      console.log("Ride details", rideDetails);
       return {
         status: 200,
         message: "Get ride details",
@@ -225,7 +223,6 @@ export class driverRepositoryImp implements DriverRepository {
         }
       ]);
 
-      console.log("notifications",notifications)
       return {
         status: 200,
         message: "Get driver notifications",
@@ -269,8 +266,6 @@ export class driverRepositoryImp implements DriverRepository {
 
       const startDate = new Date(date); // This will be in UTC
       const endDate = new Date(startDate.getTime() + (duration / 60) * 60000); // duration is in minutes
-      console.log(endDate);
-      console.log(startDate);
       const isRideOverlap = async (
         driverId: string,
         startDate: Date,
@@ -297,7 +292,6 @@ export class driverRepositoryImp implements DriverRepository {
         };
       }
 
-      // console.log(startDate.toLocaleString());
       // Create the ride if no overlap
       const newRide = new Ride({
         origin: source,
@@ -376,9 +370,7 @@ export class driverRepositoryImp implements DriverRepository {
   ): Promise<{ message: string; status: number }> {
     try {
       // Fetch the driver by their ID
-      console.log("driverdeleterepo", driverId);
       const driver = await driverModel.findById(driverId);
-      console.log("driver", driver);
       if (!driver) {
         return { message: "Driver not found", status: 402 };
       }
@@ -393,7 +385,6 @@ export class driverRepositoryImp implements DriverRepository {
 
       // Update the driver's vehicle list
       driver.vehicles = updatedVehicles;
-      console.log("udated vehicles", updatedVehicles);
       // Save the updated driver profile
       await driver.save();
 
@@ -436,7 +427,6 @@ export class driverRepositoryImp implements DriverRepository {
           driver: null,
         };
       }
-      console.log("add vehicle");
       console.log(driver);
       return {
         message: "Vehicle added successfully",
@@ -469,8 +459,6 @@ export class driverRepositoryImp implements DriverRepository {
           status: 404,
         };
       }
-      console.log("edit driver info");
-      console.log(driver);
       return {
         message: "Driver info updated successfully",
         status: 200,
@@ -525,10 +513,8 @@ export class driverRepositoryImp implements DriverRepository {
     driverId: string;
   }): Promise<{ user: Driver | null; message: string; status: number }> {
     try {
-      console.log("here", data.driverId);
 
       const driver = await driverModel.findOne({ email: data.driverId });
-      console.log(driver);
       if (!driver) {
         return {
           user: null,
@@ -567,7 +553,6 @@ export class driverRepositoryImp implements DriverRepository {
       rcDocumentUrl,
       userId,
     } = data;
-    console.log("upload repositiiorysdbvjvdnv", data);
     try {
       const driver = await driverModel.findById(userId);
       if (!driver) {

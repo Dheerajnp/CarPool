@@ -17,7 +17,6 @@ export class userController{
       }
 
       getUserDetails:RequestHandler = async(req,res,next)=>{
-        console.log("getUserDetails");
         const { userId } = req.params;
         try{
           const { user,message,status } = await this.interactor.getUserDetailsInteractor(userId);
@@ -31,7 +30,6 @@ export class userController{
       editDocument:RequestHandler = async(req,res,next)=>{
         const { userId } = req.params;
         const { url,type } =req.body;
-        console.log(userId, url, type);
         try {
           const result = await this.interactor.editDocumentInteractor(userId,type,url);
           return res.status(result.status).json(result);

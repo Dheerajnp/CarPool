@@ -16,7 +16,6 @@ const VerifyUser = ({ savedId }: { savedId: string}) => {
       setError("Enter valid OTP");
       return;
     }
-    console.log(otp)
     setError("");
     dispatch(verifyOtpThunk({ savedId, otp })).then((response: any) => {
       if (response.payload.user) {
@@ -27,7 +26,6 @@ const VerifyUser = ({ savedId }: { savedId: string}) => {
           navigate('/driver/upload-license');
         }
       } else {
-        console.log(response.payload);
         setError(response.payload.message);
       }
     });

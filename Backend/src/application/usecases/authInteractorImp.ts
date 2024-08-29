@@ -64,9 +64,6 @@ export class authInteractorImp implements authInteractor{
         tempId,
         enteredOtp
       );
-      console.log("intercator mesg::")
-      console.log("message:--------------------",message)
-
       return { user: user, message: message,status: status };
     } catch (error) {
       console.log(error);

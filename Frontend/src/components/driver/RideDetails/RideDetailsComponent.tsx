@@ -21,7 +21,6 @@ export default function RideDetailsForDriver() {
         const response = await axiosApiGateway.get(
           `/driver/getRideDetails/${rideId}`
         );
-        console.log(response.data.rideDetails);
         if (response.data.status === 200) {
           setRideDetails(response.data.rideDetails);
         }
@@ -164,7 +163,7 @@ export default function RideDetailsForDriver() {
                     <div className="flex items-center gap-4">
                       <div>
                         <p className="text-lg font-semibold">
-                          {/* {passenger.rider.name} */}
+                          {passenger.rider.name}
                         </p>
                         <p className="text-muted-foreground">
                           Number of Passengers: {passenger.numberOfPassengers}

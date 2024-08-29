@@ -32,8 +32,6 @@ const UserDocumentReviewListPage = () => {
       console.error('Error fetching users:', error);
     }
   };
-  console.log("total pages")
-  console.log(totalPages);
 
   const handleSearch = (e: any) => {
     setSearchQuery(e.target.value.toLowerCase());

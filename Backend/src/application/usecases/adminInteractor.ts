@@ -123,7 +123,6 @@ export class adminInteractorImp implements AdminInteractor{
         }
     }
     async actionInteractor(id: string, block: string,role:string): Promise<{ users: User | null; message: string; status: number; }> {
-        console.log("User Actions interactor");
         try {
             const { users, message, status } = await this.repository.userBlockUnblock(
                 id,
@@ -160,7 +159,6 @@ export class adminInteractorImp implements AdminInteractor{
     }
    async AdminVerifyInteractor(adminToken: string): Promise<{ user?: AdminType | null | undefined; message: string | null; status: number; }> {
         try{
-            console.log("AdminVerifyInteractor",adminToken)
             const {message,status,user} = await this.repository.adminVerify(adminToken)
             if (status === 200) {
                 return { user, message: 'Admin verified successfully', status: 200 };
