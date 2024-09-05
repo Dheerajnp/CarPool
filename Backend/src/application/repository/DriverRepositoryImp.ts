@@ -256,7 +256,6 @@ export class driverRepositoryImp implements DriverRepository {
           }
         }
       ]);
-      console.log("notttttttttttttttttttttttttttttti",notifications)
       return {
         status: 200,
         message: "Get driver notifications",

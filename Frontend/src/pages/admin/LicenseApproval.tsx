@@ -31,7 +31,6 @@ const LicenseApprovalTable = () => {
         params: { page: currentPage, limit, searchQuery },
         withCredentials: true,
       });
-      console.log(response.data)
       setUsersList(response.data.drivers);
       setTotalPages(response.data.pagesDriver);
     } catch (error) {

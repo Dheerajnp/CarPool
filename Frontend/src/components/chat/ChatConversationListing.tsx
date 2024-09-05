@@ -1,3 +1,4 @@
+import { SetStateAction, useEffect, useState } from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import useSocket from "../../hooks/UseSocket";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -31,29 +32,67 @@ interface ConversationListProps {
   selectedConversation: IConversation | null;
   setSelectedConversation: (conversation: IConversation) => void;
   onlineUser: onlineUserFindType[];
+  counts: { _id: string; unreadCount: number }[];
+  setCount: React.Dispatch<
+    SetStateAction<{ _id: string; unreadCount: number }[]>
+  >;
 }
 
 export const ConversationList: React.FC<ConversationListProps> = ({
   conversations,
   selectedConversation,
   setSelectedConversation,
-  onlineUser
+  onlineUser,
+  counts,
+  setCount,
 }) => {
- 
-  const isUserOnline = (userId:string)=>{
-    return onlineUser.some(user => user.userId === userId);
-  }
-
+  const isUserOnline = (userId: string) => {
+    return onlineUser.some((user) => user.userId === userId);
+  };
 
   const { auth } = useEssentials();
+  const socket = useSocket(auth?.user?.id || "");
+
+  useEffect(() => {
+    if (socket && conversations.length > 0 && auth.user) {
+      socket.emit(
+        "unseenMessage",
+        conversations.map((conversation) => conversation.roomId),
+        auth.user.id
+      );
+    }
+  }, [socket, auth.user, conversations]);
+
+  useEffect(() => {
+    if (socket && selectedConversation) {
+      socket.emit("seenMessage", selectedConversation.roomId, auth.user?.id);
+      setCount(
+        [...counts].filter((count) => count._id !== selectedConversation.roomId)
+      );
+    }
+  }, [socket, selectedConversation]);
+  useEffect(() => {
+    if (socket) {
+      socket.on(
+        "UnseenCount",
+        (data: { _id: string; unreadCount: number }[]) => {
+          setCount([...data]);
+        }
+      );
+    }
+    return () => {
+      // socket?.off("UnseenCount");
+    };
+  }, [socket]);
+
   return (
     <ScrollArea className="bg-background rounded-s-lg w-1/4 border p-6 mt-20 flex flex-col gap-4 h-[calc(98vh-80px)]">
       {conversations.map((conversation: IConversation) => {
         const displayUser =
           auth.user?.role === "rider" ? conversation.driver : conversation.user;
 
-          const isOnline = isUserOnline(displayUser._id);
-          
+        const isOnline = isUserOnline(displayUser._id);
+
         return (
           <div
             key={conversation._id}
@@ -71,7 +110,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
               </Avatar>
               <span
                 className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full z-10 ${
-                  isOnline  ? "bg-green-500" : "bg-red-500"
+                  isOnline ? "bg-green-500" : "bg-red-500"
                 }`}
               />
             </div>
@@ -89,10 +128,20 @@ export const ConversationList: React.FC<ConversationListProps> = ({
             </div>
             {/* Unread message indicator */}
             <div
-              className={`absolute right-2 top-2 h-3 w-3 rounded-full ${
-                conversation.seen ? "bg-transparent" : "bg-red-500"
-              }`}
+              className={`absolute right-2 top-2 h-5 w-5 font-semibold rounded-full`}
             />
+            <div>
+              {counts.length > 0 &&
+                counts.find((values) => values._id === conversation.roomId) && (
+                  <div className="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-semibold">
+                    {
+                      counts.find(
+                        (values) => values._id === conversation.roomId
+                      )?.unreadCount
+                    }
+                  </div>
+                )}
+            </div>
           </div>
         );
       })}

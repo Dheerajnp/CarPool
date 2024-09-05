@@ -81,7 +81,6 @@ const DriverProfile: React.FC = () => {
   };
 
   const handleSaveVehicle = (updatedVehicle: Vehicle) => {
-    console.log("saving",updatedVehicle);
     setDriver((prevDriver:any) => {
       if (!prevDriver) return prevDriver;
       return {
@@ -131,7 +130,6 @@ const DriverProfile: React.FC = () => {
   };
 
   const handleImageClick = (imageUrl: string|undefined) => {
-    console.log("Image clicked",imageUrl)
     setSelectedImageUrl(imageUrl);
     setIsImageModalOpen(true);
   };

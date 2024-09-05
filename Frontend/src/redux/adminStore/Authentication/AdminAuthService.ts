@@ -30,7 +30,6 @@ export const adminVerify:Function = async(data:interfaces.AdminAuthVerifyData): 
         Authorization: `Bearer ${data.adminToken}`
       }
     });
-    console.log("response.data=",response.data)
     return <interfaces.AdminAuthVerifyResponse> response.data;
   } catch (error) {
     console.error(error);

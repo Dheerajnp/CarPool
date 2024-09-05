@@ -44,7 +44,6 @@ const EditLicenseInfoModal: React.FC<EditLicenseInfoModalProps> = ({
         data.append("file", file);
         data.append("upload_preset", "ij1csbqj");
         data.append("cloud_name", "dfwtb2qba");
-        console.log(values)
         return axios.post(
           "https://api.cloudinary.com/v1_1/dfwtb2qba/auto/upload",
           data,

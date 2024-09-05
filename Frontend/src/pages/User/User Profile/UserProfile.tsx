@@ -29,7 +29,6 @@ export default function UserProfile() {
       setLoading(true);
       const response = await axiosApiGateway.get(`/user/getUser/${userId}`);
       if (response.data.status === 200) {
-        console.log(response.data.user);
         setUser(response.data.user);
       } else {
         toast.error(response.data.message);

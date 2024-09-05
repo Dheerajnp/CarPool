@@ -72,7 +72,6 @@ export class authInteractorImp implements authInteractor{
   }
    async createUser(userData: { email: string; password: string; name: string; role: string; }): Promise<{ message: string; status: number; user: TempUser | null; }> {
         try {
-            console.log("userService:Signup");
             console.log(userData);
       
             const newUser: {

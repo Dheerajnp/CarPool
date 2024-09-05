@@ -49,7 +49,6 @@ export default function RideDetailsComponent() {
   }, [rideId]);
 
   const handleRideRequestClick = async (userId: string, rideId: string) => {
-    console.log(userId, rideId);
     axiosApiGateway
       .put(`/ride/requestRide/${rideId}`, {
         userId,
@@ -65,7 +64,6 @@ export default function RideDetailsComponent() {
   };
 
   const handleChatClick = async(driverId:string)=>{
-    console.log(auth.user?.id)
     const response = await axiosApiGateway.get(`/chat/user/getChat/${auth.user?.id as string}?driverId=${driverId}`)
     if(response.data.result.status === 200){
       navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
@@ -74,9 +72,7 @@ export default function RideDetailsComponent() {
     }
   }
   const formatDate = (dateString: string) => {
-    console.log(dateString);
     const date = new Date(dateString);
-    console.log(date);
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "long",

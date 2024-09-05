@@ -2,6 +2,8 @@ import { Server as SocketIOServer, Socket, Server } from "socket.io";
 import { Server as HttpServer } from "http";
 import { env } from "../../config/config";
 import Notification from "../database/models/notificationSchema";
+import messageModel from "../database/models/messageSchema";
+import { Types } from "mongoose";
 
 let io: SocketIOServer | undefined;
 
@@ -38,15 +40,28 @@ const initializeSocketServer = (server: HttpServer) => {
 
 
     socket.on("addUser", (userId) => {
-      console.log(userId)
       addUser(userId, socket.id);
       io?.emit("getUsers", users);
     });
-    console.log(users)
 
     socket.on('notificationSeen',async(notificationId)=>{
       const notification = await Notification.findByIdAndUpdate(notificationId,{seen:"true",status:"read"});
       socket.emit('changeNotification',notification);
+    });
+
+    socket.on('unseenMessage',async(roomId:string[],userId)=>{
+      const response = await messageModel.aggregate([
+        {
+          $match:{roomId:{$in:roomId},senderId:{$ne:new Types.ObjectId(userId)},seen:false}
+        },
+        {
+          $group:{
+            _id:"$roomId",
+            unreadCount:{$sum:1},
+          }
+        }
+      ])
+      return socket.emit("UnseenCount",response)
     })
 
     socket.on("joinRoom", (recieverId) => {
@@ -62,6 +77,9 @@ const initializeSocketServer = (server: HttpServer) => {
       console.log(`Socket disconnected: ${socket.id}`);
       io?.emit("getUsers", users);
     });
+    socket.on("seenMessage",async (roomId,userId)=>{
+      await messageModel.updateMany({roomId:roomId,senderId:{$ne:new Types.ObjectId(userId)}},{$set:{seen:true}})
+    })
   });
 };
 const getSocketInstance = (): SocketIOServer | undefined => io;

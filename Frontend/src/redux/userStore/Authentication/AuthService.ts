@@ -49,7 +49,6 @@ export const login:Function =async (data:interfaces.LoginCredentials):Promise<in
         const response = await axios.post('/login',data,{
             withCredentials:true
         })
-        console.log("from login function",response.data)
         return response.data;
     } catch (error: any) {
         if (error.response) {
@@ -117,7 +116,6 @@ export const resetPassword:Function = async(data:interfaces.ResetPasswordCredent
       const response = await axios.post('/reset-password',data,{
         withCredentials: true
       })
-      console.log(response.data)
       return <interfaces.ResetPasswordResponse> response.data
   } catch (error) {
     console.log(error);
@@ -133,7 +131,6 @@ export const googleSignup:Function = async(credentials:interfaces.GoogleSignUpCr
     const response = await axios.post('/user/google-signup',credentials,{
       withCredentials: true
     })
-    console.log(response.data)
     return <interfaces.GoogleSignUpResponse> response.data
   } catch (error) {
     console.log(error);
@@ -151,7 +148,6 @@ export const licenseUpload:Function = async({userId, licenseFrontUrl, licenseBac
       { licenseFrontUrl, licenseBackUrl },
       { withCredentials: true }
     );
-    console.log(response.data)
     return response.data;
   } catch (error) {
     return {

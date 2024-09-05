@@ -172,7 +172,6 @@ export class RideRepositoryImp implements RideRepository {
         },
         { new: true } // To return the updated document
       );
-      console.log(rider)
 
       const driverId = ride.driver;
 

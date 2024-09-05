@@ -139,13 +139,11 @@ export default function RideDetailedViewDriver() {
 
   const handleOtpComplete = (otp: string) => {
     if (otp == currentPassenger.otp) {
-      console.log(currentPassenger.rider._id);
       axiosApiGateway
         .post(`/ride/userOnboarding/${rideId}`, {
           userId: currentPassenger.rider._id,
         })
         .then((response) => {
-          console.log(response.data.result);
         })
         .catch((error) => {
           console.log("error", error);
@@ -170,7 +168,6 @@ export default function RideDetailedViewDriver() {
   };
 
   const handleChatClick = async (userId: string) => {
-    console.log(auth.user?.id);
     const response = await axiosApiGateway.get(
       `/chat/user/getChat/${userId}?driverId=${auth.user?.id as string}`
     );

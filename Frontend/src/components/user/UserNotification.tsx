@@ -34,7 +34,6 @@ const UserNotification = () => {
         const response = await axiosApiGateway.get(`/user/notifications`, {
           params: { userId: auth.user?.id },
         });
-        console.log("notification data", response.data.notifications);
         setNotifications(response.data.notifications);
       } catch (error) {
         console.error("Error fetching notifications:", error);

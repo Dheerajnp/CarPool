@@ -51,6 +51,9 @@ export default function Component() {
 
   const socket = useSocket(selectedConversation?.roomId as string);
   const [onlineUser, setOnlineUser] = useState<onlineUserFindType[]>([]);
+  const [counts, setCount] = useState<{ _id: string; unreadCount: number }[]>(
+    []
+  );
 
   useEffect(() => {
     if (socket) {
@@ -60,20 +63,18 @@ export default function Component() {
       });
 
       return () => {
-        socket.off("newMessage");
+        // socket.off("newMessage");
       };
     }
-  }, [socket]);
+  }, [socket, selectedConversation]);
 
   useEffect(() => {
-    console.log("socket")
     socket?.emit("addUser", auth.user?.id);
     socket?.on("getUsers", (users) => {
-      console.log("users", users);
       setOnlineUser(users);
     });
-  }, [socket,auth.user?.id]);
-  console.log(onlineUser)
+  }, [socket, auth.user?.id]);
+  console.log(onlineUser);
 
   const handleMessageSend = async () => {
     if (chatMessage.trim() === "") return;
@@ -108,6 +109,8 @@ export default function Component() {
           selectedConversation={selectedConversation}
           setSelectedConversation={setSelectedConversation}
           onlineUser={onlineUser}
+          counts={counts}
+          setCount={setCount}
         />
         <div className="bg-background rounded-e-lg w-[70vw] border p-6 mt-20 flex flex-col gap-4  h-[calc(98vh-80px)]">
           {selectedConversation && selectedConversation.driver ? (

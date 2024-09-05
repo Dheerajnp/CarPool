@@ -34,7 +34,6 @@ axiosApiGateway.interceptors.response.use(
     } else {
       return response;
     }
-    console.log(response);
     return response;
   },
   async (error) => {
@@ -47,7 +46,6 @@ axiosApiGateway.interceptors.response.use(
           refreshToken: refreshToken
         })
           .then((response) => {
-            console.log(response);
             const newToken = response.data.accessToken;
             Cookies.set('token', newToken);
             return axiosApiGateway(originalRequest);

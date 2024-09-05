@@ -40,7 +40,6 @@ const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, o
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
     setSubmitting(true);
-    console.log("Submit", values);
     try {
       let rcDocumentUrl = values.rcDocumentUrl;
       if (values.rcDocumentUrl instanceof File) {
@@ -67,8 +66,6 @@ const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, o
         rcDocumentUrl,
       };
 
-      console.log("updatedVehicle");
-      console.log(updatedVehicle);
       // Save to backend
      const response = await axiosApiGateway.put(`/driver/addVehicle/${driver._id}`, updatedVehicle);
 

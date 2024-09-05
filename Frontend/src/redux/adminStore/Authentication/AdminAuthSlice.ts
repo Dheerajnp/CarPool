@@ -34,7 +34,6 @@ export const adminVerify = createAsyncThunk<interfaces.AdminAuthVerifyResponse,i
     async(data,{ rejectWithValue })=>{
         try {
             const result = await adminAuthService.adminVerify(data);
-            console.log("thumk",result)
             return result;
         } catch (error) {
             return rejectWithValue({

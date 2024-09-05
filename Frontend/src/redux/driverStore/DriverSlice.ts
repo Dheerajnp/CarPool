@@ -34,7 +34,6 @@ interface AsyncThunkConfig {
         const response = await axios.post('/login',credentials,{
             withCredentials:true
         })
-        console.log("from login function",response.data)
         return response.data;
     } catch (error: any) {
         if (error.response) {

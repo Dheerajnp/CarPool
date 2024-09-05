@@ -49,7 +49,6 @@ export default function RideDetailsPage() {
         const response = await axiosApiGateway.get(
           `/ride/getRideDetails/${rideId}`
         );
-        console.log(response.data.result.rideDetails);
         setRideData(response.data.result.rideDetails);
       } catch (error) {
         console.error("Error fetching ride details:", error);
@@ -61,7 +60,6 @@ export default function RideDetailsPage() {
     fetchRideDetails();
   }, [rideId]);
 
-  console.log(rideData);
 
   const handleCancelRide = () => {
     setIsDialogOpen(false);
@@ -73,7 +71,6 @@ export default function RideDetailsPage() {
   };
 
   const handleChatClick = async (driverId: string) => {
-    console.log(auth.user?.id);
     const response = await axiosApiGateway.get(
       `/chat/user/getChat/${auth.user?.id as string}?driverId=${driverId}`
     );

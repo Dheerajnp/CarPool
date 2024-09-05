@@ -21,6 +21,7 @@ import { resetState } from "../redux/userStore/Authentication/AuthSlice";
 import DriverNotification from "./driver/DriverNotification";
 import UserNotification from "./user/UserNotification";
 import { FaCar } from "react-icons/fa";
+import { MessageCircle } from "lucide-react";
 
 const Header: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -42,6 +43,13 @@ const Header: React.FC = () => {
           <span>CarPool</span>
         </Link>
         <div className="flex items-center gap-4">
+          <Link to={'/chat'}>
+          <Button
+          variant={'ghost'}>
+            <MessageCircle size={20} />
+          </Button>
+          </Link>
+          
           {role==="rider"&&
            <UserNotification />
           }

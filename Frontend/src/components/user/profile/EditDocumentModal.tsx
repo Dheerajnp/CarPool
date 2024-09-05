@@ -45,7 +45,6 @@ const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
     setSubmitting(true);
-    console.log("Submit", values);
     try {
       let imageurl = values.imageurl;
       if (values.imageurl instanceof File) {
@@ -65,7 +64,6 @@ const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         );
 
         imageurl = response.data.secure_url;
-        console.log("Upload", imageurl);
       }
 
       const updatedDocument = {
@@ -74,14 +72,11 @@ const EditDocumentModal: React.FC<EditDocumentModalProps> = ({
         status:'pending',
       };
 
-      console.log("updatedDocument");
-      console.log(updatedDocument);
       // Save to backend
       const response = await axiosApiGateway.put(
         `/user/updateDocument/${user._id}`,
         updatedDocument
       );
-      console.log("response after svaibkff",response.data)
       if (response.data.status === 200) {
         onSave(updatedDocument);
         toast.success("Document information updated successfully!");
