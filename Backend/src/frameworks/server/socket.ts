@@ -1,6 +1,7 @@
 import { Server as SocketIOServer, Socket, Server } from "socket.io";
 import { Server as HttpServer } from "http";
 import { env } from "../../config/config";
+import Notification from "../database/models/notificationSchema";
 
 let io: SocketIOServer | undefined;
 
@@ -42,6 +43,11 @@ const initializeSocketServer = (server: HttpServer) => {
       io?.emit("getUsers", users);
     });
     console.log(users)
+
+    socket.on('notificationSeen',async(notificationId)=>{
+      const notification = await Notification.findByIdAndUpdate(notificationId,{seen:"true",status:"read"});
+      socket.emit('changeNotification',notification);
+    })
 
     socket.on("joinRoom", (recieverId) => {
       socket.join(recieverId);

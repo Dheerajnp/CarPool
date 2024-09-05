@@ -11,6 +11,7 @@ import useSocket from "../../hooks/UseSocket";
 import { useEffect, useState } from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import axiosApiGateway from "../../functions/axios";
+import { User } from "lucide-react";
 
 interface Notification {
   _id: string;
@@ -19,41 +20,45 @@ interface Notification {
   status: "unread" | "read";
   createdAt: Date;
   senderName: string; // Sender's name
-  rideId:string; //ride
+  rideId: string; //ride
+  notificationType: string;
 }
 
 const DriverNotification = () => {
-  const { auth,navigate } = useEssentials();
+  const { auth, navigate } = useEssentials();
   const socket = useSocket(auth.user?.id as string);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-        try {
-          const response = await axiosApiGateway.get(`/driver/notifications`, {
-            params: { userId: auth.user?.id },
-          });
-          console.log("notification data",response.data.notifications)
-          setNotifications(response.data.notifications);
-        } catch (error) {
-          console.error("Error fetching notifications:", error);
-        }
-      };
-  
-      fetchNotifications();
+      try {
+        const response = await axiosApiGateway.get(`/driver/notifications`, {
+          params: { userId: auth.user?.id },
+        });
+        console.log("notification data", response.data.notifications);
+        setNotifications(response.data.notifications);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
 
     if (socket) {
-      socket.on("notification", (newNotification: Notification,name:string) => {
-        setNotifications((prevNotifications) => [
-          {...newNotification,sender:name},
-          ...prevNotifications,
-        ]);
-      });
+      socket.on(
+        "notification",
+        (newNotification: Notification, name: string) => {
+          setNotifications((prevNotifications) => [
+            { ...newNotification, sender: name },
+            ...prevNotifications,
+          ]);
+        }
+      );
     }
     () => {
-      socket?.disconnect()
+      socket?.disconnect();
     };
-  }, [socket]);  
+  }, [socket]);
 
   return (
     <Popover>
@@ -82,17 +87,38 @@ const DriverNotification = () => {
                 </strong>
                 <div className="mt-2 py-1 text-sm gap-1">
                   {notifications.length > 0 ? (
-                    notifications.map((notification) => (
-                      <div
-                        key={notification._id}
-                        onClick={()=>navigate(`/driver/rideDetails/${notification?.rideId}`)}
-                        className={`p-2 rounded-md mt-1 cursor-pointer ${
-                          notification.status === "unread" ? "bg-blue-100" : ""
-                        }`}
-                      >
-                        {notification.message} FROM {notification.senderName}
-                      </div>
-                    ))
+                    notifications
+                      .filter((notification) => notification.status !== "read") // Filter out seen notifications
+                      .map((notification) => (
+                        <div
+                          key={notification._id}
+                          className={`flex items-start gap-4 p-4 rounded-md mt-1 cursor-pointer border relative ${
+                            notification.status === "unread"
+                              ? "bg-blue-100"
+                              : "bg-white"
+                          }`}
+                          onClick={() => {
+                            socket?.emit("notificationSeen", notification._id);
+                            navigate(
+                              `/driver/rideDetails/${notification?.rideId}`
+                            );
+                          }}
+                        >
+                          <div
+                            className={`absolute right-2 top-2 h-3 w-3 rounded-full ${
+                              notification.status === "read"
+                                ? "bg-transparent"
+                                : "bg-red-500"
+                            }`}
+                          />
+                          <User className="mt-1 h-5 w-5 text-primary" />
+                          <div>
+                            <p className="text-sm text-muted-foreground">
+                              {notification.senderName} requested a ride.
+                            </p>
+                          </div>
+                        </div>
+                      ))
                   ) : (
                     <div className="text-gray-500">No new notifications</div>
                   )}

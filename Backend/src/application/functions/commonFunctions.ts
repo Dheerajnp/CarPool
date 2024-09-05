@@ -27,6 +27,10 @@ export const otpHash:Function = async(otp:string)=>{
 }
 
 
+export const generateRideOtp= () => {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
 export const jwtGenerateToken = (userID: string,userRole:string): string => {
     const payload = {
       userID: userID,

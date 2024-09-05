@@ -15,4 +15,5 @@ export interface DriverRepository{
     getRideDetailsRepository(rideId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
     requestAcceptRepository(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
     requestDenyRepository(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
+    updateRideStatusRepository(rideId:string,status:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
 } 

@@ -6,8 +6,40 @@ import { RideInterface } from "../interfaces/usecases/driverInteractor";
 import Ride from "../../frameworks/database/models/rideSchema";
 import { IRide } from "../../entities/interfaces/RideInterface";
 import { getSocketInstance } from "../../frameworks/server/socket";
+import { generateRideOtp } from "../functions/commonFunctions";
 
 export class driverRepositoryImp implements DriverRepository {
+  async updateRideStatusRepository(rideId: string,status:string): Promise<{ status: number; message: string; rideDetails: IRide | null; }> {
+    try {
+      const ride = await Ride.findByIdAndUpdate(
+        rideId,
+        { status: status },
+        { new: true }
+      ).populate("driver", "_id name")
+       .populate("passengers.rider", "name id")
+       .exec();
+
+      if (!ride) {
+        return {
+          status: 404,
+          message: "Ride not found",
+          rideDetails: null,
+        };
+      }
+      return {
+        status: 200,
+        message: "Ride status updated successfully",
+        rideDetails: ride,
+      };
+    }catch (e) {
+      console.error("Error updating ride status", e);
+      return {
+        status: 500,
+        message: "Internal server error",
+        rideDetails: null,
+      };
+    }
+  }
   async requestAcceptRepository(rideId: string,passengerId:string): Promise<{ status: number; message: string; rideDetails: IRide | null; }> {
     try {
       const ride = await Ride.findById(rideId);
@@ -51,7 +83,7 @@ export class driverRepositoryImp implements DriverRepository {
       // Accept the ride request
       passenger.status = "accepted";
       ride.availableSeats -= passenger.numberOfPassengers;
-  
+      passenger.otp = generateRideOtp();
       // Save the updated ride details
       await ride.save();
   
@@ -215,6 +247,8 @@ export class driverRepositoryImp implements DriverRepository {
             sender: 1,
             recipient: 1,
             message: 1,
+            status:1,
+            seen:1,
             createdAt: 1,
             user: { $arrayElemAt: ["$user", 0] },
             senderName:{ $arrayElemAt: ["$user.name", 0] },
@@ -222,7 +256,7 @@ export class driverRepositoryImp implements DriverRepository {
           }
         }
       ]);
-
+      console.log("notttttttttttttttttttttttttttttti",notifications)
       return {
         status: 200,
         message: "Get driver notifications",

@@ -7,9 +7,68 @@ import {
 } from "../../frameworks/server/socket";
 import { RideRepository } from "../interfaces/repository/RideRepository";
 import { IRide } from "../../entities/interfaces/RideInterface";
-import { Types } from "mongoose";
+import { Types,Schema, Mongoose } from "mongoose";
+
 
 export class RideRepositoryImp implements RideRepository {
+  async userRideOnboardRepository(rideId: string, userId: string): Promise<{ message: string; status: number; rideDetails: IRide | null; }> {
+    try {
+      const ride = await Ride.findById(rideId);
+      if(!ride){
+        return {
+          message: "Ride not found",
+          status: 404,
+          rideDetails: null,
+        };
+      }
+      
+      const passenger = ride?.passengers.find(p =>String(p.rider) == userId)
+      if(!passenger){
+        return {
+          message: "User not found in the ride",
+          status: 404,
+          rideDetails: null,
+        };
+      }
+      passenger.passengerRideStatus = "ongoing";
+
+      await ride.save();
+
+      return {
+        message: "User added successfully to the ride",
+        status: 200,
+        rideDetails: ride,
+      }
+    } catch (error) {
+      throw "skvbs"
+    }
+  }
+  async getRideDetailsRepository(rideId: string): Promise<{ message: string; status: number; rideDetails: IRide | null; }> {
+    try {
+      const ride = await Ride.findById(rideId).populate("driver", "_id name")
+       .populate("passengers.rider", "name id")
+       .exec();
+      if (!ride) {
+        return {
+          message: "Ride not found",
+          status: 404,
+          rideDetails: null,
+        };
+      }
+      return {
+        message: "Ride found successfully",
+        status: 200,
+        rideDetails: ride,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: "Internal Server Error",
+        status: 500,
+        rideDetails: null,
+      };
+    }
+  }
   async getRidesUserRepository(userId: string): Promise<{ message: string; status: number; rides: IRide[] | null; }> {
     try {
         const ride = await Ride.find({ "passengers.rider": userId })
@@ -120,8 +179,9 @@ export class RideRepositoryImp implements RideRepository {
       const notification = new Notification({
         recipient: driverId,
         sender: passengerId,
-        message: "A ride request has been received",
-        rideId:ride._id
+        message: `Ride request has been received from ${user.name}`,
+        rideId:ride._id,
+        notificationType:'request'
       });
       await notification.save();
 

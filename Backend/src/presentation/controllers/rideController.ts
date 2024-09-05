@@ -36,4 +36,32 @@ export class RideController{
         }
       }
 
+      getRideDetails:RequestHandler = async(req,res)=>{
+        const { rideId } = req.params;
+        console.log(rideId);
+        console.log("RIDEEEEEEEEEEEEEEEEEEEEEEEEE")
+        try {
+          const result = await this.interactor.getRideDetailsInteractor(rideId);
+          console.log(result);
+          return res.status(result.status).json({result});
+        } catch (error) {
+          return res.status(500).json({message  : "Internal server error",status:500});
+        }
+      }
+
+
+      userOnboardRide:RequestHandler = async(req,res)=>{
+        console.log("useronboardddddddddddddddddddddddd")
+        const { rideId } = req.params;
+        const {userId} = req.body;
+
+        try {
+          const result = await this.interactor.userRideOnboardInteractor(rideId, userId);
+          console.log(result);
+          return res.status(result.status).json({result});
+        } catch (error) {
+          return res.status(500).json({message  : "Internal server error",status:500});
+        }
+      }
+
 }

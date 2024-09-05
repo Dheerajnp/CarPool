@@ -5,6 +5,19 @@ import { DriverInteractor, RideInterface } from "../interfaces/usecases/driverIn
 
 export class driverInteractorImp implements DriverInteractor{
     constructor(private readonly repository: DriverRepository){}
+    async updateRideStatusInteractor(rideId: string,status:string): Promise<{ status: number; message: string; rideDetails: IRide | null; }> {
+        try {
+            const result = await this.repository.updateRideStatusRepository(rideId,status);
+            return result;
+        } catch (error) {
+            console.log(error);
+            return {
+                message: 'Internal Server Error',
+                status: 500,
+                rideDetails: null
+            }
+        }
+    }
     async requestDenyInteractor(rideId: string,passengerId:string): Promise<{ status: number; message: string;rideDetails:IRide|null }> {
         try {
             const response = await this.repository.requestDenyRepository(rideId,passengerId);

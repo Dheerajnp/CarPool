@@ -138,4 +138,14 @@ export class driverController{
         }
       }
       
+      updateRideStatus:RequestHandler = async(req,res)=>{
+        const{rideId} = req.params;
+        const {status} = req.body;
+        try {
+          const result = await this.interactor.updateRideStatusInteractor(rideId,status);
+          return res.status(result.status).json(result);
+        } catch (error) {
+          return res.status(500).json({message:"Internal Server Error"})
+        }
+      }
 }

@@ -25,4 +25,5 @@ driverRouter.get('/notifications',authMiddleware,controller.getNotifications.bin
 driverRouter.get('/getRideDetails/:rideId',authMiddleware,controller.getRideDetails.bind(controller));
 driverRouter.put('/requestAccept/:rideId',authMiddleware,controller.requestAccept.bind(controller));
 driverRouter.put('/requestDeny/:rideId',authMiddleware,controller.requestDeny.bind(controller));
+driverRouter.put('/updateRideStatus/:rideId',authMiddleware,controller.updateRideStatus.bind(controller));
 export default driverRouter;

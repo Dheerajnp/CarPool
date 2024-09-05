@@ -29,6 +29,8 @@ export interface IRide extends Document {
       rider: mongoose.Schema.Types.ObjectId;
       status: 'pending' | 'accepted' | 'rejected';
       numberOfPassengers:number;
+      otp:string;
+      passengerRideStatus:string;
     }[];
     distance: number;
     duration: number;

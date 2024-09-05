@@ -11,6 +11,7 @@ import useSocket from "../../hooks/UseSocket";
 import { useEffect, useState } from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import axiosApiGateway from "../../functions/axios";
+import { Car } from "lucide-react";
 
 interface Notification {
   _id: string;
@@ -45,11 +46,18 @@ const UserNotification = () => {
     if (socket) {
       socket.on("requestnotification", (newNotification: Notification) => {
         setNotifications((prevNotifications) => [
-          {...newNotification},
+          { ...newNotification },
           ...prevNotifications,
         ]);
       });
     }
+
+    socket?.on("changeNotification", (newNotification: Notification) => {
+      setNotifications((prevNotifications) => [
+        { ...newNotification, status: "read" },
+        ...prevNotifications,
+      ]);
+    });
 
     return () => {
       socket?.disconnect();
@@ -83,19 +91,51 @@ const UserNotification = () => {
                 </strong>
                 <div className="mt-2 py-1 text-sm gap-1">
                   {notifications.length > 0 ? (
-                    notifications.map((notification) => (
-                      <div
-                        key={notification._id}
-                        onClick={() => navigate(`/user/rideDetails/${notification?.rideId}`)}
-                        className={`p-2 rounded-md mt-1 cursor-pointer ${
-                          notification.status === "unread" ? "bg-blue-100" : ""
-                        }`}
-                      >
-                        {notification.message}
-                      </div>
-                    ))
+                    notifications.filter(
+                      (notification) => notification.status !== "read"
+                    ).length > 0 ? ( // Filter out seen notifications
+                      notifications
+                        .filter(
+                          (notification) => notification.status !== "read"
+                        )
+                        .map((notification) => (
+                          <div
+                            key={notification._id}
+                            onClick={() => {
+                              socket?.emit(
+                                "notificationSeen",
+                                notification._id
+                              );
+                              navigate(
+                                `/user/rideDetails/${notification?.rideId}`
+                              );
+                            }}
+                            className={`flex items-start gap-4 p-4 rounded-md mt-1 cursor-pointer relative ${
+                              notification.status === "unread"
+                                ? "bg-blue-100"
+                                : "bg-white"
+                            }`}
+                          >
+                            <div
+                              className={`absolute right-2 top-2 h-3 w-3 rounded-full ${
+                                notification.status === "read"
+                                  ? "bg-transparent"
+                                  : "bg-red-500"
+                              }`}
+                            />
+                            <Car className="mt-1 h-10 w-10 text-primary" />
+                            <div>
+                              <p className="text-sm text-muted-foreground">
+                                {notification.message}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                    ) : (
+                      <div className="text-gray-500">No new notifications</div>
+                    )
                   ) : (
-                    <div className="text-gray-500">No new notifications</div>
+                    <div className="text-gray-500">No notifications found</div>
                   )}
                 </div>
               </div>

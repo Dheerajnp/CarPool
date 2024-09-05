@@ -36,10 +36,14 @@ export interface IRideDetails {
     };
     status: 'pending' | 'accepted' | 'rejected';
     numberOfPassengers: number;
+    passengerRideStatus:string;
+    otp:string;
+    paymentStatus:boolean;
   }[];
   distance: number;
   duration: number;
   passengerCount: number;
+  
 }
 
 export interface RideDetailsListState {

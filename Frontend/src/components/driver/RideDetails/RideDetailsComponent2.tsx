@@ -33,12 +33,40 @@ import toast from "react-hot-toast";
 import RoundLoader from "../../RoundLoader";
 import MapComponent from "../../map/MapComponent";
 import Header from "../../Navbar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
+import OtpInput from "./RideOnboardingOtpModal";
 
 export default function RideDetailedViewDriver() {
-  const { auth,navigate } = useEssentials();
+  const { auth, navigate } = useEssentials();
   const { rideId } = useParams();
   const [rideDetails, setRideDetails] = useState<IRideDetails | null>(null);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<string | undefined>(undefined);
+  const [tempStatus, setTempStatus] = useState<string | undefined>(undefined);
+  const [otpVerification, setOtpVerification] = useState({});
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [currentPassenger, setCurrentPassenger] = useState<any>(null);
+
+  const getStatusOptions = () => {
+    switch (status) {
+      case "pending":
+        return ["pending", "ongoing", "completed", "cancelled"];
+      case "active":
+        return ["completed"];
+      case "completed":
+        return ["completed"];
+      case "cancelled":
+        return ["cancelled"];
+      default:
+        return [];
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -49,6 +77,7 @@ export default function RideDetailedViewDriver() {
         );
         if (response.data.status === 200) {
           setRideDetails(response.data.rideDetails);
+          setStatus(response.data.rideDetails.status);
         }
       } catch (error: any) {
         console.error("Error fetching ride details:", error);
@@ -56,11 +85,15 @@ export default function RideDetailedViewDriver() {
         setLoading(false);
       }
     };
+    if (rideId) {
+      console.log(rideId);
+      fetchRideDetails();
+    }
+  }, [rideId,setRideDetails]);
 
-    fetchRideDetails();
-  }, [rideId]);
   const handleRouteFetched = () => {
-    console.log(`Fetching ride details`);
+    console.log(rideDetails?.origin.coordinates);
+    console.log(rideDetails?.destination.coordinates);
   };
 
   const formatDate = (dateString: string) => {
@@ -72,6 +105,55 @@ export default function RideDetailedViewDriver() {
       hour: "2-digit",
       minute: "2-digit",
     }).format(date);
+  };
+
+  const handleStatusChange = (newStatus: any) => {
+    setTempStatus(newStatus);
+  };
+
+
+
+  const applyStatusChange = () => {
+    if(rideId){
+      setLoading(true);
+      axiosApiGateway
+       .put(`/driver/updateRideStatus/${rideId}`, { status: tempStatus })
+       .then((response) => {
+          setRideDetails(response.data.rideDetails);
+          setStatus(response.data.rideDetails.status);
+          toast.success(response.data.message);
+        })
+       .catch((error) => {
+          console.error(error.data.message);
+        })
+       .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
+
+  const handleOtpVerification = (passenger: any) => {
+    setCurrentPassenger(passenger);
+    setIsOtpModalOpen(true);
+  };
+
+  const handleOtpComplete = (otp: string) => {
+    if (otp == currentPassenger.otp) {
+      console.log(currentPassenger.rider._id);
+      axiosApiGateway
+        .post(`/ride/userOnboarding/${rideId}`, {
+          userId: currentPassenger.rider._id,
+        })
+        .then((response) => {
+          console.log(response.data.result);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    } else {
+      toast.error("Invalid Otp please enter the correct otp");
+    }
+    setIsOtpModalOpen(false);
   };
 
   const handleRequestAccept = async (passengerId: string) => {
@@ -87,15 +169,17 @@ export default function RideDetailedViewDriver() {
     }
   };
 
-  const handleChatClick = async(userId:string)=>{
-    console.log(auth.user?.id)
-    const response = await axiosApiGateway.get(`/chat/user/getChat/${userId}?driverId=${auth.user?.id as string}`)
-    if(response.data.result.status === 200){
+  const handleChatClick = async (userId: string) => {
+    console.log(auth.user?.id);
+    const response = await axiosApiGateway.get(
+      `/chat/user/getChat/${userId}?driverId=${auth.user?.id as string}`
+    );
+    if (response.data.result.status === 200) {
       navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
-    }else{
+    } else {
       toast("Unable to initiate chat with driver. Please try again later.");
     }
-  }
+  };
 
   const handleRequestDeny = async (passengerId: string) => {
     try {
@@ -144,7 +228,7 @@ export default function RideDetailedViewDriver() {
               </div>
               <div className="flex items-center space-x-2">
                 <UsersIcon className="text-muted-foreground me-2" />
-                  {rideDetails?.totalSeats && rideDetails?.availableSeats
+                {rideDetails?.totalSeats && rideDetails?.availableSeats
                   ? `${rideDetails.totalSeats - rideDetails.availableSeats}/${
                       rideDetails.totalSeats
                     }`
@@ -187,24 +271,88 @@ export default function RideDetailedViewDriver() {
               <CardTitle>Ride Status</CardTitle>
             </CardHeader>
             <CardContent>
-              <Select defaultValue="ongoing">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+              <Select onValueChange={handleStatusChange} value={tempStatus}>
+                <SelectTrigger
+                  id="status"
+                  disabled={
+                    rideDetails?.status === "completed" ||
+                    rideDetails?.status === "cancelled"
+                  }
+                >
+                <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="ongoing">Ongoing</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  {getStatusOptions().map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option.charAt(0).toUpperCase() + option.slice(1)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+             
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Update Status</Button>
+              <div className="flex gap-1 " >
+              <Button className="w-full"
+              onClick={applyStatusChange}
+              >Update Status</Button>
+              {status === "active" && (
+                <Button 
+                variant={"outline"}
+                  onClick={() =>
+                    (window.open( `https://www.google.com/maps/dir/?api=1&origin=${rideDetails?.origin.name}&destination=${rideDetails?.destination.name}`,'_blank')
+                  )
+                  }
+                >
+                  Go to Maps
+                </Button>
+              )}
+              </div>
+              
             </CardFooter>
           </Card>
         </div>
+        {status === "cancelled" && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Ride Cancelled</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-red-600">
+                This ride has been cancelled and no further actions can be taken
+                for it.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
+        {status === "active" && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Ongoing Ride</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                The ride is currently ongoing. Please make sure all passengers
+                are on board and the trip is progressing smoothly.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {status === "completed" && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Ride Completed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                This ride has been successfully completed. Thank you for using
+                our service!
+              </p>
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>Passenger Requests</CardTitle>
@@ -236,13 +384,13 @@ export default function RideDetailedViewDriver() {
                             <p className="font-medium">
                               {passenger.rider.name}
                             </p>
-                            {/* <p className="text-sm text-muted-foreground">Pickup: {passenger.pickupLocation}</p> */}
                             <p className="text-muted-foreground">
                               Number of Passengers:{" "}
                               {passenger.numberOfPassengers}
                             </p>
                           </div>
                         </div>
+
                         <div className="space-x-2">
                           <Button
                             size="sm"
@@ -295,10 +443,7 @@ export default function RideDetailedViewDriver() {
                               alt={passenger.rider.name}
                             />
                             <AvatarFallback>
-                              {passenger.rider.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
+                              {passenger.rider.name}
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -313,8 +458,31 @@ export default function RideDetailedViewDriver() {
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Badge>Confirmed</Badge>
-                          <Button size="icon" variant="ghost" onClick={()=>handleChatClick(passenger.rider._id as string)}>
+                          {rideDetails.status === "active" &&
+                            passenger.passengerRideStatus !== "ongoing" && (
+                              <div className="ml-auto">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    handleOtpVerification(passenger)
+                                  }
+                                >
+                                  Verify OTP
+                                </Button>
+                              </div>
+                            )}
+                          {/* <Badge>Confirmed</Badge> */}
+                          {rideDetails.status==="active" && passenger.passengerRideStatus === "ongoing" && (
+                             <Badge>Onboard</Badge>
+                          )}
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() =>
+                              handleChatClick(passenger.rider._id as string)
+                            }
+                          >
                             <MessageCircleIcon className="h-4 w-4" />
                             <span className="sr-only">
                               Chat with {passenger.rider.name}
@@ -354,6 +522,17 @@ export default function RideDetailedViewDriver() {
           </CardContent>
         </Card>
       </div>
+      <Dialog open={isOtpModalOpen} onOpenChange={setIsOtpModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Verify Passenger</DialogTitle>
+            <DialogDescription>
+              Please ask {currentPassenger?.name} to provide their 4-digit OTP.
+            </DialogDescription>
+          </DialogHeader>
+          <OtpInput onComplete={handleOtpComplete} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

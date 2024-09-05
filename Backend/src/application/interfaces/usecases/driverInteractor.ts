@@ -40,4 +40,6 @@ export interface DriverInteractor{
     getRideDetailsIntercator(rideId:string):Promise<{status:number,message:string,rideDetails:IRide | null}>
     requestAcceptInteractor(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
     requestDenyInteractor(rideId:string,passengerId:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
+    updateRideStatusInteractor(rideId:string,status:string):Promise<{status:number,message:string,rideDetails:IRide|null}>
+
 }
