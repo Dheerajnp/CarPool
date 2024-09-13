@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import  { useState, useEffect, useMemo } from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import { verifyOtpThunk } from "../../redux/userStore/Authentication/AuthSlice";
 import OTP from "./OTP";

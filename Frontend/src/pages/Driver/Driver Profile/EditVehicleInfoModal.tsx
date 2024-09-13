@@ -27,6 +27,7 @@ const validationSchema = Yup.object({
 const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, onSave,driver }) => {
   const [rcDocumentPreview, setRcDocumentPreview] = useState<string | null>(null);
 
+  console.log(rcDocumentPreview)
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     setFieldValue: (field: string, value: any) => void,
@@ -101,7 +102,7 @@ const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, o
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ setFieldValue, values, isSubmitting }) => (
+          {({ setFieldValue, isSubmitting }) => (
             <Form className="flex flex-col gap-4">
               <div className="grid grid-cols-1 gap-4">
                 <Label htmlFor="brand">Brand</Label>

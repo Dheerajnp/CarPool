@@ -19,9 +19,7 @@ import {
 import {
   MapPinIcon,
   CalendarIcon,
-  ClockIcon,
   UsersIcon,
-  CarIcon,
   MessageCircleIcon,
 } from "lucide-react";
 import { useEssentials } from "../../../hooks/UseEssentials";
@@ -49,14 +47,13 @@ export default function RideDetailedViewDriver() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string | undefined>(undefined);
   const [tempStatus, setTempStatus] = useState<string | undefined>(undefined);
-  const [otpVerification, setOtpVerification] = useState({});
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [currentPassenger, setCurrentPassenger] = useState<any>(null);
 
   const getStatusOptions = () => {
     switch (status) {
       case "pending":
-        return ["pending", "ongoing", "completed", "cancelled"];
+        return ["pending", "active", "completed", "cancelled"];
       case "active":
         return ["completed"];
       case "completed":
@@ -143,7 +140,7 @@ export default function RideDetailedViewDriver() {
         .post(`/ride/userOnboarding/${rideId}`, {
           userId: currentPassenger.rider._id,
         })
-        .then((response) => {
+        .then(() => {
         })
         .catch((error) => {
           console.log("error", error);

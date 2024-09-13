@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { toast } from "react-hot-toast";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
@@ -26,7 +26,7 @@ const EditLicenseInfoModal: React.FC<EditLicenseInfoModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const { dispatch,navigate } = useEssentials();
+  const { dispatch } = useEssentials();
   const [licenseFrontUrl, setLicenseFrontUrl] = useState(
     driver.licenseFrontUrl || ""
   );
@@ -115,7 +115,7 @@ const EditLicenseInfoModal: React.FC<EditLicenseInfoModalProps> = ({
             setSubmitting(false);
           }}
         >
-          {({ errors, touched, setFieldValue, values }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form className="p-4 space-y-4">
               <div className="grid grid-cols-[auto_1fr] items-center gap-4">
                 <Label htmlFor="license-front">License Front</Label>

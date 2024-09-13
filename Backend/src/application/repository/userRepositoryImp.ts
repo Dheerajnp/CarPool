@@ -5,7 +5,62 @@ import User from "../../entities/interfaces/UserInterface";
 import { IRide } from "../../entities/interfaces/RideInterface";
 import Ride from "../../frameworks/database/models/rideSchema";
 import Notification from "../../frameworks/database/models/notificationSchema";
+import { createPaymentIntent } from "../../frameworks/payment/stripePaymentService";
+import mongoose from "mongoose";
 export class userRepositoryImp implements UserRepository {
+  async createPaymentRepository(name: string, amount: number, email: string, userId: string, rideId: string): Promise<{ message: string; status: number; sessionId: string; }> {
+    try {
+      console.log("createPaymentInteractor")
+      console.log(userId)
+      if(userId){
+        const ride = await Ride.findById(rideId);
+        if(!ride){
+          return {
+            message: 'Ride not found',
+            status: 404,
+            sessionId: ''
+          }
+        }
+        const session = await createPaymentIntent(
+          {name,email},
+          amount,
+          rideId
+        )
+        let selectedRide = ride.passengers.find(p => p.rider.toString() === userId);
+        if(!selectedRide){
+          return{
+            message: 'User not found in the ride',
+            status: 404,
+            sessionId: ''
+          }
+        }
+        selectedRide.payment = {
+          amount:amount * selectedRide.numberOfPassengers,
+          status:'paid',
+          transactionId: session.id,
+          paymentMethod: 'card',
+          paymentDate: new Date()
+        }
+        await ride.save();
+        return {
+          message: 'Payment successful',
+          status: 200,
+          sessionId: session.id
+        };
+      }
+      return {
+        message: 'User id not found',
+        status: 404,
+        sessionId: ''
+      }
+    } catch (error) {
+      return{
+        message: 'Internal Server Error',
+        status: 500,
+        sessionId: ''
+      }
+    }
+  }
   async getUserNotificationRepository(
     userId: string
   ): Promise<{ status: number; message: string; notifications: any[] }> {

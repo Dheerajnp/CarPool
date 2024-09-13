@@ -1,4 +1,3 @@
-import { Driver } from "../../driverStore/interfaces";
 
 export interface Admin{
     name: string;

@@ -1,19 +1,30 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../ui/card";
+import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import { useDispatch } from "react-redux";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import getLocations from "../../services/getLocations";
-import { format, formatISO } from 'date-fns';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { fetchRidesFailure, fetchRidesRequest, fetchRidesSuccess } from '../../redux/userStore/Rides/RideListSlice';
-import axiosApiGateway from '../../functions/axios';
-import { useNavigate } from 'react-router-dom';
-import { FaCalendar } from 'react-icons/fa';
+import { format, formatISO } from "date-fns";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import {
+  fetchRidesFailure,
+  fetchRidesRequest,
+  fetchRidesSuccess,
+} from "../../redux/userStore/Rides/RideListSlice";
+import axiosApiGateway from "../../functions/axios";
+import { useNavigate } from "react-router-dom";
+import { FaCalendar } from "react-icons/fa";
 
 interface LocationSuggestion {
   place_name: string;
@@ -23,7 +34,9 @@ interface LocationSuggestion {
 const SearchRide: React.FC = () => {
   const [sourceInput, setSourceInput] = useState<string>("");
   const [destinationInput, setDestinationInput] = useState<string>("");
-  const [fromSuggestions, setFromSuggestions] = useState<LocationSuggestion[]>([]);
+  const [fromSuggestions, setFromSuggestions] = useState<LocationSuggestion[]>(
+    []
+  );
   const [toSuggestions, setToSuggestions] = useState<LocationSuggestion[]>([]);
   const fromInputRef = useRef<HTMLDivElement>(null);
   const toInputRef = useRef<HTMLDivElement>(null);
@@ -32,41 +45,55 @@ const SearchRide: React.FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      from: { name: "", coordinates: [0, 0] } as { name: string, coordinates: [number, number] },
-      to: { name: "", coordinates: [0, 0] } as { name: string, coordinates: [number, number] },
+      from: { name: "", coordinates: [0, 0] } as {
+        name: string;
+        coordinates: [number, number];
+      },
+      to: { name: "", coordinates: [0, 0] } as {
+        name: string;
+        coordinates: [number, number];
+      },
       date: undefined as Date | undefined,
     },
     validationSchema: Yup.object({
       from: Yup.object({
-        name: Yup.string().required('Departure city is required'),
-        coordinates: Yup.array().of(Yup.number()).length(2, 'Invalid coordinates').required('Departure city coordinates are required'),
-      }).required('Departure city is required'),
+        name: Yup.string().required("Departure city is required"),
+        coordinates: Yup.array()
+          .of(Yup.number())
+          .length(2, "Invalid coordinates")
+          .required("Departure city coordinates are required"),
+      }).required("Departure city is required"),
       to: Yup.object({
-        name: Yup.string().required('Arrival city is required'),
-        coordinates: Yup.array().of(Yup.number()).length(2, 'Invalid coordinates').required('Arrival city coordinates are required'),
-      }).required('Arrival city is required'),
-      date: Yup.date().nullable().required('Date is required'),
+        name: Yup.string().required("Arrival city is required"),
+        coordinates: Yup.array()
+          .of(Yup.number())
+          .length(2, "Invalid coordinates")
+          .required("Arrival city coordinates are required"),
+      }).required("Arrival city is required"),
+      date: Yup.date().nullable().required("Date is required"),
     }),
-    onSubmit: async(values) => {
+    onSubmit: async (values) => {
       dispatch(fetchRidesRequest());
-        const localDate = new Date(values.date?values.date:"");
-        let utcDate = formatISO(localDate);
+      const localDate = new Date(values.date ? values.date : "");
+      let utcDate = formatISO(localDate);
       try {
-        const response = await axiosApiGateway.get('/user/getRides', {
+        const response = await axiosApiGateway.get("/user/getRides", {
           params: {
             fromName: values.from.name,
             fromCoordinates: values.from.coordinates,
             toName: values.to.name,
             toCoordinates: values.to.coordinates,
-            date:utcDate,
+            date: utcDate,
           },
         });
         dispatch(fetchRidesSuccess(response.data));
-        navigate('/user/search')
+        navigate("/user/search", {
+          state: { origin: sourceInput, destination: destinationInput },
+        });
       } catch (error: any) {
-        dispatch(fetchRidesFailure(error.message || 'Failed to fetch rides'));
+        dispatch(fetchRidesFailure(error.message || "Failed to fetch rides"));
       }
-    }
+    },
   });
 
   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,13 +119,16 @@ const SearchRide: React.FC = () => {
     }
   };
 
-  const handleSelectSuggestion = (suggestion: LocationSuggestion, fieldName: 'from' | 'to') => {
+  const handleSelectSuggestion = (
+    suggestion: LocationSuggestion,
+    fieldName: "from" | "to"
+  ) => {
     formik.setFieldValue(fieldName, {
       name: suggestion.place_name,
       coordinates: suggestion.center,
     });
 
-    if (fieldName === 'from') {
+    if (fieldName === "from") {
       setSourceInput(suggestion.place_name);
       setFromSuggestions([]);
     } else {
@@ -109,8 +139,10 @@ const SearchRide: React.FC = () => {
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
-      fromInputRef.current && !fromInputRef.current.contains(e.target as Node) &&
-      toInputRef.current && !toInputRef.current.contains(e.target as Node)
+      fromInputRef.current &&
+      !fromInputRef.current.contains(e.target as Node) &&
+      toInputRef.current &&
+      !toInputRef.current.contains(e.target as Node)
     ) {
       setFromSuggestions([]);
       setToSuggestions([]);
@@ -129,9 +161,9 @@ const SearchRide: React.FC = () => {
       // Set the time to midnight
       date.setHours(0, 0, 0, 0);
     }
-    formik.setFieldValue('date', date);
+    formik.setFieldValue("date", date);
   };
-  
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Card className="w-full max-w-5xl">
@@ -151,7 +183,9 @@ const SearchRide: React.FC = () => {
               placeholder="Enter departure city"
             />
             {formik.touched.from && formik.errors.from ? (
-              <div className="text-red-500 text-[11px]">{formik.errors.from.name || formik.errors.from.coordinates}</div>
+              <div className="text-red-500 text-[11px]">
+                {formik.errors.from.name || formik.errors.from.coordinates}
+              </div>
             ) : null}
             {fromSuggestions.length > 0 && (
               <ul className="bg-white absolute w-full overflow-x-auto h-52 z-30">
@@ -159,7 +193,7 @@ const SearchRide: React.FC = () => {
                   <li
                     key={index}
                     className="px-4 py-3 cursor-pointer hover:bg-blue-200 dark:bg-black dark:text-white dark:hover:bg-violet-700"
-                    onClick={() => handleSelectSuggestion(suggestion, 'from')}
+                    onClick={() => handleSelectSuggestion(suggestion, "from")}
                   >
                     {suggestion.place_name}
                   </li>
@@ -178,7 +212,9 @@ const SearchRide: React.FC = () => {
               placeholder="Enter arrival city"
             />
             {formik.touched.to && formik.errors.to ? (
-              <div className="text-red-500 text-[11px]">{formik.errors.to.name || formik.errors.to.coordinates}</div>
+              <div className="text-red-500 text-[11px]">
+                {formik.errors.to.name || formik.errors.to.coordinates}
+              </div>
             ) : null}
             {toSuggestions.length > 0 && (
               <ul className="bg-white absolute w-full overflow-x-auto h-52 z-30">
@@ -186,7 +222,7 @@ const SearchRide: React.FC = () => {
                   <li
                     key={index}
                     className="px-4 py-3 cursor-pointer hover:bg-blue-200 dark:bg-black dark:text-white dark:hover:bg-violet-700"
-                    onClick={() => handleSelectSuggestion(suggestion, 'to')}
+                    onClick={() => handleSelectSuggestion(suggestion, "to")}
                   >
                     {suggestion.place_name}
                   </li>
@@ -198,9 +234,16 @@ const SearchRide: React.FC = () => {
             <Label htmlFor="date">Date</Label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal relative">
-                  {formik.values.date ? format(formik.values.date, "PPP") : <span id="date">Select date</span>}
-                  <FaCalendar className='absolute right-2 text-gray-500'/>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal relative"
+                >
+                  {formik.values.date ? (
+                    format(formik.values.date, "PPP")
+                  ) : (
+                    <span id="date">Select date</span>
+                  )}
+                  <FaCalendar className="absolute right-2 text-gray-500" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -209,21 +252,27 @@ const SearchRide: React.FC = () => {
                   selected={formik.values.date}
                   onSelect={handleDateChange}
                   initialFocus
-                  disabled={(date) => date.getTime() < new Date().setHours(0, 0, 0, 0)}
+                  disabled={(date) =>
+                    date.getTime() < new Date().setHours(0, 0, 0, 0)
+                  }
                 />
               </PopoverContent>
             </Popover>
             {formik.touched.date && formik.errors.date ? (
-              <div className="text-red-500 text-[11px]">{formik.errors.date}</div>
+              <div className="text-red-500 text-[11px]">
+                {formik.errors.date}
+              </div>
             ) : null}
           </div>
         </CardContent>
         <CardFooter className="col-span-3">
-          <Button type="submit" className="w-full">Search</Button>
+          <Button type="submit" className="w-full">
+            Search
+          </Button>
         </CardFooter>
       </Card>
     </form>
   );
-}
+};
 
 export default SearchRide;

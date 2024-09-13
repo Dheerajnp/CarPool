@@ -16,7 +16,6 @@ import { IRideDetails } from "../../../redux/userStore/RideDetails/RideDetailsIn
 import RoundLoader from "../../RoundLoader";
 import { useEssentials } from "../../../hooks/UseEssentials";
 import toast from "react-hot-toast";
-import Header from "../../Navbar";
 import { MdChatBubble } from "react-icons/md";
 import {
   Tooltip,

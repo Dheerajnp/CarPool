@@ -31,7 +31,13 @@ const rideSchema = new mongoose.Schema<IRide>({
         status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
         numberOfPassengers:{type: Number, default:1},
         otp: { type: Number },
-        paymentStatus:{type: Boolean ,default:false}
+        payment: {
+          amount: { type: Number, required: true },  // Payment amount
+          status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },  // Payment status
+          transactionId: { type: String, required: true },  // Payment transaction ID
+          paymentMethod: { type: String, enum: ['cash', 'card', 'online'], default: 'online' },  // Payment method
+          paymentDate: { type: Date, default: Date.now }  // Date of payment
+        },
       },
     ],
     distance: { type: Number, required: true },

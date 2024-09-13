@@ -1,4 +1,3 @@
-import React from 'react'
 import RideDetailsForDriver from '../../../components/driver/RideDetails/RideDetailsComponent'
 
 const RideDetailPage = () => {

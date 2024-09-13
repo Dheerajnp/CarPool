@@ -19,7 +19,8 @@ export const authMiddleware:RequestHandler = async(req:Request, res:Response, ne
         if(!decodedToken){
             return res.status(401).json({message:"Invalid token", status:403});
         }
-        req.role = decodedToken.role
+        req.role = decodedToken.role;
+        req.userId = decodedToken.userID;
         next();
    } catch (error) {
         console.log(error);

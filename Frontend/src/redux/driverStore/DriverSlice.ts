@@ -1,5 +1,4 @@
 import { createSlice,createAsyncThunk  } from "@reduxjs/toolkit";
-import { Driver } from "../userStore/Authentication/interfaces";
 import axios from "axios";
 import * as interfaces from "./interfaces";
 import { AppDispatch, RootState } from "../store";
@@ -29,7 +28,7 @@ interface AsyncThunkConfig {
 
   export const driverLogin = createAsyncThunk<interfaces.DriverLoginResponse,interfaces.DriverLoginCredentials,AsyncThunkConfig>(
     "driver/login",
-    async (credentials, { rejectWithValue }) => {
+    async (credentials) => {
       try {
         const response = await axios.post('/login',credentials,{
             withCredentials:true

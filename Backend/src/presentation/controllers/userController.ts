@@ -87,4 +87,19 @@ export class userController{
         return res.status(500).json({message: "Internal server error",status:500});
       }
     }
+
+    createPayment:RequestHandler = async (req,res)=>{
+      const { name, amount, email,rideId } = req.body;
+      const  userId  = req.userId;
+      try {
+        const result = await this.interactor.createPaymentInteractor(name, amount, email, userId as string,rideId);;
+        return res.status(result.status).json({
+          message: result.message,
+          sessionId: result.sessionId,
+          status: result.status
+        });
+      } catch (error) {
+        return res.status(500).json({ message: "Internal server error", status: 500 });
+      }
+    }
 }

@@ -6,10 +6,8 @@ import { IRideDetails } from "../../../redux/userStore/RideDetails/RideDetailsIn
 import RoundLoader from "../../RoundLoader";
 import Header from "../../Navbar";
 import toast from "react-hot-toast";
-import { useEssentials } from "../../../hooks/UseEssentials";
 
 export default function RideDetailsForDriver() {
-  const {navigate} = useEssentials();
   const { rideId } = useParams();
   const [rideDetails, setRideDetails] = useState<IRideDetails | null>(null);
   const [loading, setLoading] = useState(false);

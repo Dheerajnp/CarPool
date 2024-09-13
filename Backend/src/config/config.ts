@@ -14,6 +14,10 @@ const config: ConfigInterface = {
 export const configuredKeys = {
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY as string,
   JWT_REFRESH_SECRET_KEY: process.env.JWT_REFRESH_SECRET_KEY as string,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+  MAILER_USER: process.env.MAILER_USER as string,
+  MAILER_PASS: process.env.MAILER_PASS as string,
+  VITE_ORIGIN: process.env.VITE_ORIGIN,
 };
 
 export const env = process.env as {
@@ -24,6 +28,7 @@ export const env = process.env as {
   MAILER_USER: string;
   MAILER_PASS: string;
   VITE_ORIGIN: string;
+  
 };
 
 export default config;

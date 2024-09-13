@@ -39,6 +39,13 @@ export interface IRideDetails {
     passengerRideStatus:string;
     otp:string;
     paymentStatus:boolean;
+    payment:{
+      amount: number;
+      transactionId: string;
+      paymentMethod: string;
+      paymentDate: Date;
+      status:number;
+    }
   }[];
   distance: number;
   duration: number;

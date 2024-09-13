@@ -17,5 +17,5 @@ userRouter.put('/updateInfo/:userId',authMiddleware,controller.userInfoEdit.bind
 userRouter.get('/getRides',authMiddleware,controller.getRides.bind(controller));
 userRouter.get('/getRideDetails/:rideId',authMiddleware,controller.getRideDetails.bind(controller));
 userRouter.get('/notifications',authMiddleware,controller.getUserNotifications.bind(controller));
-
+userRouter.post('/create-payment',authMiddleware,controller.createPayment.bind(controller));
 export default userRouter;

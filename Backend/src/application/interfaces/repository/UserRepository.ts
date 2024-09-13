@@ -9,4 +9,5 @@ export interface UserRepository{
     getRidesRepository(data:{fromName:string,fromCoordinates:number[],toName:string,toCoordinates:number[],date:Date|undefined}):Promise<{message:string,status:number,rides:IRide[]}>
     getRideDetailsRepository(rideId:string):Promise<{message:string,status:number,ride:IRide|null}>
     getUserNotificationRepository(userId:string):Promise<{status:number,message:string,notifications:any[]}>
+    createPaymentRepository(name:string, amount:number, email:string, userId:string,rideId:string):Promise<{message:string,status:number,sessionId:string}>
 }

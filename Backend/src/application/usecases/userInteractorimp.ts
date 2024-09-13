@@ -2,9 +2,26 @@ import { IRide } from "../../entities/interfaces/RideInterface";
 import User from "../../entities/interfaces/UserInterface";
 import { UserRepository } from "../interfaces/repository/UserRepository";
 import { UserInteractor } from "../interfaces/usecases/userInteractor";
+import {createPaymentIntent} from "../../frameworks/payment/stripePaymentService"
 
 export class userInteractorImp implements UserInteractor {
     constructor(private readonly repository: UserRepository) {}
+  async createPaymentInteractor(name: string, amount: number, email: string, userId: string,rideId:string): Promise<{ message: string; status: number; sessionId: string; }> {
+    try {
+      const {message, status, sessionId} = await this.repository.createPaymentRepository(name, amount,email,userId,rideId);
+      return {
+        message,
+        status,
+        sessionId
+      };
+    } catch (error) {
+      return{
+        message: 'Internal Server Error',
+        status: 500,
+        sessionId: ''
+      }
+    }
+  }
   async getUserNotificationInteractor(userId: string): Promise<{ status: number; message: string; notifications: any[]; }> {
     try {
       const result = await this.repository.getUserNotificationRepository(userId);

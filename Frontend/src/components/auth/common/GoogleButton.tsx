@@ -10,6 +10,7 @@ export interface GoogleParams {
 const GoogleButton: React.FC<GoogleParams> = ({ label,role }) => {
   const Glogin = () => {
     // Mock function for login, replace with actual logic
+    console.log(role)
     console.log(`Mock ${label} with Google clicked`);
   };
 

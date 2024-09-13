@@ -1,4 +1,3 @@
-import React from 'react'
 import SearchResultsComponent from '../../../components/user/Search/SearchResults'
 
 const SearchResultsPage = () => {

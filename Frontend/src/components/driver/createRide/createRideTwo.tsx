@@ -11,7 +11,7 @@ import axiosApiGateway from "../../../functions/axios";
 import { formatISO } from "date-fns";
 
 const CreateRideStageTwo = () => {
-  const { dispatch, navigate, ride, auth } = useEssentials();
+  const {  navigate, ride, auth } = useEssentials();
   const [route, setRoute] = useState<any>(null);
   const [suggestedPriceRange, setSuggestedPriceRange] = useState<[number, number]>([0, 0]);
   const [vehicles, setVehicles] = useState([]);

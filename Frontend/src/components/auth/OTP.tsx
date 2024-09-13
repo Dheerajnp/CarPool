@@ -15,6 +15,7 @@ const OTP: React.FC<IOTPInputProps> = ({ length, otp, setOtp, setError }) => {
           setError("");
         }
         setOtp(value);
+        console.log(otp)
       };
 
   return (

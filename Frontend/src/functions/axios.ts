@@ -1,9 +1,6 @@
 import Cookies from "js-cookie";
 import axios from 'axios';
-import { useEssentials } from "../hooks/UseEssentials";
-import { resetState } from "../redux/userStore/Authentication/AuthSlice";
-import { persistor } from "../redux/store"
-import { useDispatch } from "react-redux";
+
 
 const getCookieToken = () => {
   const token = Cookies.get('token');

@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useEffect} from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import useSocket from "../../hooks/UseSocket";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";

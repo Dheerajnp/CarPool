@@ -31,6 +31,13 @@ export interface IRide extends Document {
       numberOfPassengers:number;
       otp:string;
       passengerRideStatus:string;
+      payment:{
+        amount: number,
+        status: 'pending' | 'paid' | 'failed',
+        transactionId: string,
+        paymentMethod: string,
+        paymentDate: Date,
+      }
     }[];
     distance: number;
     duration: number;

@@ -5,7 +5,6 @@ import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { useEssentials } from "../../../hooks/UseEssentials";
 import { Driver, Vehicle } from "../../../redux/userStore/Authentication/interfaces";
-import axios from "axios";
 import EditDriverInfoModal from "./EditDriverInfoModal";
 import EditVehicleModal from "./EditVehicleInfoModal";
 import EditLicenseInfoModal from "./EditLicenseInfoModal";

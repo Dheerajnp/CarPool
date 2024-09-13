@@ -8,7 +8,7 @@ interface FileUploadProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ label, file, preview, onChange }) => (
+const FileUpload: React.FC<FileUploadProps> = ({ label, preview, onChange }) => (
   <Box className="flex flex-col mb-6">
     <label
       htmlFor={label}

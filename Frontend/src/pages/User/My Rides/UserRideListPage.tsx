@@ -1,4 +1,3 @@
-import React from 'react'
 import UserRides from '../../../components/user/MyRides/RideList'
 
 const UserRideListPage = () => {

@@ -4,7 +4,6 @@ import UploadLicensePage from "../pages/Driver/UploadLicense/UploadLicensePage"
 import DriverProfile from "../pages/Driver/Driver Profile/DriverProfile"
 import CreateRidePage from "../pages/Driver/CreateRide/CreateRide_2"
 import RidesListPage from "../pages/Driver/MyRides/RidesList"
-import RideDetailPage from "../pages/Driver/MyRides/RideDetailPage"
 import RideDetailedViewDriver from "../components/driver/RideDetails/RideDetailsComponent2"
 
 export default function DriverRoutes(){

@@ -33,6 +33,7 @@ import axiosApiGateway from "../../../functions/axios";
 import RoundLoader from "../../RoundLoader";
 import { useEssentials } from "../../../hooks/UseEssentials";
 import toast from "react-hot-toast";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function RideDetailsPage() {
   const [rideData, setRideData] = useState<IRideDetails | undefined>(undefined);
@@ -80,6 +81,28 @@ export default function RideDetailsPage() {
       toast("Unable to initiate chat with driver. Please try again later.");
     }
   };
+  
+  const makePayment = async ()=>{
+    const name = auth.user?.name;
+    const email = auth.user?.email;
+    const stripe = await loadStripe(import.meta.env.VITE_API_STRIPE_KEY);
+    axiosApiGateway.post("/user/create-payment",{
+      amount: rideData?.price,
+      name,
+      email,
+      rideId: rideData?._id,
+    })
+    .then((res)=>{
+      if(res.data.sessionId){
+        stripe?.redirectToCheckout({
+          sessionId: res.data.sessionId,
+        })
+      }
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  }
 
   const getRideStatusColor = (status: string) => {
     switch (status) {
@@ -219,7 +242,7 @@ export default function RideDetailsPage() {
                       {rideData.status === "completed" && (
                         <Button
                           variant={"ghost"}
-                          onClick={() => setIsDialogOpen(true)}
+                          onClick={makePayment}
                         >
                           Pay for the ride
                         </Button>

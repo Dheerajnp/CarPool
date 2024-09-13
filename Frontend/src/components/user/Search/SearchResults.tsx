@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../../ui/button";
 import { IoMdLocate } from "react-icons/io";
@@ -40,22 +40,31 @@ import axiosApiGateway from "../../../functions/axios";
 import Header from "../../Navbar";
 import { SkeletonCard } from "./SkeletonCardSearch";
 import NoRidesFound from "./NoridesFoundComponent";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface LocationSuggestion {
   place_name: string;
   center: [number, number];
 }
 
+interface LocationState {
+  origin: string;
+  destination: string;
+}
+
 export default function SearchResultsComponent() {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const data = location.state as LocationState;
   const rides = useSelector((state: RootState) => state.rides.rides);
   const status = useSelector((state: RootState) => state.rides.status);
-  const error = useSelector((state: RootState) => state.rides.error);
+  // const error = useSelector((state: RootState) => state.rides.error);
 
   const [filteredRides, setFilteredRides] = useState(rides);
-  const [sourceInput, setSourceInput] = useState<string>("");
-  const [destinationInput, setDestinationInput] = useState<string>("");
+  const [sourceInput, setSourceInput] = useState<string>(data?.origin || "");
+  const [destinationInput, setDestinationInput] = useState<string>(
+    data?.destination || ""
+  );
   const [fromSuggestions, setFromSuggestions] = useState<LocationSuggestion[]>(
     []
   );
@@ -187,6 +196,7 @@ export default function SearchResultsComponent() {
   };
   const handlePriceChange = (event: Event, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
+    console.log(event)
   };
 
   const handleSeatsChange = (value: string) => {
@@ -214,12 +224,11 @@ export default function SearchResultsComponent() {
     setCurrentPage(newPage);
   };
 
-  
-
   // Pagination calculations
   const indexOfLastRide = currentPage * ridesPerPage;
   const indexOfFirstRide = indexOfLastRide - ridesPerPage;
   const currentRides = filteredRides.slice(indexOfFirstRide, indexOfLastRide);
+  console.log(currentRides)
   const totalPages = Math.ceil(filteredRides.length / ridesPerPage);
   return (
     <div>
@@ -313,7 +322,9 @@ export default function SearchResultsComponent() {
                         selected={formik.values.date}
                         onSelect={handleDateChange}
                         initialFocus
-                        disabled={(date) => date.getTime() < new Date().setHours(0, 0, 0, 0)}
+                        disabled={(date) =>
+                          date.getTime() < new Date().setHours(0, 0, 0, 0)
+                        }
                       />
                     </PopoverContent>
                   </Popover>
@@ -450,30 +461,29 @@ export default function SearchResultsComponent() {
                   </div>
                 </CardContent>
               </Card>
-              
             ))
           ) : (
             <NoRidesFound />
           )}
           {filteredRides.length > ridesPerPage && (
-                    <div className="flex justify-center mt-4">
-                      <Button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </Button>
-                      <span className="mx-4">
-                        Page {currentPage} of {totalPages}
-                      </span>
-                      <Button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </Button>
-                    </div>
-                  )}
+            <div className="flex justify-center mt-4">
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              <span className="mx-4">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

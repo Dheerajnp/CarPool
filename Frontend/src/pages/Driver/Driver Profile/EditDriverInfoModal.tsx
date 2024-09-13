@@ -26,7 +26,7 @@ const EditDriverInfoModal: React.FC<EditDriverInfoModalProps> = ({ driver, onClo
   const handleSave = () => {
     let name = formData.name;
     let phone = formData.phone;
-    const response = axiosApiGateway.post(`/driver/updateInfo/${driver._id}`,
+    axiosApiGateway.post(`/driver/updateInfo/${driver._id}`,
       {name,phone},
     ).then((response) => {
       if(response.data.status === 200) {
