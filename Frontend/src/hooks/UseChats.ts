@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useEssentials } from "./UseEssentials";
 import axiosApiGateway from "../functions/axios";
-
+import  { io,Socket } from "socket.io-client";
 interface IConversation {
   _id: string;
   seen: boolean;
@@ -37,6 +37,19 @@ export function useChat() {
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<IConversation | null>(null);
 
+  const socketRef = useRef<Socket>()
+
+
+  useEffect(()=>{
+    const connect = io(import.meta.env.VITE_SOCKET_URL);
+
+    socketRef.current = connect;
+
+    connect.on("getMessage",(data)=>{
+      console.log(data);
+      setMessages((prevMessages) => [...prevMessages, data]);
+    })
+  })
   useEffect(() => {
     if (auth.user?.id) {
       

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { CheckCircle, XCircle, CreditCard, Calendar } from 'lucide-react'
 import { Button } from "../../ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../../ui/card"
+import { useEssentials } from '../../../hooks/UseEssentials'
+import { useParams } from 'react-router-dom'
 
 interface PaymentResultProps {
   isSuccessful: boolean
@@ -13,7 +15,9 @@ interface PaymentResultProps {
 }
 
 export default function PaymentStatus({ isSuccessful = true, amount = 25.00, date = "2023-06-15", destination = "Downtown" }: PaymentResultProps) {
-  const [showConfetti, setShowConfetti] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false);
+  const {navigate} = useEssentials();
+  const { rideId } = useParams();
 
   useEffect(() => {
     if (isSuccessful) {
@@ -50,7 +54,7 @@ export default function PaymentStatus({ isSuccessful = true, amount = 25.00, dat
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="flex items-center"><CreditCard className="mr-2" /> Amount:</span>
-              <span className="font-semibold">${amount.toFixed(2)}</span>
+              <span className="font-semibold">₹{amount.toFixed(2)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="flex items-center"><Calendar className="mr-2" /> Date:</span>
@@ -63,7 +67,7 @@ export default function PaymentStatus({ isSuccessful = true, amount = 25.00, dat
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Button variant={isSuccessful ? "default" : "destructive"}>
+          <Button onClick={()=>navigate(`/user/rideDetails/${rideId}`)} variant={isSuccessful ? "default" : "destructive"}>
             {isSuccessful ? "View Ride Details" : "Try Again"}
           </Button>
         </CardFooter>

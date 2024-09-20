@@ -25,7 +25,7 @@ interface Notification {
 
 const UserNotification = () => {
   const { auth, navigate } = useEssentials();
-  const socket = useSocket(auth.user?.id as string);
+  const socket = useSocket();
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {

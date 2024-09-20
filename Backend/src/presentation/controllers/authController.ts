@@ -58,6 +58,21 @@ export class authController{
       }
     }
 
+
+    googleLoginService:RequestHandler = async(req,res,next)=>{
+      console.log("Google login user");
+    
+    try {
+          const { name, email, password, role } = req.body;
+          const { user, message, token,refreshToken } = await this.interactor.googleLoginInteractor({ name, email, password, role });
+          return res.status(200).json({ message, token, user , refreshToken });
+    } catch (error) {
+          console.log(error)
+          return res.status(500).json({message  : "Internal server error",status:500});
+    }
+    }
+
+    
     forgotPassword:RequestHandler = async (req, res) => {
       try {
         const { email,role } = req.body;

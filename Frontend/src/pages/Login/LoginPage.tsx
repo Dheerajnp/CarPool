@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../comp
 import { Input } from "../../components/ui/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ModeToggle } from "../../components/mode-toggle";
+import { ModeToggle } from "../../components/Common/mode-toggle";
 import GoogleButton from "../../components/auth/common/GoogleButton";
 import { login } from "../../redux/userStore/Authentication/AuthSlice";
 import { useEssentials } from "../../hooks/UseEssentials";
@@ -110,7 +110,7 @@ const LoginPage = () => {
                 ))}
               </div>
             </div>
-          <GoogleButton label='In' role=""/>
+          <GoogleButton label='In' role={role}/>
             <div className="relative mt-1 flex h-px bg-gray-200 dark:bg-gray-700">
               <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-3.5 px-2 bg-white dark:bg-slate-950 text-gray-500 dark:text-gray-300">
                 or

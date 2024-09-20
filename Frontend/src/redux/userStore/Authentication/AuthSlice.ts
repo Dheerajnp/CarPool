@@ -34,6 +34,8 @@ export const register = createAsyncThunk<interfaces.RegisterResponse, interfaces
     }
 );
 
+
+
 export const verifyOtpThunk = createAsyncThunk<interfaces.VerifyOtpResponse,interfaces.VerifyOtpCredentials,AsyncThunkConfig>(
     'user/verifyotp',
     async (data,{rejectWithValue}) => {
@@ -130,7 +132,11 @@ export const googleLogin = createAsyncThunk<interfaces.GoogleSignUpResponse, int
     'user/google-signup',
     async (credentials, { rejectWithValue }) => {
         try {
+            console.log(credentials)
             const data = await authService.googleSignup(credentials);
+            // const userId = data.user._id;
+            // localStorage.setItem('registeredUserId', userId);
+            // localStorage.setItem('expiryOtp', CalculateTime(5));
             return data;
         } catch (error) {
             return rejectWithValue({

@@ -9,21 +9,22 @@ const PaymentStatusPage = () => {
   const [rideData, setRideData] = useState<IRideDetails | null>(null);
   const { rideId } = useParams();
   const [searchParams] = useSearchParams();
-  const status = searchParams.get("status");
+  const status = searchParams.get("success");
   const isSuccessfull = status==="true"?true :false;
 
   useEffect(() => {
     axiosApiGateway
       .get(`/ride/getRideDetails/${rideId}`)
       .then((response) => {
+        console.log(response)
         if (response.status === 200) {
-          setRideData(response.data.rideDetails);
+          setRideData(response.data.result.rideDetails);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  });
+  },[rideId]);
 
   return (
     <>
@@ -31,7 +32,7 @@ const PaymentStatusPage = () => {
         <PaymentStatus
           amount={rideData?.price}
           isSuccessful={isSuccessfull}
-          date={rideData?.rideDate.toString()}
+          date={new Date(rideData.rideDate).toLocaleString()}
           destination={rideData.destination.name}
           driver={rideData?.driver.name}
         />
@@ -39,7 +40,6 @@ const PaymentStatusPage = () => {
         <>
         <LoaderCentered />
         </>
-        
       )}
     </>
   );

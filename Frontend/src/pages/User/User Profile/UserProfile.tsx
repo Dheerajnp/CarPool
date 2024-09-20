@@ -13,7 +13,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "../../../components/ui/avatar";
-import Header from "../../../components/Navbar";
+import Header from "../../../components/Common/Navbar";
 import EditDocumentModal from "../../../components/user/profile/EditDocumentModal";
 import EditUserInfoModal from "../../../components/user/profile/EditUserInfoModal";
 import LoaderCentered from "../../../components/Common/LoaderCentered";
@@ -24,21 +24,28 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const { auth } = useEssentials();
-  const userId = auth.user?.id;
+  const userId = auth.user?._id;
   const [profilePicture, setProfilePicture] = useState("/placeholder-user.jpg");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditUserInfoOpen, setIsEditUserInfoOpen] = useState(false);
 
+
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
-      const response = await axiosApiGateway.get(`/user/getUser/${userId}`);
-      if (response.data.status === 200) {
-        setUser(response.data.user);
-      } else {
-        toast.error(response.data.message);
+      if(userId){
+        const response = await axiosApiGateway.get(`/user/getUser/${userId}`);
+        if (response.data.status === 200) {
+          setUser(response.data.user);
+        } else {
+          toast.error(response.data.message);
+        }
+        setLoading(false);
+      }else{
+        toast.error("User not found.");
+        setLoading(false);
       }
-      setLoading(false);
+     
     };
     fetchUser();
   }, [userId]);

@@ -56,6 +56,25 @@ export class authInteractorImp implements authInteractor{
       throw error;
     }
   }
+
+
+  async googleLoginInteractor(credentials: {email:string,name:string,password:string,role:string}): Promise<{ message: string; status: number; user: User|null; token: string|null; refreshToken: string|null; }> {
+    try {
+      const {name} = credentials;
+      console.log("nameeeeeeeeeeee interactor");
+      const result = await this.repository.googleCredentialsCreate(credentials);
+      return result;
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Internal Server Error',
+        status: 500,
+        user: null,
+        token: null,
+        refreshToken: null
+      }
+    }
+  }
   async verifyOtpAndSave(enteredOtp: string, tempId: string): Promise<{ user: User | Driver | null; message: string; status: number; }> {
     try {
       

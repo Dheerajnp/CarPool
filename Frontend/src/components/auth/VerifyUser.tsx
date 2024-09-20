@@ -2,7 +2,7 @@ import  { useState, useEffect, useMemo } from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import { verifyOtpThunk } from "../../redux/userStore/Authentication/AuthSlice";
 import OTP from "./OTP";
-import { ModeToggle } from "../mode-toggle";
+import { ModeToggle } from "../Common/mode-toggle";
 
 const VerifyUser = ({ savedId }: { savedId: string}) => {
   const { dispatch, navigate } = useEssentials();

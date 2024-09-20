@@ -9,6 +9,7 @@ export class userInteractorImp implements UserInteractor {
   async createPaymentInteractor(name: string, amount: number, email: string, userId: string,rideId:string): Promise<{ message: string; status: number; sessionId: string; }> {
     try {
       const {message, status, sessionId} = await this.repository.createPaymentRepository(name, amount,email,userId,rideId);
+      console.log("bbbbbbbbbbbbbbbbbbbbbb",message, status, sessionId)
       return {
         message,
         status,

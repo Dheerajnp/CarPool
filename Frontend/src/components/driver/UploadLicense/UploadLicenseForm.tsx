@@ -7,7 +7,7 @@ import FileUpload from "./FileUpload";
 import TextInput from "./TextInput";
 import { useEssentials } from "../../../hooks/UseEssentials";
 import { Button } from "../../ui/button";
-import { ModeToggle } from "../../mode-toggle";
+import { ModeToggle } from "../../Common/mode-toggle";
 
 const validationSchema = Yup.object({
   vehicleBrand: Yup.string().required("Vehicle brand is required"),

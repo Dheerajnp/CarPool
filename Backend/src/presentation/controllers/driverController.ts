@@ -120,6 +120,7 @@ export class driverController{
       requestAccept:RequestHandler = async(req,res)=>{
         const {rideId} = req.params;
         const {passengerId} = req.body;
+        console.log(rideId,passengerId)
         try {
           const result = await this.interactor.requestAcceptInteractor(rideId,passengerId);
           return res.status(result.status).json(result);

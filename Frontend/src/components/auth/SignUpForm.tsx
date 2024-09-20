@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { ModeToggle } from "../../components/mode-toggle";
+import { ModeToggle } from "../Common/mode-toggle";
 import GoogleButton from './common/GoogleButton';
 import { Link } from 'react-router-dom';
 import { useEssentials } from '../../hooks/UseEssentials';

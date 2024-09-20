@@ -13,10 +13,21 @@ export class userRepositoryImp implements UserRepository {
       console.log("createPaymentInteractor")
       console.log(userId)
       if(userId){
+        console.log("hbshbsh")
         const ride = await Ride.findById(rideId);
+        console.log(ride)
         if(!ride){
           return {
             message: 'Ride not found',
+            status: 404,
+            sessionId: ''
+          }
+        }
+       
+        let selectedRide = ride.passengers.find(p => p.rider.toString() === userId);
+        if(!selectedRide){
+          return{
+            message: 'User not found in the ride',
             status: 404,
             sessionId: ''
           }
@@ -26,14 +37,7 @@ export class userRepositoryImp implements UserRepository {
           amount,
           rideId
         )
-        let selectedRide = ride.passengers.find(p => p.rider.toString() === userId);
-        if(!selectedRide){
-          return{
-            message: 'User not found in the ride',
-            status: 404,
-            sessionId: ''
-          }
-        }
+        console.log(session)
         selectedRide.payment = {
           amount:amount * selectedRide.numberOfPassengers,
           status:'paid',
@@ -41,6 +45,8 @@ export class userRepositoryImp implements UserRepository {
           paymentMethod: 'card',
           paymentDate: new Date()
         }
+        
+        console.log(selectedRide.payment)
         await ride.save();
         return {
           message: 'Payment successful',
@@ -54,6 +60,7 @@ export class userRepositoryImp implements UserRepository {
         sessionId: ''
       }
     } catch (error) {
+      console.log(error)
       return{
         message: 'Internal Server Error',
         status: 500,

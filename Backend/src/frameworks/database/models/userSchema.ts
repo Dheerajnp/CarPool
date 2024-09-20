@@ -1,5 +1,8 @@
 import { model,Schema,Types } from "mongoose";
- import User from "../../../entities/interfaces/UserInterface";
+import User from "../../../entities/interfaces/UserInterface";
+import path from "path";
+
+const defaultProfilePicPath = path.join("/assets/icons/userProfile.jpg");
 
 const userSchema = new Schema<User>({
     name: {
@@ -29,6 +32,7 @@ const userSchema = new Schema<User>({
     },
     profile: {
         type: String,
+        default: defaultProfilePicPath,
     },
     role:{
         type:String,

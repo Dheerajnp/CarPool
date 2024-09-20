@@ -91,6 +91,7 @@ export class userController{
     createPayment:RequestHandler = async (req,res)=>{
       const { name, amount, email,rideId } = req.body;
       const  userId  = req.userId;
+      console.log(userId,name,amount,email,rideId);
       try {
         const result = await this.interactor.createPaymentInteractor(name, amount, email, userId as string,rideId);;
         return res.status(result.status).json({

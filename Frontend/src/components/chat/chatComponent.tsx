@@ -14,7 +14,7 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { Button } from "../../components/ui/button";
 import { Textarea } from "../../components/ui/textarea";
-import Header from "../Navbar";
+import Header from "../Common/Navbar";
 import { ScrollArea } from "../ui/scroll-area";
 import { MdOutlineArrowDropDownCircle } from "react-icons/md";
 import { CiPhone } from "react-icons/ci";
@@ -24,7 +24,7 @@ import { FiSend } from "react-icons/fi";
 import { useEssentials } from "../../hooks/UseEssentials";
 import { useChat } from "../../hooks/UseChats";
 import { ConversationList } from "./ChatConversationListing";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import axiosApiGateway from "../../functions/axios";
 import useSocket from "../../hooks/UseSocket";
 
@@ -49,33 +49,103 @@ export default function Component() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const socket = useSocket(selectedConversation?.roomId as string);
+  const recieverId = useMemo(() => {
+    if (!selectedConversation || !auth.user?.id) return null;
+
+    if (auth.user.id === selectedConversation.driver._id) {
+      return selectedConversation.user._id;
+    } else if (auth.user.id === selectedConversation.user._id) {
+      return selectedConversation.driver._id;
+    }
+
+    return null;
+  }, [selectedConversation, auth]);
+  const socket = useSocket();
   const [onlineUser, setOnlineUser] = useState<onlineUserFindType[]>([]);
   const [counts, setCount] = useState<{ _id: string; unreadCount: number }[]>(
     []
   );
+  function setCountings(roomId: string) {
+    setCount((prevCounts) => {
+      let fount = false;
+      // Map over previous counts to update the unread count
+      const updatedCounts = prevCounts.map((count) => {
+        if (count._id === roomId) {
+          fount = true;
+          return { ...count, unreadCount: count.unreadCount + 1 };
+        }
+        return count;
+      });
+  
+      // If no matching roomId was found, add a new entry
+      if (!fount) {
+        return [...updatedCounts, { _id: roomId, unreadCount: 1 }];
+      }
+  
+      return updatedCounts;
+    });
+  }
+  
+
+  const selectedIsOnline = () =>{
+   
+  }
 
   useEffect(() => {
     if (socket) {
-      socket.on("newMessage", (data) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
+      socket.on("newMessage", (data: any) => {
+        console.log(data);
+        if (data.roomId === selectedConversation?.roomId) {
+          return setMessages((prevMessages) => [...prevMessages, data]);
+        }
+        console.log(data.roomId);
+        console.log(counts)
+        setCountings(data.roomId);
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
       });
 
       return () => {
-        // socket.off("newMessage");
+        socket.off("newMessage");
       };
     }
-  }, [socket, selectedConversation]);
+  }, [socket, selectedConversation, setMessages, setCountings]);
 
   useEffect(() => {
-    socket?.emit("addUser", auth.user?.id);
-    socket?.on("getUsers", (users) => {
-      setOnlineUser(users);
+    if (socket && conversations.length > 0 && auth && auth.user) {
+      socket?.emit(
+        "getUsers",
+        conversations.map((conv) =>
+          auth.user?.role === "rider" ? conv.driver._id : conv.user._id
+        )
+      );
+      socket.emit("sendonline", auth.user.id, auth.user.role);
+    }
+  }, [conversations, socket, auth, auth.user]);
+  useEffect(() => {
+    socket?.on("online", (userId: string) => {
+      setOnlineUser(
+        [...onlineUser, { userId: userId }].filter(
+          (values, idx, arr) => arr.indexOf(values) === idx
+        )
+      );
     });
-  }, [socket, auth.user?.id]);
-  console.log(onlineUser);
+    socket?.on("getUsers", (users: string[]) => {
+      console.log("getUsers", users);
+      setOnlineUser([
+        ...onlineUser,
+        ...users.map((values) => {
+          return {
+            userId: values,
+          };
+        }),
+      ]);
+    });
 
+    ()=>{
+      socket?.off("online");
+      socket?.off("getUsers");
+    }
+  }, [socket]);
   const handleMessageSend = async () => {
     if (chatMessage.trim() === "") return;
     await sendMessageToChat(chatMessage);
@@ -90,14 +160,27 @@ export default function Component() {
       })
       .then((response) => {
         console.log(response.data.result);
-        socket?.emit("newMessage", response.data.result.chatMessage);
+        socket?.emit("newMessage", {
+          message: response.data.result.chatMessage,
+          recieverId: recieverId,
+        });
+        setMessages([...messages, response.data.result.chatMessage]);
       })
       .catch((error) => {
         console.error(error);
         console.error("Error sending message:", error);
       });
   };
+  const isUserOnline = (userId: string) => {
+    return onlineUser.some((user) => user.userId === userId);
+  };
 
+  // useEffect(()=>{
+  //   setOnlineUser(
+  //     onlineUser.filter((user) => user.userId!== selectedConversation.)
+  //   )
+  // },[selectedConversation])
+      
   return (
     <div className="w-full flex justify-center">
       <header className="bg-background border-b  fixed top-0 left-0 right-0 z-50">
@@ -111,6 +194,7 @@ export default function Component() {
           onlineUser={onlineUser}
           counts={counts}
           setCount={setCount}
+          selectedIsOnline={selectedIsOnline}
         />
         <div className="bg-background rounded-e-lg w-[70vw] border p-6 mt-20 flex flex-col gap-4  h-[calc(98vh-80px)]">
           {selectedConversation && selectedConversation.driver ? (

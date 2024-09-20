@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { Button } from "../../../components/ui/button";
 import { Link } from "react-router-dom";
 import MapComponent from "../../map/MapComponent";
-import Header from "../../Navbar";
+import Header from "../../Common/Navbar";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useEssentials } from "../../../hooks/UseEssentials";

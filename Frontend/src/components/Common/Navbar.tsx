@@ -10,16 +10,16 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerClose,
-} from "../components/ui/drawer";
-import { Button } from "../components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { ModeToggle } from "../components/mode-toggle";
-import CarIcon from "../components/CarIcon";
-import { removeCookie } from "../functions/CalculateTime";
-import { useEssentials } from "../hooks/UseEssentials";
-import { resetState } from "../redux/userStore/Authentication/AuthSlice";
-import DriverNotification from "./driver/DriverNotification";
-import UserNotification from "./user/UserNotification";
+} from "../ui/drawer";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ModeToggle } from "../Common/mode-toggle";
+import CarIcon from "../Common/CarIcon";
+import { removeCookie } from "../../functions/CalculateTime";
+import { useEssentials } from "../../hooks/UseEssentials";
+import { resetState } from "../../redux/userStore/Authentication/AuthSlice";
+import DriverNotification from "../driver/DriverNotification";
+import UserNotification from "../user/UserNotification";
 import { FaCar } from "react-icons/fa";
 import { MessageCircle } from "lucide-react";
 

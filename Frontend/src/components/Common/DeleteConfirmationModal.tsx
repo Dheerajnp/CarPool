@@ -1,6 +1,6 @@
 import React from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "../components/ui/dialog";
-import { Button } from "../components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "../ui/dialog";
+import { Button } from "../ui/button";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;

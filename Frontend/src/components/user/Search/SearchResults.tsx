@@ -37,10 +37,11 @@ import {
   fetchRidesSuccess,
 } from "../../../redux/userStore/Rides/RideListSlice";
 import axiosApiGateway from "../../../functions/axios";
-import Header from "../../Navbar";
+import Header from "../../Common/Navbar";
 import { SkeletonCard } from "./SkeletonCardSearch";
 import NoRidesFound from "./NoridesFoundComponent";
 import { Link, useLocation } from "react-router-dom";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
 
 interface LocationSuggestion {
   place_name: string;
@@ -126,6 +127,8 @@ export default function SearchResultsComponent() {
       }
     },
   });
+  console.log(rides)
+
 
   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -196,7 +199,7 @@ export default function SearchResultsComponent() {
   };
   const handlePriceChange = (event: Event, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
-    console.log(event)
+    console.log(event);
   };
 
   const handleSeatsChange = (value: string) => {
@@ -228,7 +231,7 @@ export default function SearchResultsComponent() {
   const indexOfLastRide = currentPage * ridesPerPage;
   const indexOfFirstRide = indexOfLastRide - ridesPerPage;
   const currentRides = filteredRides.slice(indexOfFirstRide, indexOfLastRide);
-  console.log(currentRides)
+  console.log(currentRides);
   const totalPages = Math.ceil(filteredRides.length / ridesPerPage);
   return (
     <div>
@@ -361,13 +364,13 @@ export default function SearchResultsComponent() {
                     onChange={handlePriceChange}
                     valueLabelDisplay="auto"
                     min={0}
-                    max={4000}
+                    max={10000}
                     valueLabelFormat={(value) => `${value}`}
                   />
                 </Box>
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>₹0</span>
-                  <span>₹4000</span>
+                  <span>₹10000</span>
                 </div>
                 <Button onClick={handleFilter}>Apply</Button>
               </div>
@@ -404,11 +407,23 @@ export default function SearchResultsComponent() {
                 <CardHeader className="p-4">
                   <div className="flex justify-between">
                     <div className="flex align-middle gap-2">
-                      <img
-                        src={ride.driver.profile ? ride.driver.profile : ""}
-                        alt="profile"
-                        className="rounded-full border-gray-200 h-10 w-10 mt-2"
-                      />
+                      {ride.driver.profile ? (
+                        <img
+                          src={ride.driver.profile}
+                          alt="profile"
+                          className="rounded-full border-gray-200 h-10 w-10 mt-2"
+                        />
+                      ) : (
+                        <Avatar className="h-10 w-10 mt-2">
+                          <AvatarFallback>
+                            {ride.driver.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
                       <div className="flex flex-col">
                         <span className=" mt-2 text-lg">
                           {ride.driver.name}

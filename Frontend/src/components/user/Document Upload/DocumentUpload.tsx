@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Toaster, toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useEssentials } from "../../../hooks/UseEssentials";
-import { ModeToggle } from "../../mode-toggle";
+import { ModeToggle } from "../../Common/mode-toggle";
 import axiosApiGateway from "../../../functions/axios";
 
 const DocumentUpload = () => {

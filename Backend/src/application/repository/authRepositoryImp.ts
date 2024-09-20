@@ -10,133 +10,159 @@ import driverModel from "../../frameworks/database/models/driverSchema";
 import bcrypt from "bcryptjs";
 
 export class AuthRepositoryImp implements AuthRepository {
-
-  async resetPasswordRepository(data: { email: string; password: string; role:string}): Promise<{ message: string; status: number; }> {
+  async resetPasswordRepository(data: {
+    email: string;
+    password: string;
+    role: string;
+  }): Promise<{ message: string; status: number }> {
     try {
-        const { email, password,role } = data;
+      const { email, password, role } = data;
       let foundUser = null;
-      if(role === "rider"){
-        foundUser = await userModel.findOne({email:email});
-      }else if(role === "host"){
-        foundUser = await driverModel.findOne({email:email});
+      if (role === "rider") {
+        foundUser = await userModel.findOne({ email: email });
+      } else if (role === "host") {
+        foundUser = await driverModel.findOne({ email: email });
       }
 
-        if (!foundUser) {
-            return {
-                message: 'Invalid User',
-                status: 401
-            };
-        }
-
-        const encPassword = await CommonFunctions.HashPassword(password);
-
-        // Update the password in the correct model based on which one contains the email
-        if (role === "rider") {
-            await userModel.findOneAndUpdate({ email: email }, { $set: { password: encPassword } });
-        } else if (role === "driver") {
-            await driverModel.findOneAndUpdate({ email: email }, { $set: { password: encPassword } });
-        }
-
+      if (!foundUser) {
         return {
-            message: 'Password reset successfully',
-            status: 200
+          message: "Invalid User",
+          status: 401,
         };
+      }
+
+      const encPassword = await CommonFunctions.HashPassword(password);
+
+      // Update the password in the correct model based on which one contains the email
+      if (role === "rider") {
+        await userModel.findOneAndUpdate(
+          { email: email },
+          { $set: { password: encPassword } }
+        );
+      } else if (role === "driver") {
+        await driverModel.findOneAndUpdate(
+          { email: email },
+          { $set: { password: encPassword } }
+        );
+      }
+
+      return {
+        message: "Password reset successfully",
+        status: 200,
+      };
     } catch (error) {
-        console.error(error);
+      console.error(error);
+      return {
+        message: "Internal Server Error",
+        status: 500,
+      };
+    }
+  }
+
+  async verifyOtpforgotPassword(data: {
+    email: string;
+    otp: string;
+    role: string;
+  }): Promise<{ message: string; status: number; user: Driver | User | null }> {
+    try {
+      const { email, otp, role } = data;
+      let foundUser = null;
+      if (role === "rider") {
+        foundUser = await userModel.findOne({ email: email });
+      } else if (role === "host") {
+        foundUser = await driverModel.findOne({ email: email });
+      }
+      if (!foundUser) {
         return {
-            message: 'Internal Server Error',
-            status: 500
+          message: "Invalid User",
+          status: 401,
+          user: null,
         };
-    }
-}
+      }
 
+      if (foundUser.otp !== otp) {
+        return {
+          message: "Invalid OTP",
+          status: 401,
+          user: null,
+        };
+      }
 
-    async verifyOtpforgotPassword(data: { email: string; otp: string; role:string }): Promise<{ message: string; status: number; user: Driver | User | null }> {
-        try {
-            const { email, otp,role } = data;
-           let foundUser=null;
-            if(role === "rider"){
-              foundUser = await userModel.findOne({email:email})
-            }else if(role ==="host"){
-              foundUser = await driverModel.findOne({email:email})
-            }
-            if (!foundUser) {
-                return {
-                    message: 'Invalid User',
-                    status: 401,
-                    user: null
-                };
-            }
-    
-            if (foundUser.otp !== otp) {
-                return {
-                    message: 'Invalid OTP',
-                    status: 401,
-                    user: null
-                };
-            }
-    
-            // Update the correct model based on which one contains the email
-            if (role === "rider") {
-                await userModel.findOneAndUpdate({ email: email }, { $set: { otp: null } });
-            } else if (role === "host") {
-                await driverModel.findOneAndUpdate({ email: email }, { $set: { otp: null } });
-            }
-    
-            return {
-                message: `OTP verified of the ${role} `,
-                status: 200,
-                user: foundUser,
-            };
-        } catch (error) {
-            console.error(error);
-            return {
-                message: 'Internal Server Error',
-                status: 500,
-                user: null
-            };
-        }
-    }
-    
+      // Update the correct model based on which one contains the email
+      if (role === "rider") {
+        await userModel.findOneAndUpdate(
+          { email: email },
+          { $set: { otp: null } }
+        );
+      } else if (role === "host") {
+        await driverModel.findOneAndUpdate(
+          { email: email },
+          { $set: { otp: null } }
+        );
+      }
 
-    async userForgotPassword(email: string,role:string): Promise<{ message: string; user: Driver | User | null; status: number; }> {
-        try {
-          let foundUser;
-            if(role ==="rider"){
-               foundUser = await userModel.findOne({email:email})
-            }else if(role ==="host"){
-              foundUser = await driverModel.findOne({email:email})
-            }
-            if (!foundUser) {
-                return {
-                    message: 'User not found',
-                    status: 401,
-                    user: null
-                };
-            }
-    
-            const otp = CommonFunctions.otpGenerator();
-            sendMail.forgotPasswordOtpMail(otp, email);
-            if (foundUser.role === "rider") {
-                await userModel.findOneAndUpdate({ email: email }, { $set: { otp: otp } });
-            } else if (foundUser.role === "host") {
-                await driverModel.findOneAndUpdate({ email: email }, { $set: { otp: otp } });
-            }
-    
-            return {
-                message: `OTP sent to mail of the ${role}`,
-                status: 200,
-                user: foundUser ,
-            };
-        } catch (error) {
-            console.error(error);
-            return {
-                message: 'Internal Server Error',
-                status: 500,
-                user: null
-            };
-        }
+      return {
+        message: `OTP verified of the ${role} `,
+        status: 200,
+        user: foundUser,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: "Internal Server Error",
+        status: 500,
+        user: null,
+      };
     }
+  }
+
+  async userForgotPassword(
+    email: string,
+    role: string
+  ): Promise<{ message: string; user: Driver | User | null; status: number }> {
+    try {
+      let foundUser;
+      if (role === "rider") {
+        foundUser = await userModel.findOne({ email: email });
+      } else if (role === "host") {
+        foundUser = await driverModel.findOne({ email: email });
+      }
+      if (!foundUser) {
+        return {
+          message: "User not found",
+          status: 401,
+          user: null,
+        };
+      }
+
+      const otp = CommonFunctions.otpGenerator();
+      sendMail.forgotPasswordOtpMail(otp, email);
+      if (foundUser.role === "rider") {
+        await userModel.findOneAndUpdate(
+          { email: email },
+          { $set: { otp: otp } }
+        );
+      } else if (foundUser.role === "host") {
+        await driverModel.findOneAndUpdate(
+          { email: email },
+          { $set: { otp: otp } }
+        );
+      }
+
+      return {
+        message: `OTP sent to mail of the ${role}`,
+        status: 200,
+        user: foundUser,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: "Internal Server Error",
+        status: 500,
+        user: null,
+      };
+    }
+  }
   async findByCredentials(userCredentials: {
     email: string;
     password: string;
@@ -186,24 +212,106 @@ export class AuthRepositoryImp implements AuthRepository {
           userData.role as string
         );
         return {
-            user: userData,
-            message: "User authenticated successfully",
-            token: token,
-            refreshToken: refreshToken,
-          };
+          user: userData,
+          message: "User authenticated successfully",
+          token: token,
+          refreshToken: refreshToken,
+        };
       }
-      return{
+      return {
         user: null,
         message: "Password not set for this user",
         token: null,
         refreshToken: null,
-      }
-      
+      };
     } catch (error) {
       console.error(error);
       throw new Error("Internal server error");
     }
   }
+
+  async googleCredentialsCreate(credentials: {
+    email: string;
+    name: string;
+    password: string;
+    role: string;
+  }): Promise<{
+    message: string;
+    status: number;
+    user: User | Driver | null;
+    token: string | null;
+    refreshToken: string | null;
+  }> {
+    console.log("repository google creation signup");
+    const { name, email, password, role } = credentials;
+    const HashPassword = await CommonFunctions.HashPassword(password);
+    
+    try {
+      // Variable to store either user or driver
+      let user: User | null = null;
+      let driver: Driver | null = null;
+      let token: string | null = null;
+      let refreshToken: string | null = null;
+  
+      if (role === 'rider') {
+        // Create user in userModel
+        user = new userModel({
+          name,
+          email,
+          password: HashPassword,
+          role,
+        });
+        await user.save();
+        console.log("User created with google as rider", user);
+        
+        // Generate tokens for the user
+        token = CommonFunctions.jwtGenerateToken(user._id, user.role as string);
+        refreshToken = CommonFunctions.jwtGenerateRefreshToken(user._id, user.role as string);
+  
+        return {
+          user,
+          token,
+          refreshToken,
+          message:  "User created and logged in" ,
+          status: 200,
+        };
+      } else if (role === 'host') {
+        // Create driver in driverModel
+        driver = new driverModel({
+          name,
+          email,
+          password: HashPassword,
+          role,
+        });
+        await driver.save();
+        console.log("Driver created with google as host", driver);
+        
+        // Generate tokens for the driver
+        token = CommonFunctions.jwtGenerateToken(driver._id, driver.role as string);
+        refreshToken = CommonFunctions.jwtGenerateRefreshToken(driver._id, driver.role as string);
+        return {
+          user:driver,
+          token,
+          refreshToken,
+          message: "Driver created and logged in",
+          status: 200,
+        };
+      }
+  
+      return {
+        user:null,
+        token,
+        refreshToken,
+        message: role === 'rider' ? "User created and logged in" : "Driver created and logged in",
+        status: 200,
+      };
+    } catch (error: any) {
+      console.log(error);
+      throw error;
+    }
+  }
+  
+
   async verifyOtp(
     tempId: string,
     enteredOtp: string

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useEssentials } from "../../../hooks/UseEssentials";
-import RoundLoader from "../../RoundLoader";
-import Header from "../../Navbar";
+import RoundLoader from "../../Common/RoundLoader";
+import Header from "../../Common/Navbar";
 import { IRideDetails } from "../../../redux/userStore/RideDetails/RideDetailsInterface";
 import axiosApiGateway from "../../../functions/axios";
 import { FaArrowRight } from "react-icons/fa";

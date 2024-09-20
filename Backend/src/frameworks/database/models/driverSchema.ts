@@ -1,6 +1,10 @@
 import { model, Schema, Document } from "mongoose";
 import Driver from "../../../entities/interfaces/DriverInterface";
 
+import path from "path";
+
+const defaultProfilePicPath = path.join("/assets/icons/userProfile.jpg");
+
 const  vehicleSchema = new Schema({
   brand: {
     type: String,
@@ -50,6 +54,7 @@ const driverSchema = new Schema<Driver>({
   },
   profile: {
     type: String,
+    default: defaultProfilePicPath,
   },
   role: {
     type: String,

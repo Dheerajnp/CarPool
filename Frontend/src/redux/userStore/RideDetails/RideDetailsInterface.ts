@@ -37,14 +37,14 @@ export interface IRideDetails {
     status: 'pending' | 'accepted' | 'rejected';
     numberOfPassengers: number;
     passengerRideStatus:string;
-    otp:string;
+    otp:string; 
     paymentStatus:boolean;
     payment:{
       amount: number;
       transactionId: string;
       paymentMethod: string;
       paymentDate: Date;
-      status:number;
+      status:string;
     }
   }[];
   distance: number;

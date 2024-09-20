@@ -1,7 +1,7 @@
 import {
     Card,
     CardContent,
-  } from "../components/ui/card";
+  } from "../ui/card";
 const TestimonialCard = ({ text, author }:{text:string,author:string}) => (
     <Card className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <CardContent>

@@ -28,9 +28,9 @@ import { IRideDetails } from "../../../redux/userStore/RideDetails/RideDetailsIn
 import { useEffect, useState } from "react";
 import axiosApiGateway from "../../../functions/axios";
 import toast from "react-hot-toast";
-import RoundLoader from "../../RoundLoader";
+import RoundLoader from "../../Common/RoundLoader";
 import MapComponent from "../../map/MapComponent";
-import Header from "../../Navbar";
+import Header from "../../Common/Navbar";
 import {
   Dialog,
   DialogContent,

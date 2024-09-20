@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import banner from "../assets/banner/banner.jpg";
 import { FaCar, FaMoneyBillAlt, FaTree, FaUsers } from "react-icons/fa";
-import TestimonialCard from "../components/TestimonialCard";
-import FeatureCard from "../components/FeatureCard";
+import TestimonialCard from "../components/Common/TestimonialCard";
+import FeatureCard from "../components/Common/FeatureCard";
 import { Button } from "../components/ui/button";
 import { useEssentials } from "../hooks/UseEssentials";
-import Header from "../components/Navbar";
+import Header from "../components/Common/Navbar";
 import CreateRide from "../components/driver/CreateRide";
 import SearchRide from "../components/user/SearchRideCard";
 

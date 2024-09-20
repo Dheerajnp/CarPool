@@ -9,7 +9,7 @@ const controller = new driverController(interactor);
 
 const driverRouter: Router = Router();
 
-driverRouter.put('/upload-license/:userId',authMiddleware,controller.uploadLicense.bind(controller));
+driverRouter.put('/upload-license/:userId',controller.uploadLicense.bind(controller));
 driverRouter.post('/getDriver',authMiddleware,controller.getDriverDetails.bind(controller));
 driverRouter.post('/saveLicenseInfo',authMiddleware,controller.editLicenseInfo.bind(controller));
 driverRouter.post('/updateInfo/:driverId',authMiddleware,controller.editDriverInfo.bind(controller));

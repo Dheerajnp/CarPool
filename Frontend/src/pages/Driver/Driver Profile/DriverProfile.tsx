@@ -8,11 +8,11 @@ import { Driver, Vehicle } from "../../../redux/userStore/Authentication/interfa
 import EditDriverInfoModal from "./EditDriverInfoModal";
 import EditVehicleModal from "./EditVehicleInfoModal";
 import EditLicenseInfoModal from "./EditLicenseInfoModal";
-import Header from "../../../components/Navbar";
-import RoundLoader from "../../../components/RoundLoader";
+import Header from "../../../components/Common/Navbar";
+import RoundLoader from "../../../components/Common/RoundLoader";
 import { MdDelete } from "react-icons/md";
 import toast from "react-hot-toast";
-import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "../../../components/Common/DeleteConfirmationModal";
 import ImageModal from "./ImageModal";
 import axiosApiGateway from "../../../functions/axios";
 

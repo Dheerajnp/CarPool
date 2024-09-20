@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosApiGateway from "../../../functions/axios";
 import { IRideDetails } from "../../../redux/userStore/RideDetails/RideDetailsInterface";
-import RoundLoader from "../../RoundLoader";
+import RoundLoader from "../../Common/RoundLoader";
 import { useEssentials } from "../../../hooks/UseEssentials";
 import toast from "react-hot-toast";
 import { MdChatBubble } from "react-icons/md";
@@ -229,14 +229,7 @@ export default function RideDetailsComponent() {
                       <h4 className="text-lg font-light">
                         {rideDetails?.driver.email}
                       </h4>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <FaStar className="w-4 h-4 fill-primary" />
-                        <FaStar className="w-4 h-4 fill-primary" />
-                        <FaStar className="w-4 h-4 fill-primary" />
-                        <FaStar className="w-4 h-4 fill-muted stroke-muted-foreground" />
-                        <FaStar className="w-4 h-4 fill-muted stroke-muted-foreground" />
-                        <span>4.3</span>
-                      </div>
+                     
                     </div>
                     <TooltipProvider>
                       <Tooltip>

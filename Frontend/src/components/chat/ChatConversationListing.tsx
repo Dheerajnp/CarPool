@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect} from "react";
+import { SetStateAction, useEffect } from "react";
 import { useEssentials } from "../../hooks/UseEssentials";
 import useSocket from "../../hooks/UseSocket";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -31,11 +31,12 @@ interface ConversationListProps {
   conversations: IConversation[];
   selectedConversation: IConversation | null;
   setSelectedConversation: (conversation: IConversation) => void;
-  onlineUser: onlineUserFindType[];
+  onlineUser: any[];
   counts: { _id: string; unreadCount: number }[];
   setCount: React.Dispatch<
     SetStateAction<{ _id: string; unreadCount: number }[]>
   >;
+  selectedIsOnline:()=>void;
 }
 
 export const ConversationList: React.FC<ConversationListProps> = ({
@@ -45,14 +46,16 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   onlineUser,
   counts,
   setCount,
+  selectedIsOnline
 }) => {
   const isUserOnline = (userId: string) => {
     return onlineUser.some((user) => user.userId === userId);
   };
 
   const { auth } = useEssentials();
-  const socket = useSocket(auth?.user?.id || "");
+  const socket = useSocket();
 
+  
   useEffect(() => {
     if (socket && conversations.length > 0 && auth.user) {
       socket.emit(
@@ -81,7 +84,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
       );
     }
     return () => {
-      // socket?.off("UnseenCount");
+      socket?.off("UnseenCount");
     };
   }, [socket]);
 
@@ -110,7 +113,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
               </Avatar>
               <span
                 className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full z-10 ${
-                  isOnline ? "bg-green-500" : "bg-red-500"
+                  isOnline ? "bg-green-500" : ""
                 }`}
               />
             </div>
@@ -119,7 +122,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
               <div className="font-medium flex justify-between items-center">
                 <span>{displayUser.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {displayUser ? "Online" : "Offline"}
+                  {isOnline ? "Online" : "Offline"}
                 </span>
               </div>
               <div className="text-xs text-muted-foreground">

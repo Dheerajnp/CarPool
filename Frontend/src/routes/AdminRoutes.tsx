@@ -2,7 +2,7 @@ import  { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import AdminLogin from "../pages/admin/AdminLogin";
 import Layout from "../pages/admin/Layout";
-import RoundLoader from "../components/RoundLoader";
+import RoundLoader from "../components/Common/RoundLoader";
 
 const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
 const UserList = lazy(() => import("../components/admin/rider/UserList"));

@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosApiGateway from "../../../functions/axios";
 import { IRideDetails } from "../../../redux/userStore/RideDetails/RideDetailsInterface";
-import RoundLoader from "../../RoundLoader";
-import Header from "../../Navbar";
+import RoundLoader from "../../Common/RoundLoader";
+import Header from "../../Common/Navbar";
 import toast from "react-hot-toast";
 
 export default function RideDetailsForDriver() {

@@ -128,7 +128,7 @@ export const resetPassword:Function = async(data:interfaces.ResetPasswordCredent
 
 export const googleSignup:Function = async(credentials:interfaces.GoogleSignUpCredentials)=>{
   try {
-    const response = await axios.post('/user/google-signup',credentials,{
+    const response = await axios.post('/google-signup',credentials,{
       withCredentials: true
     })
     return <interfaces.GoogleSignUpResponse> response.data

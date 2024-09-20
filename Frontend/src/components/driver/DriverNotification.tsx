@@ -26,7 +26,7 @@ interface Notification {
 
 const DriverNotification = () => {
   const { auth, navigate } = useEssentials();
-  const socket = useSocket(auth.user?.id as string);
+  const socket = useSocket();
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const DriverNotification = () => {
       );
     }
     () => {
-      socket?.disconnect();
+      socket?.off("notification");
     };
   }, [socket]);
 
