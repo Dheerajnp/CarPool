@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { userRepositoryImp } from "../../application/repository/userRepositoryImp";
-import { userInteractorImp } from "../../application/usecases/userInteractorImp";
 import { userController } from "../controllers/userController";
 import {authMiddleware} from '../middlewares/authMiddleware'
+import { userInteractorImp } from "../../application/usecases/userInteractorimp";
 
 const repository = new userRepositoryImp();
 const interactor = new userInteractorImp(repository);

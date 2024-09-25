@@ -9,8 +9,6 @@ const VerifyOtp = () => {
 
   useEffect(() => {
     const Id = localStorage.getItem("registeredUserId");
-    
-   
     if (Id !== null) {
       setSavedId(Id);
     } else {

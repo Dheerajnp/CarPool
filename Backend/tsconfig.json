@@ -3,14 +3,9 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "outDir": "../CarPool(Backend)",
+        "outDir": "./dist",
         "strict": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "rootDir": "./src"
     },
-    "include": [
-        "*"
-  , "src/app.ts"  ],
-    "exclude": [
-        "node_modules"
-    ]
   }

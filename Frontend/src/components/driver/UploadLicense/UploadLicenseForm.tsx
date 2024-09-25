@@ -19,6 +19,7 @@ const validationSchema = Yup.object({
 });
 
 const UploadLicenseForm = () => {
+  console.log("Upload 2");
   const [frontLicensePreview, setFrontLicensePreview] = useState<string | null>(
     null
   );

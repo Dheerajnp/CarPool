@@ -18,11 +18,13 @@ const VerifyUser = ({ savedId }: { savedId: string}) => {
     }
     setError("");
     dispatch(verifyOtpThunk({ savedId, otp })).then((response: any) => {
+      console.log(response.payload.user)
       if (response.payload.user) {
         let role = response.payload.user.role;
         if (role === 'rider') {
           navigate('/user/upload-document');
         } else if (role === 'host') {
+          console.log("host")
           navigate('/driver/upload-license');
         }
       } else {

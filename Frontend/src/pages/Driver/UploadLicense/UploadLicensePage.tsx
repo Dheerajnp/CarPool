@@ -2,6 +2,7 @@ import { Toaster } from "react-hot-toast";
 import UploadLicenseForm from "../../../components/driver/UploadLicense/UploadLicenseForm";
 
 const UploadLicensePage = () => {
+  console.log("Upload")
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-gray-800">
       <Toaster position="top-center" reverseOrder={false} />
