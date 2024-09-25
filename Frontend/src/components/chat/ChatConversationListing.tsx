@@ -23,9 +23,9 @@ interface IConversation {
   lastMessage: string;
 }
 
-interface onlineUserFindType {
-  userId: string;
-}
+// interface onlineUserFindType {
+//   userId: string;
+// }
 
 interface ConversationListProps {
   conversations: IConversation[];
@@ -36,7 +36,7 @@ interface ConversationListProps {
   setCount: React.Dispatch<
     SetStateAction<{ _id: string; unreadCount: number }[]>
   >;
-  selectedIsOnline:()=>void;
+  // selectedIsOnline:()=>void;
 }
 
 export const ConversationList: React.FC<ConversationListProps> = ({
@@ -46,7 +46,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   onlineUser,
   counts,
   setCount,
-  selectedIsOnline
+  // selectedIsOnline
 }) => {
   const isUserOnline = (userId: string) => {
     return onlineUser.some((user) => user.userId === userId);

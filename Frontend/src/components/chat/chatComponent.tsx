@@ -87,9 +87,6 @@ export default function Component() {
   }
   
 
-  const selectedIsOnline = () =>{
-   
-  }
 
   useEffect(() => {
     if (socket) {
@@ -171,9 +168,9 @@ export default function Component() {
         console.error("Error sending message:", error);
       });
   };
-  const isUserOnline = (userId: string) => {
-    return onlineUser.some((user) => user.userId === userId);
-  };
+  // const isUserOnline = (userId: string) => {
+  //   return onlineUser.some((user) => user.userId === userId);
+  // };
 
   // useEffect(()=>{
   //   setOnlineUser(
@@ -194,7 +191,7 @@ export default function Component() {
           onlineUser={onlineUser}
           counts={counts}
           setCount={setCount}
-          selectedIsOnline={selectedIsOnline}
+          // selectedIsOnline={selectedIsOnline}
         />
         <div className="bg-background rounded-e-lg w-[70vw] border p-6 mt-20 flex flex-col gap-4  h-[calc(98vh-80px)]">
           {selectedConversation && selectedConversation.driver ? (

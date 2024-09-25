@@ -8,7 +8,6 @@ import {
 } from "../../ui/select";
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import { Button } from "../../ui/button";
-import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosApiGateway from "../../../functions/axios";
