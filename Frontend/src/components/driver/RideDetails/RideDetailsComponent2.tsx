@@ -435,10 +435,10 @@ export default function RideDetailedViewDriver() {
                           <Avatar>
                             <AvatarImage
                               src={`/placeholder.svg?height=40&width=40`}
-                              alt={passenger.rider.name}
+                              alt={passenger.rider.name.slice(0,2)}
                             />
                             <AvatarFallback>
-                              {passenger.rider.name}
+                              {passenger.rider.name.slice(0,2)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
