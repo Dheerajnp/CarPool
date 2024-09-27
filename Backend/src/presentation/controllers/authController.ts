@@ -27,8 +27,10 @@ export class authController{
         const result = await this.interactor.verifyOtpAndSave(enteredOtp, tempId);
 
         if(result.user!==null) {
-          return res.status(200).json({ message: result.message,user: result.user});
+          console.log(result)
+          return res.status(200).json(result);
         }
+        console.log(result)
        return res.status(result.status).json(result);
         
       } catch (error:any) {

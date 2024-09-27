@@ -11,5 +11,4 @@ export const basicSchema=yup.object().shape({
         .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
         .matches(/[a-z]/, "Password must contain at least one lowercase letter"),
     confirmPassword:yup.string().oneOf([yup.ref('password')],'Passwords must match'),
-    // role:yup.string().required("Select a given role to continue")  
 })

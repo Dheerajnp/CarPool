@@ -28,6 +28,17 @@ export class driverController{
         }
       }
 
+
+      updateDriverProfilePicture:RequestHandler = async (req, res) => {
+        const { driverId,profilePictureUrl } =req.body;
+        try {
+          const result = await this.interactor.updateProfilePictureDriver(driverId,profilePictureUrl);
+          return res.status(result.status).json(result);
+        } catch (error) {
+          return res.status(500).json({message  : "Internal server error"});
+        }
+      }
+
       editLicenseInfo:RequestHandler = async(req, res) => {
 
         const { licenseBackUrl, licenseFrontUrl,driverId } = req.body;
@@ -120,7 +131,6 @@ export class driverController{
       requestAccept:RequestHandler = async(req,res)=>{
         const {rideId} = req.params;
         const {passengerId} = req.body;
-        console.log(rideId,passengerId)
         try {
           const result = await this.interactor.requestAcceptInteractor(rideId,passengerId);
           return res.status(result.status).json(result);

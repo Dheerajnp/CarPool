@@ -25,9 +25,8 @@ const validationSchema = Yup.object({
 });
 
 const EditVehicleModal: React.FC<EditVehicleModalProps> = ({ vehicle, onClose, onSave,driver }) => {
-  const [rcDocumentPreview, setRcDocumentPreview] = useState<string | null>(null);
+  const [_rcDocumentPreview, setRcDocumentPreview] = useState<string | null>(null);
 
-  console.log(rcDocumentPreview)
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     setFieldValue: (field: string, value: any) => void,

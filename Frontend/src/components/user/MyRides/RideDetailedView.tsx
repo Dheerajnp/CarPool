@@ -45,6 +45,7 @@ export default function RideDetailsPage() {
   const { rideId } = useParams();
   const { auth, navigate } = useEssentials();
 
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
   useEffect(() => {
     const fetchRideDetails = async () => {
       setIsLoading(true);
@@ -71,12 +72,11 @@ export default function RideDetailsPage() {
       title: "Ride Cancelled",
       description: "Your ride has been successfully cancelled.",
     });
-    // Handle the API call for cancelling the ride
   };
 
   const handleChatClick = async (driverId: string) => {
     const response = await axiosApiGateway.get(
-      `/chat/user/getChat/${auth.user?.id as string}?driverId=${driverId}`
+      `/chat/user/getChat/${userId as string}?driverId=${driverId}`
     );
     if (response.data.result.status === 200) {
       navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
@@ -128,7 +128,7 @@ export default function RideDetailsPage() {
     rideData?.passengers.forEach((passenger) => {
       if (
         rideData?.status === "active" &&
-        passenger.rider._id === auth.user?.id
+        passenger.rider._id === userId
       ) {
         setOtp(passenger.otp);
       }
@@ -268,11 +268,19 @@ export default function RideDetailsPage() {
                       <div>
                         {rideData.status === "completed" &&
                           rideData.passengers.find(
-                            (value) => value.rider._id === auth.user?.id
+                            (value) => value.rider._id === userId
                           )?.payment?.status !== "paid" && (
                             <Button variant={"ghost"} onClick={makePayment}>
                               Pay for the ride
                             </Button>
+                          )}
+                           {rideData.status === "completed" &&
+                          rideData.passengers.find(
+                            (value) => value.rider._id === userId
+                          )?.payment?.status == "paid" && (
+                            <Badge variant={"destructive"} >
+                              Paid
+                            </Badge>
                           )}
                       </div>
                     </div>

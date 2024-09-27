@@ -24,6 +24,7 @@ export interface IRide extends Document {
     availableSeats: number;
     totalSeats: number;
     price: number;
+    totalPrice:number;
     status: 'pending' | 'active' | 'completed' | 'cancelled';
     passengers: {
       rider: mongoose.Schema.Types.ObjectId;

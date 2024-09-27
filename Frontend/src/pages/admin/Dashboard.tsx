@@ -1,45 +1,100 @@
 
-import React from 'react';
-import { Bar, Line, Pie } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import React, { useEffect, useState } from "react";
+import { Bar, Line, Pie } from "react-chartjs-2";
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import axios from "axios";
 
-Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend);
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard: React.FC = () => {
+  // const [year, setYear] = useState(new Date().getFullYear());
   // useRequireAuth();
   const barData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     datasets: [
       {
-        label: 'Rides',
-        data: [12, 19, 3, 5, 2, 3, 7],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        label: "Rides",
+        data: [0, 0, 0, 0, 0, 0, 0,0,1,0],
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
       },
     ],
   };
 
   const lineData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     datasets: [
       {
-        label: 'New Users',
-        data: [33, 53, 85, 41, 44, 65, 90],
+        label: "New Users",
+        data: [0, 0, 0, 0, 0, 0, 0,0,2],
         fill: true,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
       },
     ],
   };
 
-  const pieData = {
-    labels: ['Rider', 'Host'],
+
+  const [pieData, setPieData] = useState({
+    labels: ["Rider", "Host"],
     datasets: [
       {
-        data: [60, 40],
-        backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)'],
+        data: [0, 0],
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+        ],
       },
     ],
-  };
+  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const rideResponse = await axios.get(`/ride/ride-stats?year=${2024}`);
+        const rideStats = rideResponse.data;
+        console.log(rideStats);
+        const userResponse = await axios.get("/admin/user-roles-stats");
+        const userRoles = userResponse.data;
+        console.log(userRoles);
+        setPieData({
+          labels: ["User", "Driver"],
+          datasets: [
+            {
+              data: [userRoles.rider, userRoles.host],
+              backgroundColor: [
+                "rgba(75, 192, 192, 0.6)",
+                "rgba(153, 102, 255, 0.6)",
+              ],
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="p-4">
@@ -58,20 +113,11 @@ const Dashboard: React.FC = () => {
 
         <div className="bg-white p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">User Roles</h2>
-          <Pie data={pieData} />
+          {pieData && <Pie data={pieData} />}
         </div>
-      </div>
-
-      <div className="bg-white p-4 rounded shadow-md">
-        <h2 className="text-xl font-semibold mb-2">Recent Activity</h2>
-        <ul>
-          <li className="mb-2">User John Doe joined as a rider</li>
-          <li className="mb-2">User Jane Doe joined as a host</li>
-          <li className="mb-2">Ride from NYC to Boston scheduled for tomorrow</li>
-        </ul>
       </div>
     </div>
   );
-}
+};
 
-export default Dashboard
+export default Dashboard;

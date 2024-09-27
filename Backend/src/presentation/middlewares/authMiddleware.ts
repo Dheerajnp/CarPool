@@ -68,7 +68,6 @@ export const userBlocked = async (
         const { email } = req.body;
         const user = await userModel.findOne({email:email});
         if(user){
-            console.log(user,"user exists middleware");
             const role = user.role;
             const token = jwtGenerateToken(user._id as string, user.role as string);
             Cookie.set("token",token);

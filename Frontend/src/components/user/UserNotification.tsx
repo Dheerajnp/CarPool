@@ -27,12 +27,13 @@ const UserNotification = () => {
   const { auth, navigate } = useEssentials();
   const socket = useSocket();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const response = await axiosApiGateway.get(`/user/notifications`, {
-          params: { userId: auth.user?.id },
+          params: { userId: userId },
         });
         setNotifications(response.data.notifications);
       } catch (error) {
@@ -52,16 +53,20 @@ const UserNotification = () => {
     }
 
     socket?.on("changeNotification", (newNotification: Notification) => {
+      console.log(newNotification)
       setNotifications((prevNotifications) => [
         { ...newNotification, status: "read" },
         ...prevNotifications,
       ]);
+      navigate(
+        `/user/rideDetails/${newNotification?.rideId}`
+      );
     });
 
     return () => {
-      socket?.disconnect();
+      // socket?.disconnect();
     };
-  }, [socket, auth.user?.id]);
+  }, [socket, userId]);
 
   return (
     <Popover>
@@ -104,9 +109,6 @@ const UserNotification = () => {
                               socket?.emit(
                                 "notificationSeen",
                                 notification._id
-                              );
-                              navigate(
-                                `/user/rideDetails/${notification?.rideId}`
                               );
                             }}
                             className={`flex items-start gap-4 p-4 rounded-md mt-1 cursor-pointer relative ${

@@ -20,4 +20,6 @@ adminRouter.patch('/approveVehicle/:driverId/:vehicleId',controller.approveVehic
 adminRouter.patch('/rejectVehicle/:driverId/:vehicleId',controller.rejectVehicle.bind(controller));
 adminRouter.patch('/rejectDocument/:userId',controller.rejectDocument.bind(controller));
 adminRouter.patch('/approveDocument/:userId',controller.acceptDocument.bind(controller));
+adminRouter.get('/user-roles-stats',controller.userstatsController.bind(controller));
+
 export default adminRouter;

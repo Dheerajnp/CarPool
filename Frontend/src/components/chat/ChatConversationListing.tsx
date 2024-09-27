@@ -23,9 +23,7 @@ interface IConversation {
   lastMessage: string;
 }
 
-// interface onlineUserFindType {
-//   userId: string;
-// }
+
 
 interface ConversationListProps {
   conversations: IConversation[];
@@ -36,7 +34,7 @@ interface ConversationListProps {
   setCount: React.Dispatch<
     SetStateAction<{ _id: string; unreadCount: number }[]>
   >;
-  // selectedIsOnline:()=>void;
+  
 }
 
 export const ConversationList: React.FC<ConversationListProps> = ({
@@ -46,7 +44,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   onlineUser,
   counts,
   setCount,
-  // selectedIsOnline
+  
 }) => {
   const isUserOnline = (userId: string) => {
     return onlineUser.some((user) => user.userId === userId);
@@ -54,21 +52,21 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 
   const { auth } = useEssentials();
   const socket = useSocket();
-
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id;
   
   useEffect(() => {
     if (socket && conversations.length > 0 && auth.user) {
       socket.emit(
         "unseenMessage",
         conversations.map((conversation) => conversation.roomId),
-        auth.user.id
+        userId
       );
     }
   }, [socket, auth.user, conversations]);
 
   useEffect(() => {
     if (socket && selectedConversation) {
-      socket.emit("seenMessage", selectedConversation.roomId, auth.user?.id);
+      socket.emit("seenMessage", selectedConversation.roomId, userId);
       setCount(
         [...counts].filter((count) => count._id !== selectedConversation.roomId)
       );
@@ -90,11 +88,11 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 
   return (
     <ScrollArea className="bg-background rounded-s-lg w-1/4 border p-6 mt-20 flex flex-col gap-4 h-[calc(98vh-80px)]">
-      {conversations.map((conversation: IConversation) => {
-        const displayUser =
-          auth.user?.role === "rider" ? conversation.driver : conversation.user;
-
-        const isOnline = isUserOnline(displayUser._id);
+      {auth && auth.user && conversations && conversations.length > 0 &&conversations.map((conversation: IConversation) => {
+        console.log(conversation)
+        const displayUser = auth.user?.role === "rider" ? conversation.driver : conversation.user;
+        console.log(displayUser)
+        const isOnline = isUserOnline(displayUser?._id);
 
         return (
           <div
@@ -106,9 +104,9 @@ export const ConversationList: React.FC<ConversationListProps> = ({
           >
             <div className="relative">
               <Avatar className="w-12 h-12 border rounded-full shadow-md ">
-                <AvatarImage src={displayUser.profile} alt="Avatar" />
+                <AvatarImage src={displayUser && displayUser?.profile} alt="Avatar" />
                 <AvatarFallback>
-                  {displayUser.name.charAt(0).toUpperCase()}
+                  {displayUser && displayUser?.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <span
@@ -120,7 +118,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 
             <div className="flex-1">
               <div className="font-medium flex justify-between items-center">
-                <span>{displayUser.name}</span>
+                <span>{displayUser && displayUser?.name}</span>
                 <span className="text-xs text-muted-foreground">
                   {isOnline ? "Online" : "Offline"}
                 </span>

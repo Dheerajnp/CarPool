@@ -37,6 +37,7 @@ export function useChat() {
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<IConversation | null>(null);
 
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
   const socketRef = useRef<Socket>()
 
 
@@ -51,10 +52,11 @@ export function useChat() {
     })
   })
   useEffect(() => {
-    if (auth.user?.id) {
+
+    if (userId) {
       
       axiosApiGateway
-        .get(`/chat/user/getConversations/${auth.user?.id}`)
+        .get(`/chat/user/getConversations/${userId}`)
         .then((response) => {
           if (response.data) {
             setConversations(response.data.result.chat);

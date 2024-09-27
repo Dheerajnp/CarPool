@@ -134,9 +134,7 @@ export const googleLogin = createAsyncThunk<interfaces.GoogleSignUpResponse, int
         try {
             console.log(credentials)
             const data = await authService.googleSignup(credentials);
-            // const userId = data.user._id;
-            // localStorage.setItem('registeredUserId', userId);
-            // localStorage.setItem('expiryOtp', CalculateTime(5));
+
             return data;
         } catch (error) {
             return rejectWithValue({
@@ -215,13 +213,6 @@ const authSlice = createSlice({
                 state.message = ''
             })
             .addCase(AuthUser.fulfilled, (state, action) => {
-                // if (action.payload.status !== 200) {
-                //     toast.error(action.payload.message, {
-                //         position: 'top-right',
-                //         duration: 2000,
-                //     });
-                //     Cookies.remove('token')
-                // }
                 state.message = action.payload.message;
                 state.loading = false
                 if (action.payload.status === 200) {

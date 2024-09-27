@@ -1,4 +1,3 @@
-// import React from 'react'
 import NewPassword from '../../components/auth/forgot password/NewPassword'
 
 const NewPasswordPage = () => {

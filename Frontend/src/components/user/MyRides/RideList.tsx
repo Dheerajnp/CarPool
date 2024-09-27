@@ -19,11 +19,13 @@ export default function UserRides() {
   const [rides, setRides] = useState<IRideDetails[]>([]);
   const [loading, setLoading] = useState(true);
 
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
+  console.log(userId)
   useEffect(() => {
     const fetchRides = async () => {
       try {
         const response = await axiosApiGateway.get(
-          `/ride/getUserRides/${auth.user?.id}`
+          `/ride/getUserRides/${userId}`
         );
         if (response.data.result.status === 200) {
           setRides(response.data.result.rides);
@@ -36,18 +38,23 @@ export default function UserRides() {
     };
 
     fetchRides();
-  }, [auth.user?.id]);
+  }, [userId]);
 
+
+  console.log(rides)
   // Grouping rides by status
   const pendingRides = rides.filter((ride) => ride.status === "pending");
+  console.log(pendingRides)
   const ongoingRides = rides.filter((ride) => ride.status === "active");
   const completedRides = rides.filter((ride) => ride.status === "completed");
   const canceledRides = rides.filter((ride) => ride.status === "cancelled");
 
   const renderRide = (ride: IRideDetails) => {
+    console.log(userId)
     const userPassenger = ride.passengers.find(
-      (passenger) => passenger.rider.id === auth.user?._id
+      (passenger) => passenger.rider._id === userId
     );
+    console.log(userPassenger)
     if (!userPassenger) return null;
 
     return (

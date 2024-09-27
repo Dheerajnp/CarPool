@@ -3,7 +3,7 @@ import Driver from "../../../entities/interfaces/DriverInterface";
 
 import path from "path";
 
-const defaultProfilePicPath = path.join("/assets/icons/userProfile.jpg");
+const defaultProfilePicPath = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?w=740&t=st=1727417465~exp=1727418065~hmac=f5612e9180ed0edf5119919a1c14bb10eafca2b4275724390805024c73119b51";
 
 const  vehicleSchema = new Schema({
   brand: {

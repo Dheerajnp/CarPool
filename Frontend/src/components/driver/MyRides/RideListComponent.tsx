@@ -12,12 +12,13 @@ export default function MyRides() {
   const { auth } = useEssentials();
   const [rides, setRides] = useState<IRideDetails[]>([]);
   const [loading, setLoading] = useState(true);
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
 
   useEffect(() => {
     const fetchRides = async () => {
       try {
         const response = await axiosApiGateway.get(
-          `/ride/getDriverRides/${auth.user?.id}`
+          `/ride/getDriverRides/${userId}`
         );
         if (response.data.result.status === 200) {
           setRides(response.data.result.rides);
@@ -30,7 +31,7 @@ export default function MyRides() {
     };
 
     fetchRides();
-  }, [auth.user?.id]);
+  }, [userId]);
 
   // Group rides by status
   const pendingRides = rides.filter((ride) => ride.status === "pending");

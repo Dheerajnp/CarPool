@@ -23,9 +23,10 @@ import { useEssentials } from "./hooks/UseEssentials";
 function App() {
   const socket = useSocket();
   const { auth } = useEssentials();
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
   useEffect(() => {
     if(auth && socket && auth.user) {
-      socket.emit("joinRoom",auth.user.id)
+      socket.emit("joinRoom",userId)
     }
     return ()=>{
       socket?.off()

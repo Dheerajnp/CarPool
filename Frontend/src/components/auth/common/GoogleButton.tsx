@@ -47,10 +47,8 @@ const GoogleButton:React.FC<GoogleParams> = ({label,role}) => {
               toast.error(errorMessage);
             });
         }else{
-            console.log("data by google:",res.data)
             dispatch(googleLogin({email: res.data.email as string, password: res.data.sub as string, role:role as string , name: res.data.given_name as string})).then((response:any )=> {
                 if(response.payload.user){
-                    console.log("pppppppppppppppppppp",response.payload.user.role)
                     setCookie('token',response.payload.token)
                     setCookie('refreshToken',response.payload.refreshToken);
                     if(response.payload.user.role === "rider"){

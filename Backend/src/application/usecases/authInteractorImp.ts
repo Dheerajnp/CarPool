@@ -61,7 +61,6 @@ export class authInteractorImp implements authInteractor{
   async googleLoginInteractor(credentials: {email:string,name:string,password:string,role:string}): Promise<{ message: string; status: number; user: User|null; token: string|null; refreshToken: string|null; }> {
     try {
       const {name} = credentials;
-      console.log("nameeeeeeeeeeee interactor");
       const result = await this.repository.googleCredentialsCreate(credentials);
       return result;
     } catch (error) {
@@ -79,11 +78,11 @@ export class authInteractorImp implements authInteractor{
     try {
       
       
-      const { user, message, status} = await this.repository.verifyOtp(
+      const data = await this.repository.verifyOtp(
         tempId,
         enteredOtp
       );
-      return { user: user, message: message,status: status };
+      return data;
     } catch (error) {
       console.log(error);
       throw error;

@@ -23,6 +23,7 @@ const rideSchema = new mongoose.Schema<IRide>({
     availableSeats: { type: Number, required: true },
     totalSeats: { type: Number, required: true },
     price: { type: Number, required: true },
+    totalPrice:{type: Number, default: 0},
     status: { type: String, enum: ['pending', 'active', 'completed', 'cancelled'], default: 'pending' },
     passengers: [
       {

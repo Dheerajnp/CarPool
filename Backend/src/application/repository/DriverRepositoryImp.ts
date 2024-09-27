@@ -9,9 +9,36 @@ import { getSocketInstance } from "../../frameworks/server/socket";
 import { generateRideOtp } from "../functions/commonFunctions";
 
 export class driverRepositoryImp implements DriverRepository {
+  async updateDriverProfilePictureRepository(driverId: string, profilePictureUrl: string): Promise<{ message: string; status: number; driver: Driver|null; }> {
+    try {
+      const driver = await driverModel.findByIdAndUpdate(
+        driverId,
+        { profile: profilePictureUrl },
+        { new: true }
+      ).exec();
+      if(driver){
+        return{
+          status: 200,
+          message: "Profile picture updated successfully",
+          driver,
+        }
+      }
+      return{
+        status: 404,
+        message: "Driver not found",
+        driver: null,
+      }
+    } catch (error) {
+      return{
+        status: 500,
+        message: "Internal Server Error",
+        driver: null,
+      }
+    }
+  }
   async updateRideStatusRepository(rideId: string,status:string): Promise<{ status: number; message: string; rideDetails: IRide | null; }> {
     try {
-      const ride = await Ride.findByIdAndUpdate(
+      const ride:any = await Ride.findByIdAndUpdate(
         rideId,
         { status: status },
         { new: true }
@@ -25,6 +52,28 @@ export class driverRepositoryImp implements DriverRepository {
           message: "Ride not found",
           rideDetails: null,
         };
+      }
+      if(status ==="active"){
+        ride.passengers.forEach((passenger:any)=>{
+          if(passenger.status === "accepted"){
+            const notification = new Notification({
+              sender: ride.driver,
+              recipient: passenger.rider,
+              rideId: ride._id,
+              type: "ride_active",
+              message:`Ride to ${ride.destination.name} has started`,
+              read: false,
+            });
+            notification.save();
+            getSocketInstance()
+            ?.to(passenger.rider.id.toString())
+            .emit("newNotification", {
+              driverId: ride.driver._id.toString(),
+              rideId: ride._id.toString(),
+              type: "ride_active",
+            });
+          }
+        })
       }
       return {
         status: 200,

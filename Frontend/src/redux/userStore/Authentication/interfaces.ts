@@ -155,6 +155,8 @@ export interface VerifyOtpResponse{
     message: string;
     user?: any;
     status: number;
+    token:string;
+    refreshToken:string;
 }
 
 export interface VerifyOtpCredentials{

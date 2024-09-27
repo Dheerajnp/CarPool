@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import DeleteConfirmationModal from "../../../components/Common/DeleteConfirmationModal";
 import ImageModal from "./ImageModal";
 import axiosApiGateway from "../../../functions/axios";
+import { uploadToCloudinary } from "../../../functions/services/uploadToCloudinary";
 
 const DriverProfile: React.FC = () => {
   const { auth } = useEssentials();
@@ -56,23 +57,51 @@ const DriverProfile: React.FC = () => {
     }
   }, [driverId,auth]);
 
-  const [profilePicture, setProfilePicture] = useState<string>(
-    "/placeholder-user.jpg"
+  const [_profilePicture, _setProfilePicture] = useState<string>(
+    driver?.profile as string
   );
   
 
-  const handleProfilePictureChange = (
+  const handleProfilePictureChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfilePicture(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      // setLoading(true);
+  
+      try {
+        // Upload to Cloudinary
+        const imageUrl = await uploadToCloudinary(file);
+  
+        // Update state with the new profile picture immediately
+        setDriver(prev=>{
+          if (!prev) return prev;
+          return {
+           ...prev,
+            profile: imageUrl,
+          };
+        })
+  
+        // Update profile picture URL in the backend
+        const response = await axiosApiGateway.put("/driver/updateProfilePicture", {
+          driverId: driver?._id,
+          profilePictureUrl: imageUrl,
+        });
+  
+        if (response.status === 200) {
+          toast.success(response.data.message);
+        } else {
+          toast.error("Failed to update profile picture. Please try again later.");
+        }
+      } catch (error) {
+        console.error("Error uploading or updating profile picture:", error);
+        toast.error("Failed to upload or update profile picture. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
+  
 
   const handleSaveDriverInfo = (updatedDriver: Driver) => {
     setDriver(updatedDriver);
@@ -158,7 +187,7 @@ const DriverProfile: React.FC = () => {
             <div className="flex items-center gap-4 dark:bg-slate-800">
               <label htmlFor="avatar-input">
                 <Avatar className="h-16 w-16 cursor-pointer">
-                  <AvatarImage src={profilePicture} />
+                  <AvatarImage src={driver.profile} />
                   <AvatarFallback>JD</AvatarFallback>
                 </Avatar>
                 <input

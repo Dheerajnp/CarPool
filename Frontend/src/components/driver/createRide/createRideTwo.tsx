@@ -16,7 +16,7 @@ const CreateRideStageTwo = () => {
   const [suggestedPriceRange, setSuggestedPriceRange] = useState<[number, number]>([0, 0]);
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
-
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
     
     
   const formik = useFormik({
@@ -45,7 +45,7 @@ const CreateRideStageTwo = () => {
         duration: route?.duration,
         vehicle: selectedVehicle,
       }
-      await axiosApiGateway.post(`/driver/create-ride/${auth.user?.id}`, { data }).then((res)=>{
+      await axiosApiGateway.post(`/driver/create-ride/${userId}`, { data }).then((res)=>{
         toast.success(res.data.message)  
         navigate("/user")
       }).catch(({response})=>{
@@ -66,7 +66,7 @@ const CreateRideStageTwo = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axiosApiGateway.get(`/driver/vehicles/${auth.user?.id}`);
+        const response = await axiosApiGateway.get(`/driver/vehicles/${userId}`);
         if (response.data.length === 0) {
           toast.error("No vehicles found. Please add a vehicle first.");
           navigate("/user")
@@ -85,7 +85,7 @@ const CreateRideStageTwo = () => {
       toast.error("Enter the ride details again");
       navigate("/user");
     }
-  }, [auth.user?._id, navigate, ride.destination, ride.source]);
+  }, [userId, navigate, ride.destination, ride.source]);
 
   const getSuggestedPriceBgColor = () => {
     const price = parseFloat(formik.values.price);

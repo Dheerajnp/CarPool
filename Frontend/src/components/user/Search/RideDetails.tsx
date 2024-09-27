@@ -25,6 +25,7 @@ import {
 
 export default function RideDetailsComponent() {
   const { auth, navigate } = useEssentials();
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
   const [rideDetails, setRideDetails] = useState<IRideDetails | null>(null);
   const { rideId } = useParams();
   let loading;
@@ -62,7 +63,7 @@ export default function RideDetailsComponent() {
   };
 
   const handleChatClick = async(driverId:string)=>{
-    const response = await axiosApiGateway.get(`/chat/user/getChat/${auth.user?.id as string}?driverId=${driverId}`)
+    const response = await axiosApiGateway.get(`/chat/user/getChat/${userId as string}?driverId=${driverId}`)
     if(response.data.result.status === 200){
       navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
     }else{
@@ -253,7 +254,7 @@ export default function RideDetailsComponent() {
                   className="w-full"
                   onClick={() =>
                     handleRideRequestClick(
-                      auth.user?.id as string,
+                      userId as string,
                       rideDetails?._id as string
                     )
                   }

@@ -4,7 +4,7 @@ const notificationSchema = new mongoose.Schema({
   recipient: { type: Schema.Types.ObjectId, required: true },
   sender: { type: Schema.Types.ObjectId, required: true },
   senderName:{ type:String },
-  notificationType:{ type:String, enum:['request','status']},
+  notificationType:{ type:String, enum:['request','status','ride_active']},
   message: { type: String, required: true },
   rideId:{ type: Types.ObjectId},
   status: { type: String, enum: ['unread', 'read'], default: 'unread' },

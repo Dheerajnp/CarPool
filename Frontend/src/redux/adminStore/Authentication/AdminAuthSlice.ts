@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import * as interfaces from './interfaces'
 import * as adminAuthService from './AdminAuthService'
 import { AppDispatch, RootState } from "../../store";
-// import Cookies from "js-cookie"
 
 type AsyncThunkConfig = {
     state: RootState;
@@ -71,7 +70,6 @@ const authSliceAdmin = createSlice({
             state.loading = false;
             state.message = action.payload.message;
             state.admin = action.payload.admin;
-            // Cookies.set('adminToken',action.payload.token as string);
         })
         .addCase(adminVerify.pending,(state)=>{
             state.loading = true;

@@ -17,9 +17,7 @@ import { Textarea } from "../../components/ui/textarea";
 import Header from "../Common/Navbar";
 import { ScrollArea } from "../ui/scroll-area";
 import { MdOutlineArrowDropDownCircle } from "react-icons/md";
-import { CiPhone } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
-import { User2Icon } from "lucide-react";
 import { FiSend } from "react-icons/fi";
 import { useEssentials } from "../../hooks/UseEssentials";
 import { useChat } from "../../hooks/UseChats";
@@ -41,25 +39,27 @@ export default function Component() {
   } = useChat();
 
   const { auth } = useEssentials();
-
   const [chatMessage, setChatMessage] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id;
 
+  console.log(userId);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  console.log(conversations)
   const recieverId = useMemo(() => {
-    if (!selectedConversation || !auth.user?.id) return null;
-
-    if (auth.user.id === selectedConversation.driver._id) {
+    if (!selectedConversation || !userId) return null;
+    console.log(selectedConversation)
+    if (userId === selectedConversation.driver?._id) {
       return selectedConversation.user._id;
-    } else if (auth.user.id === selectedConversation.user._id) {
+    } else if (userId === selectedConversation.user?._id) {
       return selectedConversation.driver._id;
     }
 
     return null;
-  }, [selectedConversation, auth]);
+  }, [selectedConversation, auth, userId]);
   const socket = useSocket();
   const [onlineUser, setOnlineUser] = useState<onlineUserFindType[]>([]);
   const [counts, setCount] = useState<{ _id: string; unreadCount: number }[]>(
@@ -76,17 +76,15 @@ export default function Component() {
         }
         return count;
       });
-  
+
       // If no matching roomId was found, add a new entry
       if (!fount) {
         return [...updatedCounts, { _id: roomId, unreadCount: 1 }];
       }
-  
+
       return updatedCounts;
     });
   }
-  
-
 
   useEffect(() => {
     if (socket) {
@@ -96,7 +94,7 @@ export default function Component() {
           return setMessages((prevMessages) => [...prevMessages, data]);
         }
         console.log(data.roomId);
-        console.log(counts)
+        console.log(counts);
         setCountings(data.roomId);
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
       });
@@ -109,13 +107,18 @@ export default function Component() {
 
   useEffect(() => {
     if (socket && conversations.length > 0 && auth && auth.user) {
-      socket?.emit(
-        "getUsers",
-        conversations.map((conv) =>
-          auth.user?.role === "rider" ? conv.driver._id : conv.user._id
-        )
-      );
-      socket.emit("sendonline", auth.user.id, auth.user.role);
+      console.log(conversations);
+      const usrs = conversations.map((conv) => {
+        if (auth.user?.role === "rider") {
+          return conv.user._id;
+        } else if (auth.user?.role === "host") {
+          return conv.driver._id;
+        }
+        return null;
+      });
+      console.log(usrs);
+      socket?.emit("getUsers", usrs);
+      socket.emit("sendonline", userId, auth.user.role);
     }
   }, [conversations, socket, auth, auth.user]);
   useEffect(() => {
@@ -138,10 +141,10 @@ export default function Component() {
       ]);
     });
 
-    ()=>{
+    () => {
       socket?.off("online");
       socket?.off("getUsers");
-    }
+    };
   }, [socket]);
   const handleMessageSend = async () => {
     if (chatMessage.trim() === "") return;
@@ -151,7 +154,7 @@ export default function Component() {
 
   const sendMessageToChat = async (chatMessage: string) => {
     await axiosApiGateway
-      .post(`/chat/${auth.user?.id}`, {
+      .post(`/chat/${userId}`, {
         message: chatMessage,
         roomId: selectedConversation?.roomId,
       })
@@ -168,16 +171,7 @@ export default function Component() {
         console.error("Error sending message:", error);
       });
   };
-  // const isUserOnline = (userId: string) => {
-  //   return onlineUser.some((user) => user.userId === userId);
-  // };
 
-  // useEffect(()=>{
-  //   setOnlineUser(
-  //     onlineUser.filter((user) => user.userId!== selectedConversation.)
-  //   )
-  // },[selectedConversation])
-      
   return (
     <div className="w-full flex justify-center">
       <header className="bg-background border-b  fixed top-0 left-0 right-0 z-50">
@@ -191,7 +185,6 @@ export default function Component() {
           onlineUser={onlineUser}
           counts={counts}
           setCount={setCount}
-          // selectedIsOnline={selectedIsOnline}
         />
         <div className="bg-background rounded-e-lg w-[70vw] border p-6 mt-20 flex flex-col gap-4  h-[calc(98vh-80px)]">
           {selectedConversation && selectedConversation.driver ? (
@@ -240,17 +233,12 @@ export default function Component() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <User2Icon className="w-4 h-4 mr-2" />
-                        View Profile
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <CiPhone className="w-4 h-4 mr-2" />
-                        Call
-                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem>
-                        <IoMdClose className="w-4 h-4 mr-2" />
+                        <IoMdClose
+                          className="w-4 h-4 mr-2"
+                          onClick={() => window.location.reload()}
+                        />
                         Close Chat
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -262,7 +250,7 @@ export default function Component() {
                 {messages && messages.length > 0 ? (
                   messages.map((message) => (
                     <div className="grid gap-4 " ref={scrollRef}>
-                      {message.senderId == auth.user?.id ? (
+                      {message.senderId == userId ? (
                         <div
                           className="flex items-start gap-3"
                           id={message.roomId}
@@ -273,7 +261,7 @@ export default function Component() {
                               alt="User Avatar"
                             />
                             <AvatarFallback>
-                              {auth.user.name?.slice(0, 2).toUpperCase()}
+                              {userId?.slice(0, 2).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div className="bg-muted rounded-lg p-3 max-w-[75%] mt-2">

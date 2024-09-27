@@ -242,7 +242,6 @@ export class AuthRepositoryImp implements AuthRepository {
     token: string | null;
     refreshToken: string | null;
   }> {
-    console.log("repository google creation signup");
     const { name, email, password, role } = credentials;
     const HashPassword = await CommonFunctions.HashPassword(password);
     
@@ -262,8 +261,6 @@ export class AuthRepositoryImp implements AuthRepository {
           role,
         });
         await user.save();
-        console.log("User created with google as rider", user);
-        
         // Generate tokens for the user
         token = CommonFunctions.jwtGenerateToken(user._id, user.role as string);
         refreshToken = CommonFunctions.jwtGenerateRefreshToken(user._id, user.role as string);
@@ -284,7 +281,6 @@ export class AuthRepositoryImp implements AuthRepository {
           role,
         });
         await driver.save();
-        console.log("Driver created with google as host", driver);
         
         // Generate tokens for the driver
         token = CommonFunctions.jwtGenerateToken(driver._id, driver.role as string);
@@ -315,10 +311,11 @@ export class AuthRepositoryImp implements AuthRepository {
   async verifyOtp(
     tempId: string,
     enteredOtp: string
-  ): Promise<{ user: User | Driver | null; message: string; status: number }> {
+  ): Promise<{ user: User | Driver | null; message: string; status: number;token?:string;refreshToken?:string }> {
     try {
       const userData: TempUser | null = await tempUserModel.findById(tempId);
-
+      let token: string | null = null;
+      let refreshToken: string | null = null; 
       if (!userData) {
         return {
           user: null,
@@ -381,11 +378,15 @@ export class AuthRepositoryImp implements AuthRepository {
 
       await newUser.save();
       await tempUserModel.deleteOne({ _id: tempId });
+      token = CommonFunctions.jwtGenerateToken(newUser._id, newUser.role as string);
+      refreshToken = CommonFunctions.jwtGenerateRefreshToken(newUser._id, newUser.role as string);
 
       return {
         user: newUser,
         message: "User verified",
         status: 200,
+        token,
+        refreshToken,
       };
     } catch (error) {
       console.error("Error during OTP verification:", error);

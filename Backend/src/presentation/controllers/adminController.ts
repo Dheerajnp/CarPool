@@ -1,8 +1,21 @@
 import { RequestHandler } from "express";
 import { AdminInteractor } from "../../application/interfaces/usecases/AdminInteractor";
+import userModel from "../../frameworks/database/models/userSchema";
+import driverModel from "../../frameworks/database/models/driverSchema";
 
 export class adminController{
     constructor(private readonly interactor : AdminInteractor){}
+
+    userstatsController:RequestHandler = async(req,res)=>{
+        try {
+            const riderCount = await userModel.countDocuments({ role: 'rider' });
+            const hostCount = await driverModel.countDocuments({ role: 'host' });
+        
+            res.json({ rider: riderCount, host: hostCount });
+          } catch (err) {
+            res.status(500).json({ message: 'Error fetching user roles stats', error: err });
+          }
+    }
 
     adminLogin:RequestHandler = async(req,res)=>{
         const { email , password } = req.body;

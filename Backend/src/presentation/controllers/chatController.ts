@@ -7,15 +7,6 @@ export class chatController{
     getChat:RequestHandler = async(req,res)=>{
         const { userId } = req.params;
         const { driverId } = req.query;
-        // let result = {
-        //     message:"success",
-        //     status:200,
-        //     chat:{
-        //         roomId:"lUqMmBUdsrexKeXq",
-
-        //     }
-        // }
-        // return res.status(200).json({result});
         try {
             const result = await this.interactor.getChatInteractor(userId,driverId as string);
             return res.status(result.status).json({result});

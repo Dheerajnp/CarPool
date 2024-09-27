@@ -13,5 +13,6 @@ rideRouter.put('/requestRide/:rideId',authMiddleware,controller.requestRide.bind
 rideRouter.get('/getDriverRides/:driverId',authMiddleware,controller.getRidesDriver.bind(controller));
 rideRouter.get('/getUserRides/:userId',authMiddleware,controller.getUserRides.bind(controller));
 rideRouter.get('/getRideDetails/:rideId',authMiddleware,controller.getRideDetails.bind(controller));
-rideRouter.post('/userOnboarding/:rideId',authMiddleware,controller.userOnboardRide.bind(controller))
+rideRouter.post('/userOnboarding/:rideId',authMiddleware,controller.userOnboardRide.bind(controller));
+rideRouter.get('/ride-stats',controller.getRidestats.bind(controller));
 export default rideRouter;

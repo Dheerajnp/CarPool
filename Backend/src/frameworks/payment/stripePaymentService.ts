@@ -10,7 +10,6 @@ type userData = {
 
 export const createPaymentIntent = async(userData:userData, totalAmount: number , rideId:string) => {
     try {
-        console.log("payyyyyyyyyyyyyyyyyyyyyyyy")
         const user = await stripe.customers.create({
             name:userData.name,
             email:userData.email

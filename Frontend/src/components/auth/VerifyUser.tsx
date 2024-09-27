@@ -3,6 +3,7 @@ import { useEssentials } from "../../hooks/UseEssentials";
 import { verifyOtpThunk } from "../../redux/userStore/Authentication/AuthSlice";
 import OTP from "./OTP";
 import { ModeToggle } from "../Common/mode-toggle";
+import { setCookie } from "../../functions/CalculateTime";
 
 const VerifyUser = ({ savedId }: { savedId: string}) => {
   const { dispatch, navigate } = useEssentials();
@@ -21,6 +22,9 @@ const VerifyUser = ({ savedId }: { savedId: string}) => {
       console.log(response.payload.user)
       if (response.payload.user) {
         let role = response.payload.user.role;
+        console.log(response)
+        setCookie('token',response.payload.token)
+        setCookie('refreshToken',response.payload.refreshToken);
         if (role === 'rider') {
           navigate('/user/upload-document');
         } else if (role === 'host') {

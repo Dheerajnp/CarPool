@@ -33,7 +33,7 @@ const UploadLicenseForm = () => {
   const { auth, navigate } = useEssentials();
   let userId: string;
   if (auth.user) {
-    userId = auth.user._id as string;
+    userId = auth.user?._id ? auth.user?._id : auth.user?.id
   }
 
   const handleFileChange = (

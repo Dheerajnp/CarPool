@@ -39,7 +39,7 @@ axiosApiGateway.interceptors.response.use(
       originalRequest._retry = true;
       const refreshToken = Cookies.get('refreshToken');
       if (refreshToken) {
-        return axios.post('http://localhost:3000/auth/refresh-token', {
+        return axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`, {
           refreshToken: refreshToken
         })
           .then((response) => {

@@ -19,12 +19,11 @@ import EditUserInfoModal from "../../../components/user/profile/EditUserInfoModa
 import LoaderCentered from "../../../components/Common/LoaderCentered";
 
 export default function UserProfile() {
-  // const [document, setDocument] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const { auth } = useEssentials();
-  const userId = auth.user?._id;
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id  
   const [profilePicture, setProfilePicture] = useState("/placeholder-user.jpg");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditUserInfoOpen, setIsEditUserInfoOpen] = useState(false);
@@ -37,6 +36,7 @@ export default function UserProfile() {
         const response = await axiosApiGateway.get(`/user/getUser/${userId}`);
         if (response.data.status === 200) {
           setUser(response.data.user);
+          setProfilePicture(response.data.user.profile);
         } else {
           toast.error(response.data.message);
         }
@@ -63,12 +63,7 @@ export default function UserProfile() {
     }
   };
 
-  // const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     setDocument(file);
-  //   }
-  // };
+  
 
   const handleSaveDocument = (updatedDocument: {
     type: string;

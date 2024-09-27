@@ -3,7 +3,6 @@ import axios from 'axios'
 import * as interfaces from './interfaces'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.baseURL = API_BASE_URL;
-// axios.defaults.withCredentials = true;
 
 export const register: Function = async (data:interfaces.RegisterCredentials) => {
     try {

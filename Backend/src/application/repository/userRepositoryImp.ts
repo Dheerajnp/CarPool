@@ -6,14 +6,12 @@ import { IRide } from "../../entities/interfaces/RideInterface";
 import Ride from "../../frameworks/database/models/rideSchema";
 import Notification from "../../frameworks/database/models/notificationSchema";
 import { createPaymentIntent } from "../../frameworks/payment/stripePaymentService";
-import mongoose from "mongoose";
+
+
 export class userRepositoryImp implements UserRepository {
   async createPaymentRepository(name: string, amount: number, email: string, userId: string, rideId: string): Promise<{ message: string; status: number; sessionId: string; }> {
     try {
-      console.log("createPaymentInteractor")
-      console.log(userId)
       if(userId){
-        console.log("hbshbsh")
         const ride = await Ride.findById(rideId);
         console.log(ride)
         if(!ride){
@@ -45,6 +43,8 @@ export class userRepositoryImp implements UserRepository {
           paymentMethod: 'card',
           paymentDate: new Date()
         }
+
+        ride.totalPrice = ride.totalPrice + amount * selectedRide.numberOfPassengers; 
         
         console.log(selectedRide.payment)
         await ride.save();

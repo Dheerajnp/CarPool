@@ -28,14 +28,14 @@ const DriverNotification = () => {
   const { auth, navigate } = useEssentials();
   const socket = useSocket();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const response = await axiosApiGateway.get(`/driver/notifications`, {
-          params: { userId: auth.user?.id },
+          params: { userId: userId },
         });
-        console.log("notification data", response.data.notifications);
         setNotifications(response.data.notifications);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -98,6 +98,7 @@ const DriverNotification = () => {
                               : "bg-white"
                           }`}
                           onClick={() => {
+                            console.log(notification._id, notification)
                             socket?.emit("notificationSeen", notification._id);
                             navigate(
                               `/driver/rideDetails/${notification?.rideId}`

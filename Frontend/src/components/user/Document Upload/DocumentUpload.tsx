@@ -10,7 +10,7 @@ const DocumentUpload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const { auth, navigate } = useEssentials();
-  const userId = auth.user?._id as string;
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
 
   const handleDocumentTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setDocumentType(event.target.value);

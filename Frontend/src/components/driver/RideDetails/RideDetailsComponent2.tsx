@@ -42,6 +42,7 @@ import OtpInput from "./RideOnboardingOtpModal";
 
 export default function RideDetailedViewDriver() {
   const { auth, navigate } = useEssentials();
+  let userId = auth.user?._id ? auth.user?._id : auth.user?.id
   const { rideId } = useParams();
   const [rideDetails, setRideDetails] = useState<IRideDetails | null>(null);
   const [loading, setLoading] = useState(false);
@@ -164,9 +165,9 @@ export default function RideDetailedViewDriver() {
     }
   };
 
-  const handleChatClick = async (userId: string) => {
+  const handleChatClick = async (Id: string) => {
     const response = await axiosApiGateway.get(
-      `/chat/user/getChat/${userId}?driverId=${auth.user?.id as string}`
+      `/chat/user/getChat/${Id}?driverId=${userId as string}`
     );
     if (response.data.result.status === 200) {
       navigate(`/chat?roomId=${response.data.result.chat.roomId}`);
@@ -474,7 +475,7 @@ export default function RideDetailedViewDriver() {
                             size="icon"
                             variant="ghost"
                             onClick={() =>
-                              handleChatClick(passenger.rider._id as string)
+                              handleChatClick(passenger.rider._id || passenger.rider.id as string)
                             }
                           >
                             <MessageCircleIcon className="h-4 w-4" />
