@@ -114,13 +114,6 @@ const Header: React.FC = () => {
                 <span>My Rides</span>
               </Link>
                }
-                <Link
-                  to="/help"
-                  className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
-                >
-                  <IoIosHelpCircle />
-                  <span>Help</span>
-                </Link>
                 <a
                   onClick={logout}
                   className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
