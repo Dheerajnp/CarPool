@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
-import {  IoIosHelpCircle, IoIosLogOut } from "react-icons/io";
+import {  IoIosLogOut } from "react-icons/io";
 import {
   Drawer,
   DrawerContent,
